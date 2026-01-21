@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Building Tools Learning Journey — Builders v1</title>
+  <style>
+    :root {
+      --max-w: 1440px;
+    }
+    html, body { margin: 0; padding: 0; background:transparent; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
+    .page { display:flex; justify-content:center; padding:0; }
+    .container { position:relative; width:100%; max-width: var(--max-w); background:#DAE5F1; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
+
+    .component { display:none; position:relative; background:#DAE5F1; }
+    .component.active { display:block; }
+
+    .svg-host { position:relative; width:100%; height:auto; display:block; background:#DAE5F1; }
+    .svg-host img { width:100%; height:auto; display:block; }
+
+    /* Adjust Component 35 (slide 8) horizontal and vertical alignment */
+    .component[data-idx="7"] .svg-host img {
+      transform: translateX(-4px) translateY(-20px);
+    }
+
+    /* Adjust Component 36 (slide 9) horizontal and vertical alignment */
+    .component[data-idx="8"] .svg-host img {
+      transform: translateX(-6px) translateY(3px);
+    }
+
+    /* overlay root sits above the image in the svg-host */
+    .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
+    .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; z-index:20; }
+    .click-area.debug { outline: 2px dashed rgba(191,224,2,0.8); background: rgba(191,224,2,0.15); }
+    .iframe-embed { position:absolute; border-radius:24px; pointer-events:auto; border:none; z-index:15; }
+    .video-embed { position:absolute; pointer-events:auto; border:none; width:100%; height:100%; }
+
+    /* debug controls - hidden */
+    .nav { display:none; }
+
+    /* video modal */
+    .video-modal { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); z-index:2000; display:none; align-items:center; justify-content:center; }
+    .video-modal.active { display:flex; }
+    .video-modal-content { position:relative; width:90%; max-width:1200px; aspect-ratio:16/9; background:#000; border-radius:8px; overflow:hidden; }
+    .video-modal video { width:100%; height:100%; }
+    .video-modal-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:40px; height:40px; font-size:24px; cursor:pointer; z-index:1; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+    .video-modal-close:hover { background:#fff; }
+  </style>
+</head>
+<body>
+  <input id="debugToggle" type="checkbox" style="display:none;" />
+
+  <div class="page">
+    <div class="container">
+      <!-- components injected here by JS -->
+    </div>
+  </div>
+
+  <div class="video-modal" id="videoModal">
+    <div class="video-modal-content">
+      <button class="video-modal-close" id="closeVideoModal">&times;</button>
+      <video id="videoPlayer" controls>
+        <source src="" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Helper: create a component block that embeds an external SVG via <object>,
+     * then positions overlays using percent based on the SVG's viewBox.
+     */
+
+    // Progress bar coordinates for 1440px viewBox (slides 1-9)
+    const progressBarSegments1440 = [
+      { to: 0, x: 117.5, y: 100.5, w: 69, h: 69 },
+      { to: 1, x: 257.5, y: 100.5, w: 69, h: 69 },
+      { to: 2, x: 397.5, y: 100.5, w: 69, h: 69 },
+      { to: 3, x: 541.5, y: 100.5, w: 69, h: 69 },
+      { to: 4, x: 685.5, y: 100.5, w: 69, h: 69 },
+      { to: 5, x: 829.5, y: 100.5, w: 69, h: 69 },
+      { to: 6, x: 973.5, y: 100.5, w: 69, h: 69 },
+      { to: 7, x: 1117.5, y: 100.5, w: 69, h: 69 },
+      { to: 8, x: 1261.5, y: 100.5, w: 69, h: 69 }
+    ];
+
+    const components = [
+      // Component 28 (Slide 1)
+      {
+        id: 28,
+        file: "builders/v1/Component 28.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1358,
+        overlays: [
+          // Get Started button
+          { action: "next", x: 1151, y: 1222, w: 207, h: 56 }
+        ]
+      },
+      // Component 29 (Slide 2)
+      {
+        id: 29,
+        file: "builders/v1/Component 29.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2601,
+        overlays: [
+          // YouTube/Vimeo video click areas
+          { action: "url", href: "https://www.youtube.com/watch?v=NJyDyLEigbQ&t=6s", x: 78, y: 1164, w: 394, h: 231 },
+          { action: "url", href: "https://www.youtube.com/watch?v=F7guvx59ZwI", x: 513.333, y: 1164, w: 394, h: 231 },
+          { action: "url", href: "https://vimeo.com/762128620?fl=pl&fe=vl", x: 948.667, y: 1164, w: 387, h: 231 },
+          // Navigation buttons
+          { action: "back", x: 78, y: 2387, w: 142, h: 56 },
+          { action: "next", x: 958, y: 2387, w: 400, h: 56 }
+        ],
+        videos: [
+          { src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/EDU%20Intro%20V3-1.mp4", x: 539, y: 475, w: 769, h: 409 }
+        ],
+        iframes: [
+          { src: "https://app.buildingtools.co/tools/access-stairs-private-handrails-balustrades-ncc2022.2-1.22?v=1&block=f395f28c-dfab-4a9b-9c0d-dc724a0b032b&standard=NCC%202022.2&standard=&menu_id=0-8-1&shareId=FmGcYD-1765161617156&zoom=2.2898&x=570.1130417311147&y=238.7100387198926&action=click&type=0&chromeless=true", x: 78, y: 1498, w: 1280, h: 650 }
+        ]
+      },
+      // Component 30 (Slide 3)
+      {
+        id: 30,
+        file: "builders/v1/Component 30.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2247,
+        overlays: [
+          // Sign Up button
+          { action: "url", href: "https://hickory.buildingtools.co/", x: 732, y: 653, w: 129, h: 44 },
+          // Sign Up text links (making clickable areas larger for usability)
+          { action: "url", href: "https://hickory.buildingtools.co/", x: 352.125, y: 1685, w: 42.414, h: 35 },
+          { action: "url", href: "https://hickory.buildingtools.co/", x: 399.766, y: 1685, w: 52.718, h: 35 },
+          { action: "url", href: "https://hickory.buildingtools.co/", x: 460.555, y: 1685, w: 55.937, h: 35 },
+          // Navigation buttons
+          { action: "back", x: 80, y: 2082, w: 142, h: 56 },
+          { action: "next", x: 847, y: 2082, w: 513, h: 56 }
+        ]
+      },
+      // Component 31 (Slide 4)
+      {
+        id: 31,
+        file: "builders/v1/Component 31.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 3561,
+        overlays: [
+          // Navigation buttons
+          { action: "back", x: 80, y: 3425, w: 142, h: 56 },
+          { action: "next", x: 1039, y: 3425, w: 322, h: 56 }
+        ]
+      },
+      // Component 32 (Slide 5)
+      {
+        id: 32,
+        file: "builders/v1/Component 32.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2544,
+        overlays: [
+          // Navigation buttons  
+          { action: "back", x: 80, y: 2408, w: 142, h: 56 },
+          { action: "next", x: 999, y: 2408, w: 362, h: 56 }
+        ]
+      },
+      // Component 33 (Slide 6)
+      {
+        id: 33,
+        file: "builders/v1/Component 33.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2229,
+        overlays: [
+          // View Playlist button
+          { action: "url", href: "https://hickory.buildingtools.co/playlist-preview/27dcd4e9-ec2e-4d05-8819-15328d104139", x: 881.5, y: 815, w: 185, h: 52 },
+          // Navigation buttons
+          { action: "back", x: 80, y: 2093, w: 142, h: 56 },
+          { action: "next", x: 920, y: 2093, w: 441, h: 56 }
+        ]
+      },
+      // Component 34 (Slide 7)
+      {
+        id: 34,
+        file: "builders/v1/Component 34.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2282,
+        overlays: [
+          // Navigation buttons
+          { action: "back", x: 80, y: 1948, w: 142, h: 56 },
+          { action: "next", x: 1087, y: 1948, w: 273, h: 56 }
+        ]
+      },
+      // Component 35 (Slide 8)
+      {
+        id: 35,
+        file: "builders/v1/Component 35.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2530,
+        overlays: [
+          // Knowledge base links
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/function", x: 72, y: 1519, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/building-code", x: 507, y: 1527, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/citation", x: 942, y: 1527, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/share-links", x: 72, y: 1979, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/-playlist", x: 507, y: 1979, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/your-tools", x: 942, y: 1979, w: 93, h: 20 },
+          // View Knowledge Base button
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base", x: 627, y: 2055, w: 167, h: 52 },
+          // Navigation buttons
+          { action: "back", x: 80, y: 2374, w: 142, h: 56 },
+          { action: "next", x: 1137, y: 2374, w: 224, h: 56 }
+        ],
+        images: [
+          { src: "creatives/Tools feedback V2.gif", x: 747, y: 544, w: 476, h: 302 }
+        ]
+      },
+      // Component 36 (Slide 9)
+      {
+        id: 36,
+        file: "builders/v1/Component 36.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 961,
+        overlays: [
+          // Launch button
+          { action: "url", href: "https://hickory.buildingtools.co/", x: 619, y: 713, w: 203, h: 56 }
+        ]
+      }
+    ];
+
+    // DOM setup
+    const container = document.querySelector('.container');
+
+    const state = {
+      index: 0, // 0..8
+      loaded: new Array(components.length).fill(false),
+      viewBox: new Array(components.length).fill(null) // {w,h}
+    };
+
+    function buildDOM() {
+      components.forEach((c, i) => {
+        const comp = document.createElement('div');
+        comp.className = 'component' + (i === 0 ? ' active' : '');
+        comp.dataset.idx = i;
+
+        const host = document.createElement('div');
+        host.className = 'svg-host';
+
+        const img = document.createElement('img');
+        img.src = c.file;
+        img.setAttribute('aria-label', `Component ${c.id}`);
+
+        const overlays = document.createElement('div');
+        overlays.className = 'overlay-root';
+
+        host.appendChild(img);
+        host.appendChild(overlays);  // Put overlays inside the svg-host
+        comp.appendChild(host);
+        container.appendChild(comp);
+
+        // Use fixed viewBox dimensions from component config
+        state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 2500 };
+        
+        // Wait for image to load before rendering overlays
+        img.addEventListener('load', () => {
+          state.loaded[i] = true;
+          renderOverlays(i);
+        });
+      });
+
+      hookDebug();
+    }
+
+    function pct(n, d) { return (n / d) * 100; }
+
+    function renderOverlays(idx) {
+      const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+      if (!compEl) return;
+      const root = compEl.querySelector('.overlay-root');
+      root.innerHTML = '';
+      const vb = state.viewBox[idx];
+      if (!vb) return; // wait until we know viewbox
+
+      const showDebug = document.getElementById('debugToggle').checked;
+
+      const host = compEl.querySelector('.svg-host');
+      
+      components[idx].overlays.forEach((o, oi) => {
+        const el = document.createElement('div');
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        
+        // Convert SVG coordinates to percentage based on viewBox
+        let leftPct = (o.x / vb.w) * 100;
+        const topPct = (o.y / vb.h) * 100;
+        let widthPct = (o.w / vb.w) * 100;
+        const heightPct = (o.h / vb.h) * 100;
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        el.title = o.action.toUpperCase();
+
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleAction(o);
+        });
+
+        root.appendChild(el);
+      });
+      
+      // Render iframes if component has them
+      if (components[idx].iframes) {
+        components[idx].iframes.forEach((iframe) => {
+          const el = document.createElement('iframe');
+          el.className = 'iframe-embed';
+          el.src = iframe.src;
+          el.setAttribute('allowfullscreen', '');
+          el.setAttribute('loading', 'lazy');
+          
+          const leftPct = (iframe.x / vb.w) * 100;
+          const topPct = (iframe.y / vb.h) * 100;
+          const widthPct = (iframe.w / vb.w) * 100;
+          const heightPct = (iframe.h / vb.h) * 100;
+          
+          el.style.left = leftPct + '%';
+          el.style.top = topPct + '%';
+          el.style.width = widthPct + '%';
+          el.style.height = heightPct + '%';
+          
+          root.appendChild(el);
+        });
+      }
+      
+      // Render images if component has them
+      if (components[idx].images) {
+        components[idx].images.forEach((image) => {
+          const el = document.createElement('img');
+          el.className = 'image-embed';
+          el.src = image.src;
+          el.setAttribute('loading', 'lazy');
+          
+          const leftPct = (image.x / vb.w) * 100;
+          const topPct = (image.y / vb.h) * 100;
+          const widthPct = (image.w / vb.w) * 100;
+          const heightPct = (image.h / vb.h) * 100;
+          
+          el.style.position = 'absolute';
+          el.style.left = leftPct + '%';
+          el.style.top = topPct + '%';
+          el.style.width = widthPct + '%';
+          el.style.height = heightPct + '%';
+          el.style.objectFit = 'cover';
+          
+          root.appendChild(el);
+        });
+      }
+      
+      // Render videos if component has them
+      if (components[idx].videos) {
+        components[idx].videos.forEach((video) => {
+          const wrapper = document.createElement('div');
+          wrapper.style.position = 'absolute';
+          wrapper.style.pointerEvents = 'auto';
+          
+          const leftPct = (video.x / vb.w) * 100;
+          const topPct = (video.y / vb.h) * 100;
+          const widthPct = (video.w / vb.w) * 100;
+          const heightPct = (video.h / vb.h) * 100;
+          
+          wrapper.style.left = leftPct + '%';
+          wrapper.style.top = topPct + '%';
+          wrapper.style.width = widthPct + '%';
+          wrapper.style.height = heightPct + '%';
+          
+          const el = document.createElement('video');
+          el.className = 'video-embed';
+          el.setAttribute('controls', '');
+          el.setAttribute('preload', 'metadata');
+          
+          const source = document.createElement('source');
+          source.src = video.src;
+          source.type = 'video/mp4';
+          el.appendChild(source);
+          
+          wrapper.appendChild(el);
+          root.appendChild(wrapper);
+        });
+      }
+      
+      // Add progress bar navigation overlays
+      const progressBarSegments = progressBarSegments1440;
+      
+      progressBarSegments.forEach((segment) => {
+        const el = document.createElement('div');
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        
+        let leftPct = (segment.x / vb.w) * 100;
+        const topPct = (segment.y / vb.h) * 100;
+        let widthPct = (segment.w / vb.w) * 100;
+        const heightPct = (segment.h / vb.h) * 100;
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        el.style.borderRadius = '50%';
+        el.title = `Go to slide ${segment.to + 1}`;
+        
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          goTo(segment.to, 'progress_bar');
+        });
+        
+        root.appendChild(el);
+      });
+    }
+
+    function handleAction(o) {
+      if (o.action === 'next') {
+        goTo(state.index + 1, 'button');
+      } else if (o.action === 'back') {
+        goTo(state.index - 1, 'button');
+      } else if (o.action === 'url' && o.href) {
+        // Track external link
+        if (typeof LearningJourneyTracker !== 'undefined') {
+          LearningJourneyTracker.trackExternalLink(o.href, state.index);
+        }
+        window.open(o.href, '_blank', 'noopener');
+      } else if (o.action === 'goto' && Number.isInteger(o.to)) {
+        goTo(o.to, 'button');
+      } else if (o.action === 'video') {
+        // Video now embedded inline - no modal needed
+      } else {
+        console.log('Unhandled action:', o);
+      }
+    }
+
+    function goTo(newIndex, method = 'button') {
+      const max = components.length - 1;
+      const clamped = Math.max(0, Math.min(max, newIndex));
+      if (clamped === state.index) return;
+      
+      const prevIndex = state.index;
+      const prev = container.querySelector(`.component[data-idx="${state.index}"]`);
+      const next = container.querySelector(`.component[data-idx="${clamped}"]`);
+      if (prev) prev.classList.remove('active');
+      if (next) next.classList.add('active');
+      state.index = clamped;
+      
+      // Track navigation with HubSpot
+      if (typeof LearningJourneyTracker !== 'undefined') {
+        LearningJourneyTracker.trackNavigation(
+          clamped,
+          getComponentName(clamped),
+          method,
+          prevIndex
+        );
+      }
+      
+      // ensure overlays re-render to honor debug toggle
+      if (state.viewBox[clamped]) renderOverlays(clamped);
+      
+      // Notify parent window of new height
+      notifyParentHeight();
+      
+      // Scroll parent window to top
+      if (window.parent !== window) {
+        window.parent.postMessage({ action: 'scrollToTop' }, '*');
+      }
+      // Also scroll this window to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function getComponentName(index) {
+      if (components[index]) {
+        return components[index].name || `Component ${components[index].id}`;
+      }
+      return `Step ${index + 1}`;
+    }
+    
+    function notifyParentHeight() {
+      if (window.parent !== window) {
+        const currentHeight = components[state.index].viewBoxHeight;
+        window.parent.postMessage({ 
+          action: 'resizeIframe', 
+          height: currentHeight 
+        }, '*');
+      }
+    }
+
+
+    function hookDebug() {
+      const dbg = document.getElementById('debugToggle');
+      dbg.addEventListener('change', () => {
+        // re-render overlays for current component
+        if (state.viewBox[state.index]) renderOverlays(state.index);
+      });
+    }
+
+    function hookKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          goTo(state.index + 1, 'keyboard');
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          goTo(state.index - 1, 'keyboard');
+        }
+      });
+    }
+
+    function openVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('videoPlayer');
+      modal.classList.add('active');
+      video.play();
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('videoPlayer');
+      modal.classList.remove('active');
+      video.pause();
+      video.currentTime = 0;
+    }
+
+    // init
+    buildDOM();
+    hookKeyboard();
+    
+    // Notify parent of initial height after DOM is ready
+    window.addEventListener('load', () => {
+      notifyParentHeight();
+      injectParentListener();
+    });
+    
+    // Inject listener script into parent window if in iframe
+    function injectParentListener() {
+      if (window.parent === window) return; // Not in iframe
+      
+      try {
+        // Try to inject script into parent (will fail if cross-origin)
+        const script = window.parent.document.createElement('script');
+        script.textContent = `
+          if (!window.iframeListenerAdded) {
+            window.iframeListenerAdded = true;
+            window.addEventListener('message', function(event) {
+              const iframe = document.querySelector('iframe[src*="tools-competency-builders-v1"]');
+              if (!iframe) return;
+              const data = event.data;
+              if (data.action === 'resizeIframe' && data.height) {
+                iframe.style.height = data.height + 'px';
+              }
+              if (data.action === 'scrollToTop') {
+                iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            });
+          }
+        `;
+        window.parent.document.head.appendChild(script);
+      } catch (e) {
+        // Cross-origin restriction - parent needs to add listener manually
+        console.log('Cannot inject parent listener due to cross-origin policy');
+      }
+    }
+
+    // Video modal event listeners
+    document.getElementById('closeVideoModal').addEventListener('click', closeVideoModal);
+    document.getElementById('videoModal').addEventListener('click', (e) => {
+      if (e.target.id === 'videoModal') closeVideoModal();
+    });
+  </script>
+  
+  <!-- HubSpot Learning Journey Tracking -->
+  <script src="https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/tracking.js"></script>
+  <script>
+    // Initialize tracking with journey name
+    LearningJourneyTracker.init('tools-competency-builders-v1');
+  </script>
+</body>
+</html>

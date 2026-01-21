@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Builder Practical Guide - Implementation</title>
+  <style>
+    :root {
+      --max-w: 1440px;
+    }
+    html, body { margin: 0; padding: 0; background:transparent; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
+    .page { display:flex; justify-content:center; padding:0; }
+    .container { position:relative; width:100%; max-width: var(--max-w); background:#DAE5F1; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
+
+    .component { display:none; position:relative; background:#DAE5F1; }
+    .component.active { display:block; }
+
+    .svg-host { position:relative; width:100%; height:auto; display:block; background:#DAE5F1; }
+    .svg-host img { width:100%; height:auto; display:block; }
+
+    /* overlay root sits above the image in the svg-host */
+    .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
+    .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
+    .click-area.debug { outline: 2px dashed rgba(191,224,2,0.8); background: rgba(191,224,2,0.15); }
+    .video-embed { position:absolute; pointer-events:auto; border:none; border-radius:24px; }
+    .image-embed { position:absolute; pointer-events:none; border-radius:32px; }
+
+    /* Debug toggle button */
+    .debug-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      padding: 12px 20px;
+      background: #7E0EB3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.2s;
+    }
+    .debug-toggle:hover {
+      background: #6A0B99;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+    .debug-toggle.active {
+      background: #BFE002;
+      color: #252D36;
+    }
+    
+    /* Accordion slide specific styles */
+    .accordion-section {
+      position: absolute;
+      left: 0;
+      right: 0;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .accordion-section > * {
+      pointer-events: auto;
+    }
+    .accordion-section .click-area {
+      z-index: 30;
+    }
+  </style>
+</head>
+<body>
+  <input id="debugToggle" type="checkbox" style="display:none;" />
+  <button class="debug-toggle" id="debugButton">Show Click Areas</button>
+
+  <div class="page">
+    <div class="container">
+      <!-- components injected here by JS -->
+    </div>
+  </div>
+
+  <script>
+    const components = [
+      // Slide 1
+      {
+        id: 1,
+        file: "Builder Practical Guide (Implementation)/1.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        isAccordion: true,
+        accordionSections: [
+          { 
+            id: "section1",
+            toggleArea: { x: 60, y: 293, w: 1320, h: 72 },
+            contentArea: { x: 60, y: 365, w: 1320, h: 174 },
+            collapsedY: 293,
+            expandedHeight: 246
+          },
+          { 
+            id: "section2",
+            toggleArea: { x: 60, y: 559, w: 1320, h: 72 },
+            contentArea: { x: 60, y: 631, w: 1320, h: 174 },
+            collapsedY: 365,
+            expandedHeight: 246
+          },
+          { 
+            id: "section3",
+            toggleArea: { x: 60, y: 825, w: 1320, h: 72 },
+            contentArea: { x: 60, y: 897, w: 1320, h: 218 },
+            collapsedY: 437,
+            expandedHeight: 290
+          }
+        ],
+        overlays: [
+          { action: "next", x: 1173, y: 1140, w: 207, h: 56 }
+        ]
+      },
+      // Slide 2
+      {
+        id: 2,
+        file: "Builder Practical Guide (Implementation)/2.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 3
+      {
+        id: 3,
+        file: "Builder Practical Guide (Implementation)/3.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 4
+      {
+        id: 4,
+        file: "Builder Practical Guide (Implementation)/4.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 5
+      {
+        id: 5,
+        file: "Builder Practical Guide (Implementation)/5.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 6
+      {
+        id: 6,
+        file: "Builder Practical Guide (Implementation)/6.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 7
+      {
+        id: 7,
+        file: "Builder Practical Guide (Implementation)/7.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 8
+      {
+        id: 8,
+        file: "Builder Practical Guide (Implementation)/8.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 9
+      {
+        id: 9,
+        file: "Builder Practical Guide (Implementation)/9.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 10
+      {
+        id: 10,
+        file: "Builder Practical Guide (Implementation)/10.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 11
+      {
+        id: 11,
+        file: "Builder Practical Guide (Implementation)/11.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 12
+      {
+        id: 12,
+        file: "Builder Practical Guide (Implementation)/12.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 13
+      {
+        id: 13,
+        file: "Builder Practical Guide (Implementation)/13.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 },
+          { action: "back", x: 60, y: 1121, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1121, w: 433, h: 56 }
+        ]
+      },
+      // Slide 14
+      {
+        id: 14,
+        file: "Builder Practical Guide (Implementation)/14.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1349,
+        overlays: [
+          { action: "back", x: 60, y: 55, w: 75, h: 75 }
+        ]
+      }
+    ];
+
+    // DOM setup
+    const container = document.querySelector('.container');
+
+    const state = {
+      index: 0, // 0..13
+      loaded: new Array(components.length).fill(false),
+      viewBox: new Array(components.length).fill(null), // {w,h}
+      toggleStates: {} // { "0-toggle1": true, "0-toggle2": false, etc }
+    };
+    
+    // Initialize toggle states
+    function initToggleStates() {
+      components.forEach((c, idx) => {
+        if (c.accordionSections) {
+          c.accordionSections.forEach((section) => {
+            const key = `${idx}-${section.id}`;
+            state.toggleStates[key] = false; // all start collapsed
+          });
+        } else if (c.toggleContent) {
+          c.toggleContent.forEach((tc) => {
+            const key = `${idx}-${tc.toggleId}`;
+            state.toggleStates[key] = tc.initiallyVisible !== false;
+          });
+        }
+      });
+    }
+
+    function hookDebug() {
+      const dbg = document.getElementById('debugToggle');
+      const btn = document.getElementById('debugButton');
+      
+      btn.addEventListener('click', () => {
+        dbg.checked = !dbg.checked;
+        btn.textContent = dbg.checked ? 'Hide Click Areas' : 'Show Click Areas';
+        btn.classList.toggle('active', dbg.checked);
+        // re-render overlays for current component
+        if (state.viewBox[state.index]) renderOverlays(state.index);
+      });
+      
+      dbg.addEventListener('change', () => {
+        btn.textContent = dbg.checked ? 'Hide Click Areas' : 'Show Click Areas';
+        btn.classList.toggle('active', dbg.checked);
+        // re-render overlays for current component
+        if (state.viewBox[state.index]) renderOverlays(state.index);
+      });
+    }
+
+    function buildDOM() {
+      components.forEach((c, i) => {
+        const comp = document.createElement('div');
+        comp.className = 'component' + (i === 0 ? ' active' : '');
+        comp.dataset.idx = i;
+
+        const host = document.createElement('div');
+        host.className = 'svg-host';
+
+        const img = document.createElement('img');
+        img.src = c.file;
+        img.setAttribute('aria-label', `Slide ${c.id}`);
+
+        const overlays = document.createElement('div');
+        overlays.className = 'overlay-root';
+
+        host.appendChild(img);
+        host.appendChild(overlays);
+        comp.appendChild(host);
+        container.appendChild(comp);
+
+        // Use fixed viewBox dimensions from component config
+        state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 1349 };
+        
+        // Wait for image to load before rendering overlays
+        img.addEventListener('load', () => {
+          state.loaded[i] = true;
+          renderOverlays(i);
+        });
+      });
+
+      hookDebug();
+    }
+    
+    function renderAccordion(idx, root, vb, showDebug) {
+      const sections = components[idx].accordionSections;
+      let currentY = sections[0].collapsedY;
+      
+      sections.forEach((section, sectionIdx) => {
+        const key = `${idx}-${section.id}`;
+        const isExpanded = state.toggleStates[key];
+        
+        // Calculate offset for this section based on previous sections
+        let offset = 0;
+        for (let i = 0; i < sectionIdx; i++) {
+          const prevKey = `${idx}-${sections[i].id}`;
+          const prevExpanded = state.toggleStates[prevKey];
+          if (prevExpanded) {
+            offset += sections[i].expandedHeight - 72; // add content height
+          }
+        }
+        
+        // Create container for this section
+        const sectionContainer = document.createElement('div');
+        sectionContainer.className = 'accordion-section';
+        sectionContainer.style.transform = `translateY(${(offset / vb.h) * 100}%)`;
+        
+        // Render toggle button
+        const toggleBtn = document.createElement('div');
+        toggleBtn.className = 'click-area' + (showDebug ? ' debug' : '');
+        toggleBtn.style.position = 'absolute';
+        toggleBtn.style.left = (section.toggleArea.x / vb.w) * 100 + '%';
+        toggleBtn.style.top = (section.toggleArea.y / vb.h) * 100 + '%';
+        toggleBtn.style.width = (section.toggleArea.w / vb.w) * 100 + '%';
+        toggleBtn.style.height = (section.toggleArea.h / vb.h) * 100 + '%';
+        toggleBtn.onclick = () => {
+          console.log('Clicked section:', section.id, 'Current state:', state.toggleStates[key]);
+          state.toggleStates[key] = !state.toggleStates[key];
+          console.log('New state:', state.toggleStates[key]);
+          renderOverlays(idx);
+        };
+        
+        sectionContainer.appendChild(toggleBtn);
+        
+        // Cover content area if collapsed
+        if (!isExpanded) {
+          const coverEl = document.createElement('div');
+          coverEl.style.position = 'absolute';
+          coverEl.style.left = (section.contentArea.x / vb.w) * 100 + '%';
+          coverEl.style.top = (section.contentArea.y / vb.h) * 100 + '%';
+          coverEl.style.width = (section.contentArea.w / vb.w) * 100 + '%';
+          coverEl.style.height = (section.contentArea.h / vb.h) * 100 + '%';
+          coverEl.style.backgroundColor = '#DAE5F1';
+          coverEl.style.borderRadius = '8px';
+          coverEl.style.pointerEvents = 'none';
+          sectionContainer.appendChild(coverEl);
+        }
+        
+        root.appendChild(sectionContainer);
+      });
+      
+      // Render other overlays (like next button)
+      components[idx].overlays.forEach((o) => {
+        const el = document.createElement('div');
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        el.style.left = (o.x / vb.w) * 100 + '%';
+        el.style.top = (o.y / vb.h) * 100 + '%';
+        el.style.width = (o.w / vb.w) * 100 + '%';
+        el.style.height = (o.h / vb.h) * 100 + '%';
+        
+        if (o.action === 'next') {
+          el.onclick = () => goToSlide(state.index + 1);
+        } else if (o.action === 'back') {
+          el.onclick = () => goToSlide(state.index - 1);
+        } else if (o.action === 'url') {
+          el.onclick = () => window.open(o.url, '_blank');
+        }
+        
+        root.appendChild(el);
+      });
+    }
+
+    function renderOverlays(idx) {
+      const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+      if (!compEl) return;
+      const root = compEl.querySelector('.overlay-root');
+      root.innerHTML = '';
+      const vb = state.viewBox[idx];
+      if (!vb) return;
+
+      const showDebug = document.getElementById('debugToggle').checked;
+      
+      // Handle accordion sections
+      if (components[idx].isAccordion && components[idx].accordionSections) {
+        renderAccordion(idx, root, vb, showDebug);
+        return;
+      }
+
+      // Render cover rectangles first (to cover sections)
+      if (components[idx].covers) {
+        components[idx].covers.forEach((cover) => {
+          const coverEl = document.createElement('div');
+          coverEl.style.position = 'absolute';
+          coverEl.style.left = (cover.x / vb.w) * 100 + '%';
+          coverEl.style.top = (cover.y / vb.h) * 100 + '%';
+          coverEl.style.width = (cover.w / vb.w) * 100 + '%';
+          coverEl.style.height = (cover.h / vb.h) * 100 + '%';
+          coverEl.style.backgroundColor = '#DAE5F1';
+          coverEl.style.borderRadius = '8px';
+          coverEl.style.pointerEvents = 'none';
+          
+          root.appendChild(coverEl);
+        });
+      }
+
+      // Render videos
+      if (components[idx].videos) {
+        components[idx].videos.forEach((v) => {
+          const videoEl = document.createElement('video');
+          videoEl.className = 'video-embed';
+          videoEl.controls = true;
+          videoEl.style.left = (v.x / vb.w) * 100 + '%';
+          videoEl.style.top = (v.y / vb.h) * 100 + '%';
+          videoEl.style.width = (v.w / vb.w) * 100 + '%';
+          videoEl.style.height = (v.h / vb.h) * 100 + '%';
+          
+          const source = document.createElement('source');
+          source.src = v.src;
+          source.type = 'video/mp4';
+          videoEl.appendChild(source);
+          
+          root.appendChild(videoEl);
+        });
+      }
+
+      // Render images
+      if (components[idx].images) {
+        components[idx].images.forEach((img) => {
+          const imgEl = document.createElement('img');
+          imgEl.className = 'image-embed';
+          imgEl.src = img.src;
+          imgEl.style.position = 'absolute';
+          imgEl.style.left = (img.x / vb.w) * 100 + '%';
+          imgEl.style.top = (img.y / vb.h) * 100 + '%';
+          imgEl.style.width = (img.w / vb.w) * 100 + '%';
+          imgEl.style.height = (img.h / vb.h) * 100 + '%';
+          imgEl.style.objectFit = 'contain';
+          
+          root.appendChild(imgEl);
+        });
+      }
+
+      // Render toggle content areas (with covers)
+      if (components[idx].toggleContent) {
+        components[idx].toggleContent.forEach((tc) => {
+          const key = `${idx}-${tc.toggleId}`;
+          const isVisible = state.toggleStates[key];
+          
+          if (!isVisible) {
+            // Create cover to hide content
+            const coverEl = document.createElement('div');
+            coverEl.style.position = 'absolute';
+            coverEl.style.left = (tc.x / vb.w) * 100 + '%';
+            coverEl.style.top = (tc.y / vb.h) * 100 + '%';
+            coverEl.style.width = (tc.w / vb.w) * 100 + '%';
+            coverEl.style.height = (tc.h / vb.h) * 100 + '%';
+            coverEl.style.backgroundColor = '#DAE5F1';
+            coverEl.style.borderRadius = '8px';
+            coverEl.style.pointerEvents = 'none';
+            
+            root.appendChild(coverEl);
+          }
+        });
+      }
+      
+      components[idx].overlays.forEach((o) => {
+        const el = document.createElement('div');
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        
+        // Convert SVG coordinates to percentage based on viewBox
+        let leftPct = (o.x / vb.w) * 100;
+        const topPct = (o.y / vb.h) * 100;
+        let widthPct = (o.w / vb.w) * 100;
+        const heightPct = (o.h / vb.h) * 100;
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        
+        if (o.action === 'next') {
+          el.onclick = () => goToSlide(state.index + 1);
+        } else if (o.action === 'back') {
+          el.onclick = () => goToSlide(state.index - 1);
+        } else if (o.action === 'url') {
+          el.onclick = () => window.open(o.url, '_blank');
+        } else if (o.action === 'toggle') {
+          el.onclick = () => {
+            const key = `${idx}-${o.toggleId}`;
+            state.toggleStates[key] = !state.toggleStates[key];
+            renderOverlays(idx);
+          };
+        }
+        
+        root.appendChild(el);
+      });
+    }
+
+    function goToSlide(newIndex) {
+      if (newIndex < 0 || newIndex >= components.length) return;
+      
+      // Hide current
+      const currentComp = container.querySelector(`.component[data-idx="${state.index}"]`);
+      if (currentComp) currentComp.classList.remove('active');
+      
+      // Show new
+      state.index = newIndex;
+      const newComp = container.querySelector(`.component[data-idx="${newIndex}"]`);
+      if (newComp) newComp.classList.add('active');
+      
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    // Initialize
+    initToggleStates();
+    buildDOM();
+  </script>
+</body>
+</html>

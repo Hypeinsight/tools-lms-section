@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building Tools Learning Journey</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    #iframe-wrapper {
+      width: 100% !important;
+      max-width: 1440px !important;
+      margin: 0 auto !important;
+      display: block !important;
+    }
+    #tools-competency-iframe {
+      border: none !important;
+      display: block !important;
+      margin: 0px auto;
+      width: 1440px;
+      transition: height 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div id="iframe-wrapper">
+    <iframe 
+      id="tools-competency-iframe" 
+      src="https://info.buildingtools.co/hubfs/tools-competency-v12-base64.html" 
+      width="1440" 
+      height="1358"
+      frameborder="0" 
+      scrolling="no">
+    </iframe>
+  </div>
+
+  <script>
+    // Listen for height change messages from the iframe
+    window.addEventListener('message', function(event) {
+      // Security: verify the origin if needed
+      // if (event.origin !== 'https://info.buildingtools.co') return;
+      
+      const iframe = document.getElementById('tools-competency-iframe');
+      
+      if (event.data.action === 'resizeIframe' && event.data.height) {
+        iframe.style.height = event.data.height + 'px';
+      }
+      
+      if (event.data.action === 'scrollToTop') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  </script>
+</body>
+</html>

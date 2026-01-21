@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Building Tools Learning Journey — v12</title>
+  <style>
+    :root {
+      --max-w: 1440px;
+    }
+    html, body { margin: 0; padding: 0; background:transparent; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
+    .page { display:flex; justify-content:center; padding:0; }
+    .container { position:relative; width:100%; max-width: var(--max-w); background:#DAE5F1; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
+
+    /* FAQ Accordion Styles */
+    .faq-accordion { position: absolute; pointer-events: auto; z-index: 20; }
+    .faq-item { background: white; margin-bottom: 12px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+    .faq-item:last-child { margin-bottom: 0; }
+    .faq-question { padding: 24px 70px 24px 30px; font-weight: 600; font-size: 18px; color: #1F2937; position: relative; user-select: none; line-height: 1.4; }
+    .faq-question::after { content: '+'; position: absolute; right: 30px; top: 50%; transform: translateY(-50%); font-size: 32px; font-weight: 300; color: #1482FF; transition: transform 0.3s ease; }
+    .faq-item.active .faq-question::after { content: '−'; transform: translateY(-50%) rotate(180deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
+    .faq-item.active .faq-answer { max-height: 600px; }
+    .faq-answer-content { padding: 0 30px 24px 30px; font-size: 16px; line-height: 1.7; color: #4B5563; }
+    .faq-item:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); }
+
+    .component { display:none; position:relative; background:#DAE5F1; }
+    .component.active { display:block; }
+
+    .svg-host { position:relative; width:100%; height:auto; display:block; background:#DAE5F1; }
+    .svg-host img { width:100%; height:auto; display:block; }
+    
+    /* Component 9 is now 1440px wide - no cropping needed */
+
+    /* Adjust Component 16 (slide 7) horizontal and vertical alignment */
+    .component[data-idx="6"] .svg-host img {
+      transform: translateX(-0.25px) translateY(-0.25px);
+    }
+    
+    /* Adjust Component 16 overlay-root to match image transform */
+    .component[data-idx="6"] .overlay-root {
+      transform: translateX(-0.25px) translateY(-0.25px);
+    }
+
+    /* Adjust Component 17 (slide 8) horizontal and vertical alignment */
+    .component[data-idx="7"] .svg-host img {
+      transform: translateX(-5px) translateY(-20px);
+    }
+    
+    /* Adjust Component 17 overlay-root to match image transform */
+    .component[data-idx="7"] .overlay-root {
+      transform: translateX(-5px) translateY(-20px);
+    }
+
+    /* overlay root sits above the image in the svg-host */
+    .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
+    .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
+    .click-area.debug { outline: 2px dashed rgba(191,224,2,0.8); background: rgba(191,224,2,0.15); }
+    .iframe-embed { position:absolute; border-radius:24px; pointer-events:auto; border:none; }
+    .video-embed { position:absolute; pointer-events:auto; border:none; width:100%; height:100%; }
+
+    /* debug controls - hidden */
+    .nav { display:none; }
+
+    /* video modal */
+    .video-modal { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); z-index:2000; display:none; align-items:center; justify-content:center; }
+    .video-modal.active { display:flex; }
+    .video-modal-content { position:relative; width:90%; max-width:1200px; aspect-ratio:16/9; background:#000; border-radius:8px; overflow:hidden; }
+    .video-modal video { width:100%; height:100%; }
+    .video-modal-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:40px; height:40px; font-size:24px; cursor:pointer; z-index:1; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+    .video-modal-close:hover { background:#fff; }
+  </style>
+</head>
+<body>
+  <input id="debugToggle" type="checkbox" style="display:none;" />
+
+  <div class="page">
+    <div class="container">
+      <!-- components injected here by JS -->
+    </div>
+  </div>
+
+  <div class="video-modal" id="videoModal">
+    <div class="video-modal-content">
+      <button class="video-modal-close" id="closeVideoModal">&times;</button>
+      <video id="videoPlayer" controls>
+        <source src="https://info.buildingtools.co/hubfs/Speed%20version%20EDU%20intro.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Helper: create a component block that embeds an external SVG via <object>,
+     * then positions overlays using percent based on the SVG's viewBox.
+     */
+
+    // Progress bar coordinates for 1440px viewBox (slides 2-9)
+    const progressBarSegments1440 = [
+      { to: 0, x: 113.5, y: 80.5, w: 69, h: 69 },
+      { to: 1, x: 253.5, y: 80.5, w: 69, h: 69 },
+      { to: 2, x: 393.5, y: 80.5, w: 69, h: 69 },
+      { to: 3, x: 537.5, y: 80.5, w: 69, h: 69 },
+      { to: 4, x: 681.5, y: 80.5, w: 69, h: 69 },
+      { to: 5, x: 825.5, y: 80.5, w: 69, h: 69 },
+      { to: 6, x: 969.5, y: 80.5, w: 69, h: 69 },
+      { to: 7, x: 1113.5, y: 80.5, w: 69, h: 69 },
+      { to: 8, x: 1257.5, y: 80.5, w: 69, h: 69 }
+    ];
+    
+    // Component 9 now uses same progress bar coordinates as other slides (1440px viewBox)
+    // No need for separate 1943px coordinates
+
+    const components = [
+      // index 0 => Component 9
+      {
+        id: 9,
+        file: "Finalised SVGs/Component 9.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1358,
+        overlays: [
+          { action: "next", x: 1151, y: 1222, w: 207, h: 56 }
+        ],
+        images: [
+          { src: "Finalised SVGs/Partners/Frame 17.svg", x: 51, y: 962, w: 1339, h: 70 }
+        ]
+      },
+      // Component 10
+      {
+        id: 10,
+        file: "Finalised SVGs/Component 10.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 4579,
+        overlays: [
+          { action: "back", x: 78, y: 4443, w: 142, h: 56 },
+          { action: "next", x: 958, y: 4443, w: 400, h: 56 },
+          { action: "url", href: "https://www.youtube.com/watch?v=CPSO4nUpb8Y", x: 78, y: 1214, w: 410, h: 231 },
+          { action: "url", href: "https://www.youtube.com/watch?v=I3hgrQFCnKs", x: 513, y: 1214, w: 410, h: 237 },
+          { action: "url", href: "https://www.youtube.com/watch?v=7iX_p2pcVHA", x: 949, y: 1214, w: 411, h: 237 }
+        ],
+        videos: [
+          { src: "http://info.buildingtools.co/hubfs/20832146/EDU%20Intro%20V3-1.mp4", x: 539, y: 475, w: 769, h: 409 }
+        ],
+        iframes: [
+          { src: "https://app.buildingtools.co/tools/access-stairs-private-handrails-balustrades-ncc2022.2-1.22?v=1&block=f395f28c-dfab-4a9b-9c0d-dc724a0b032b&standard=NCC%202022.2&standard=&menu_id=0-8-1&shareId=FmGcYD-1765161617156&zoom=2.2898&x=570.1130417311147&y=238.7100387198926&action=click&type=0&chromeless=true", x: 128, y: 3604, w: 1180, h: 577 }
+        ],
+        images: [
+          { src: "Finalised SVGs/Video placeholder/68.svg", x: 247.5, y: 1292, w: 71, h: 75 },
+          { src: "Finalised SVGs/Video placeholder/68.svg", x: 682.5, y: 1295, w: 71, h: 75 },
+          { src: "Finalised SVGs/Video placeholder/68.svg", x: 1119, y: 1295, w: 71, h: 75 }
+        ]
+      },
+      // Component 11
+      {
+        id: 11,
+        file: "Finalised SVGs/Component 11.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2247,
+        overlays: [
+          // If you prefer a different URL for LOG IN, update here.
+          { action: "url", href: "https://tafesa.buildingtools.co/", x: 732, y: 627, w: 118, h: 44 },
+          { action: "back", x: 80, y: 2082, w: 142, h: 56 },
+          { action: "next", x: 847, y: 2082, w: 513, h: 56 },
+          { action: "url", href: "https://tafesa.buildingtools.co", x: 352, y: 1685, w: 159, h: 20 }
+        ]
+      },
+      // Component 12
+      {
+        id: 12,
+        file: "Finalised SVGs/Component 12.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 3561,
+        overlays: [
+          { action: "back", x: 80, y: 3425, w: 142, h: 56 },
+          { action: "next", x: 1039, y: 3425, w: 322, h: 56 }
+        ]
+      },
+      // Component 13
+      {
+        id: 13,
+        file: "Finalised SVGs/Component 13-new.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2456,
+        overlays: [
+          { action: "back", x: 80, y: 2320, w: 142, h: 56 },
+          { action: "next", x: 999, y: 2320, w: 362, h: 56 }
+        ],
+        blurs: [
+          { x: 1147, y: 1484.59, w: 114, h: 122.346 },
+          { x: 1145.58, y: 1494.02, w: 112.573, h: 111.585 },
+          { x: 587, y: 2017, w: 62, h: 60 }
+        ]
+      },
+      // Component 14 (updated with video section)
+      {
+        id: 14,
+        file: "Finalised SVGs/Updated Component 14/Component 14.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2229,
+        overlays: [
+          { action: "back", x: 80, y: 2093, w: 142, h: 56 },
+          { action: "next", x: 919, y: 2093, w: 442, h: 56 }
+        ],
+        videos: [
+          { src: "https://info.buildingtools.co/hubfs/20832146/Playlist_1.mp4", x: 111, y: 1249, w: 1218, h: 597 }
+        ]
+      },
+      // Component 15
+      {
+        id: 15,
+        file: "Finalised SVGs/Component 15.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1699,
+        overlays: [
+          { action: "back", x: 80, y: 1570, w: 142, h: 56 },
+          { action: "next", x: 1089, y: 1570, w: 272, h: 56 }
+        ]
+      },
+      // Component 16
+      {
+        id: 16,
+        file: "Finalised SVGs/Component 16.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 3711,
+        overlays: [
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base", x: 627, y: 2055, w: 167, h: 52 },
+          { action: "back", x: 70, y: 3575, w: 142, h: 56 },
+          { action: "next", x: 1127, y: 3575, w: 224, h: 56 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/function", x: 72, y: 1539, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/building-code", x: 507, y: 1547, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/citation", x: 942, y: 1547, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/share-links", x: 72, y: 1999, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/-playlist", x: 507, y: 1999, w: 93, h: 20 },
+          { action: "url", href: "https://info.buildingtools.co/knowledge-base/your-tools", x: 942, y: 1999, w: 93, h: 20 }
+        ],
+        images: [
+          { src: "creatives/Tools feedback V2.gif", x: 747, y: 544, w: 476, h: 302 }
+        ],
+        faq: {
+          x: 130,
+          y: 2380,
+          w: 1180,
+          items: [
+            { q: "What is Tools™ and how can it help me?", a: "Tools™ is an innovative platform that transforms how building codes and standards are accessed, understood, and applied. It provides interactive, visual learning experiences that make complex regulations easier to navigate and implement in real-world scenarios." },
+            { q: "Can I access Tools™ on mobile devices?", a: "Yes! Tools™ is accessible via both web browsers and mobile apps, allowing you to learn and reference building codes on the go." },
+            { q: "What kind of resources can I share using Tools™?", a: "You can share links, QR codes, and downloadable PDFs of playlists, making it easy to distribute curated content to your team or students." },
+            { q: "How do I read and navigate the interactive graphics in Tools™?", a: "Simply click on different elements within the graphics to reveal additional information, explanations, and related content. The interface is designed to be intuitive and user-friendly." },
+            { q: "How often is the content in Tools™ updated?", a: "Tools™ content is regularly updated to reflect the latest building codes, standards, and industry best practices." },
+            { q: "Can I access Tools™ offline?", a: "Tools™ requires an internet connection for full functionality. However, the mobile app offers limited offline access to previously viewed content." },
+            { q: "Is Tools™ compatible with all Learning Management Systems (LMS)?", a: "Yes, Tools™ is designed to integrate seamlessly with most major Learning Management Systems." },
+            { q: "Can I customise the tools within the platform for my specific needs?", a: "While individual tools cannot be customised, you can create custom playlists to curate content that meets your specific learning or project requirements." },
+            { q: "What is the difference between Tools™ and traditional building management resources?", a: "Tools™ offers interactive, visual learning experiences compared to traditional text-heavy resources, making information more accessible and easier to understand." },
+            { q: "Can I use Tools™ for specific building codes other than NCC and AS?", a: "Tools™ currently focuses on Australian Standards (AS) and the National Construction Code (NCC), with plans to expand to other codes in the future." }
+          ]
+        }
+      },
+      // Component 17
+      {
+        id: 17,
+        file: "Finalised SVGs/Component 17.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 993,
+        overlays: [
+          { action: "url", href: "https://tafesa.buildingtools.co/", x: 619, y: 713, w: 203, h: 56 }
+        ]
+      }
+    ];
+
+    // DOM setup
+    const container = document.querySelector('.container');
+
+    const state = {
+      index: 0, // 0..8
+      loaded: new Array(components.length).fill(false),
+      viewBox: new Array(components.length).fill(null) // {w,h}
+    };
+
+    function buildDOM() {
+      components.forEach((c, i) => {
+        const comp = document.createElement('div');
+        comp.className = 'component' + (i === 0 ? ' active' : '');
+        comp.dataset.idx = i;
+
+        const host = document.createElement('div');
+        host.className = 'svg-host';
+
+        const img = document.createElement('img');
+        img.src = c.file;
+        img.setAttribute('aria-label', `Component ${c.id}`);
+
+        const overlays = document.createElement('div');
+        overlays.className = 'overlay-root';
+
+        host.appendChild(img);
+        host.appendChild(overlays);  // Put overlays inside the svg-host
+        comp.appendChild(host);
+        container.appendChild(comp);
+
+        // Use fixed viewBox dimensions from component config
+        state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 2500 };
+        
+        // Wait for image to load before rendering overlays
+        img.addEventListener('load', () => {
+          state.loaded[i] = true;
+          renderOverlays(i);
+        });
+      });
+
+      hookDebug();
+    }
+
+    function pct(n, d) { return (n / d) * 100; }
+
+    function renderOverlays(idx) {
+      const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+      if (!compEl) return;
+      const root = compEl.querySelector('.overlay-root');
+      root.innerHTML = '';
+      const vb = state.viewBox[idx];
+      if (!vb) return; // wait until we know viewbox
+
+      const showDebug = document.getElementById('debugToggle').checked;
+
+      // Get the actual rendered dimensions of the SVG host
+      const host = compEl.querySelector('.svg-host');
+      const obj = host.querySelector('object');
+      
+      components[idx].overlays.forEach((o, oi) => {
+        const el = document.createElement('div');
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        
+        // Convert SVG coordinates to percentage based on viewBox
+        let leftPct = (o.x / vb.w) * 100;
+        const topPct = (o.y / vb.h) * 100;
+        let widthPct = (o.w / vb.w) * 100;
+        const heightPct = (o.h / vb.h) * 100;
+        
+        // Component 9 is now 1440px - no scaling needed
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        el.title = o.action.toUpperCase();
+
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleAction(o);
+        });
+
+        root.appendChild(el);
+      });
+      
+      // Render iframes if component has them
+      if (components[idx].iframes) {
+        components[idx].iframes.forEach((iframe) => {
+          const el = document.createElement('iframe');
+          el.className = 'iframe-embed';
+          el.src = iframe.src;
+          el.setAttribute('allowfullscreen', '');
+          el.setAttribute('loading', 'lazy');
+          
+          const leftPct = (iframe.x / vb.w) * 100;
+          const topPct = (iframe.y / vb.h) * 100;
+          const widthPct = (iframe.w / vb.w) * 100;
+          const heightPct = (iframe.h / vb.h) * 100;
+          
+          el.style.left = leftPct + '%';
+          el.style.top = topPct + '%';
+          el.style.width = widthPct + '%';
+          el.style.height = heightPct + '%';
+          
+          root.appendChild(el);
+        });
+      }
+      
+      // Render images if component has them
+      if (components[idx].images) {
+        components[idx].images.forEach((image) => {
+          const el = document.createElement('img');
+          el.className = 'image-embed';
+          el.src = image.src;
+          el.setAttribute('loading', 'lazy');
+          
+          const leftPct = (image.x / vb.w) * 100;
+          const topPct = (image.y / vb.h) * 100;
+          const widthPct = (image.w / vb.w) * 100;
+          const heightPct = (image.h / vb.h) * 100;
+          
+          el.style.position = 'absolute';
+          el.style.left = leftPct + '%';
+          el.style.top = topPct + '%';
+          el.style.width = widthPct + '%';
+          el.style.height = heightPct + '%';
+          el.style.objectFit = 'cover';
+          
+          root.appendChild(el);
+        });
+      }
+      
+      // Render videos if component has them
+      if (components[idx].videos) {
+        components[idx].videos.forEach((video) => {
+          const wrapper = document.createElement('div');
+          wrapper.style.position = 'absolute';
+          wrapper.style.pointerEvents = 'auto';
+          
+          const leftPct = (video.x / vb.w) * 100;
+          const topPct = (video.y / vb.h) * 100;
+          const widthPct = (video.w / vb.w) * 100;
+          const heightPct = (video.h / vb.h) * 100;
+          
+          wrapper.style.left = leftPct + '%';
+          wrapper.style.top = topPct + '%';
+          wrapper.style.width = widthPct + '%';
+          wrapper.style.height = heightPct + '%';
+          
+          const el = document.createElement('video');
+          el.className = 'video-embed';
+          el.setAttribute('controls', '');
+          el.setAttribute('preload', 'metadata');
+          
+          const source = document.createElement('source');
+          source.src = video.src;
+          source.type = 'video/mp4';
+          el.appendChild(source);
+          
+          wrapper.appendChild(el);
+          root.appendChild(wrapper);
+        });
+      }
+      
+      // Render blur overlays if component has them
+      if (components[idx].blurs) {
+        components[idx].blurs.forEach((blur) => {
+          const el = document.createElement('div');
+          el.style.position = 'absolute';
+          el.style.pointerEvents = 'none';
+          
+          const leftPct = (blur.x / vb.w) * 100;
+          const topPct = (blur.y / vb.h) * 100;
+          const widthPct = (blur.w / vb.w) * 100;
+          const heightPct = (blur.h / vb.h) * 100;
+          
+          el.style.left = leftPct + '%';
+          el.style.top = topPct + '%';
+          el.style.width = widthPct + '%';
+          el.style.height = heightPct + '%';
+          el.style.backdropFilter = 'blur(6.5px)';
+          el.style.webkitBackdropFilter = 'blur(6.5px)';
+          el.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+          el.style.borderRadius = '4px';
+          
+          root.appendChild(el);
+        });
+      }
+      
+      // Render FAQ accordion if component has it
+      if (components[idx].faq) {
+        const faq = components[idx].faq;
+        const faqContainer = document.createElement('div');
+        faqContainer.className = 'faq-accordion';
+        
+        const leftPct = (faq.x / vb.w) * 100;
+        const topPct = (faq.y / vb.h) * 100;
+        const widthPct = (faq.w / vb.w) * 100;
+        
+        faqContainer.style.left = leftPct + '%';
+        faqContainer.style.top = topPct + '%';
+        faqContainer.style.width = widthPct + '%';
+        
+        faq.items.forEach((item, i) => {
+          const faqItem = document.createElement('div');
+          faqItem.className = 'faq-item';
+          faqItem.dataset.faqIndex = i;
+          
+          const question = document.createElement('div');
+          question.className = 'faq-question';
+          question.textContent = item.q;
+          
+          const answer = document.createElement('div');
+          answer.className = 'faq-answer';
+          
+          const answerContent = document.createElement('div');
+          answerContent.className = 'faq-answer-content';
+          answerContent.textContent = item.a;
+          
+          answer.appendChild(answerContent);
+          faqItem.appendChild(question);
+          faqItem.appendChild(answer);
+          
+          faqItem.addEventListener('click', () => {
+            const wasActive = faqItem.classList.contains('active');
+            
+            // Track FAQ interaction
+            if (typeof LearningJourneyTracker !== 'undefined') {
+              LearningJourneyTracker.trackFAQ(
+                wasActive ? 'closed' : 'opened',
+                item.q,
+                idx
+              );
+            }
+            
+            // Close all FAQ items
+            faqContainer.querySelectorAll('.faq-item').forEach(item => {
+              item.classList.remove('active');
+            });
+            // Toggle current item
+            if (!wasActive) {
+              faqItem.classList.add('active');
+            }
+          });
+          
+          faqContainer.appendChild(faqItem);
+        });
+        
+        root.appendChild(faqContainer);
+      }
+      
+      // Add progress bar navigation overlays
+      // All slides now use same coordinates (1440px viewBox)
+      const progressBarSegments = progressBarSegments1440;
+      
+      progressBarSegments.forEach((segment) => {
+        const el = document.createElement('div');
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        
+        let leftPct = (segment.x / vb.w) * 100;
+        const topPct = (segment.y / vb.h) * 100;
+        let widthPct = (segment.w / vb.w) * 100;
+        const heightPct = (segment.h / vb.h) * 100;
+        
+        // Component 9 is now 1440px - no scaling needed
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        el.style.borderRadius = '50%';
+        el.title = `Go to slide ${segment.to + 1}`;
+        
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          goTo(segment.to, 'progress_bar');
+        });
+        
+        root.appendChild(el);
+      });
+    }
+
+    function handleAction(o) {
+      if (o.action === 'next') {
+        goTo(state.index + 1, 'button');
+      } else if (o.action === 'back') {
+        goTo(state.index - 1, 'button');
+      } else if (o.action === 'url' && o.href) {
+        // Track external link
+        if (typeof LearningJourneyTracker !== 'undefined') {
+          LearningJourneyTracker.trackExternalLink(o.href, state.index);
+        }
+        window.open(o.href, '_blank', 'noopener');
+      } else if (o.action === 'goto' && Number.isInteger(o.to)) {
+        goTo(o.to, 'button');
+      } else if (o.action === 'video') {
+        // Video now embedded inline - no modal needed
+      } else {
+        console.log('Unhandled action:', o);
+      }
+    }
+
+    function goTo(newIndex, method = 'button') {
+      const max = components.length - 1;
+      const clamped = Math.max(0, Math.min(max, newIndex));
+      if (clamped === state.index) return;
+      
+      const prevIndex = state.index;
+      const prev = container.querySelector(`.component[data-idx="${state.index}"]`);
+      const next = container.querySelector(`.component[data-idx="${clamped}"]`);
+      if (prev) prev.classList.remove('active');
+      if (next) next.classList.add('active');
+      state.index = clamped;
+      
+      // Track navigation with HubSpot
+      if (typeof LearningJourneyTracker !== 'undefined') {
+        LearningJourneyTracker.trackNavigation(
+          clamped,
+          getComponentName(clamped),
+          method,
+          prevIndex
+        );
+      }
+      
+      // ensure overlays re-render to honor debug toggle
+      if (state.viewBox[clamped]) renderOverlays(clamped);
+      
+      // Notify parent window of new height
+      notifyParentHeight();
+      
+      // Scroll parent window to top
+      if (window.parent !== window) {
+        window.parent.postMessage({ action: 'scrollToTop' }, '*');
+      }
+      // Also scroll this window to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function getComponentName(index) {
+      if (components[index]) {
+        return components[index].name || `Component ${components[index].id}`;
+      }
+      return `Step ${index + 1}`;
+    }
+    
+    function notifyParentHeight() {
+      if (window.parent !== window) {
+        const currentHeight = components[state.index].viewBoxHeight;
+        console.log('Sending height notification:', currentHeight);
+        window.parent.postMessage({ 
+          action: 'resizeIframe', 
+          height: currentHeight 
+        }, '*');
+      }
+    }
+
+
+    function hookDebug() {
+      const dbg = document.getElementById('debugToggle');
+      dbg.addEventListener('change', () => {
+        // re-render overlays for current component
+        if (state.viewBox[state.index]) renderOverlays(state.index);
+      });
+    }
+
+    function hookKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          goTo(state.index + 1, 'keyboard');
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          goTo(state.index - 1, 'keyboard');
+        }
+      });
+    }
+
+    function openVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('videoPlayer');
+      modal.classList.add('active');
+      video.play();
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('videoPlayer');
+      modal.classList.remove('active');
+      video.pause();
+      video.currentTime = 0;
+    }
+
+    // init
+    buildDOM();
+    hookKeyboard();
+    
+    // Notify parent of initial height after DOM is ready
+    window.addEventListener('load', () => {
+      notifyParentHeight();
+    });
+
+    // Video modal event listeners
+    document.getElementById('closeVideoModal').addEventListener('click', closeVideoModal);
+    document.getElementById('videoModal').addEventListener('click', (e) => {
+      if (e.target.id === 'videoModal') closeVideoModal();
+    });
+  </script>
+  
+  <!-- HubSpot Learning Journey Tracking -->
+  <script src="https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/tracking.js"></script>
+  <script>
+    // Initialize tracking with journey name
+    LearningJourneyTracker.init('tools-competency-v12');
+  </script>
+</body>
+</html>

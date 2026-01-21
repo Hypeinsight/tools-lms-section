@@ -1,0 +1,48 @@
+<!-- Add this script to your HubSpot page, OUTSIDE the iframe wrapper -->
+<script>
+(function() {
+  // Listen for messages from the iframe
+  window.addEventListener('message', function(event) {
+    // Security: verify the origin if needed
+    // if (event.origin !== 'https://info.buildingtools.co') return;
+    
+    const iframe = document.getElementById('tools-competency-iframe');
+    if (!iframe) return;
+    
+    const data = event.data;
+    
+    // Handle iframe height resize
+    if (data.action === 'resizeIframe' && data.height) {
+      iframe.style.height = data.height + 'px';
+      console.log('Resized iframe to height:', data.height);
+    }
+    
+    // Handle scroll to top request
+    if (data.action === 'scrollToTop') {
+      // Scroll to the iframe wrapper
+      const wrapper = document.getElementById('iframe-wrapper');
+      if (wrapper) {
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        // Fallback: scroll to top of page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      console.log('Scrolled to top');
+    }
+  });
+})();
+</script>
+
+<!-- Your iframe code stays the same -->
+<div id="iframe-wrapper" style="width: 100% !important; max-width: 1440px !important; margin: 0 auto !important; display: block !important;">
+  <iframe id="tools-competency-iframe" 
+          style="border: none !important; display: block !important; margin: 0px auto;" 
+          xml="lang" 
+          src="https://info.buildingtools.co/hubfs/20832146/tools-competency-builders-v2-base64.html" 
+          width="1440" 
+          height="1187" 
+          data-service="info.buildingtools" 
+          frameborder="0" 
+          scrolling="no">
+  </iframe>
+</div>

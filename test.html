@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Building Tools™ Learning Journey</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #1482FF;
+            margin-bottom: 10px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .button {
+            display: inline-block;
+            background: #C4D600;
+            color: #000;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background: #b0c100;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .checklist li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>✨ Building Tools™ Learning Journey - Test Page</h1>
+        <p class="success">✓ Server is running successfully!</p>
+        <p>Your interactive learning section is ready to test.</p>
+        
+        <h2>📋 What's Included:</h2>
+        <ul class="checklist">
+            <li>7 SVG components (Component 7-13)</li>
+            <li>Interactive navigation system</li>
+            <li>Responsive design</li>
+            <li>Keyboard shortcuts</li>
+            <li>Progress tracking</li>
+        </ul>
+
+        <a href="index.html" class="button">🚀 Launch Interactive Section</a>
+    </div>
+
+    <div class="card">
+        <h2>🎮 Navigation Controls</h2>
+        <ul>
+            <li><strong>Mouse:</strong> Click BACK/NEXT buttons or progress dots</li>
+            <li><strong>Keyboard:</strong> Arrow keys (← → ↑ ↓) or number keys (1-7)</li>
+            <li><strong>Landing Page:</strong> Click "START NOW" button</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>🧪 Testing Checklist</h2>
+        <ol>
+            <li>Click "Launch Interactive Section" above</li>
+            <li>Verify Component 7 (Landing) loads correctly</li>
+            <li>Click "START NOW" button → should go to Component 8</li>
+            <li>Test "NEXT" button → navigate forward</li>
+            <li>Test "BACK" button → navigate backward</li>
+            <li>Click progress dots → jump to specific sections</li>
+            <li>Press arrow keys → navigate with keyboard</li>
+            <li>Test on mobile device or resize browser window</li>
+        </ol>
+    </div>
+
+    <div class="warning">
+        <strong>⚠️ Important:</strong> Make sure you're running a local web server!
+        <br><br>
+        <strong>Current setup:</strong> <code>python -m http.server 8000</code>
+        <br>
+        <strong>URL:</strong> <code>http://localhost:8000/test.html</code>
+    </div>
+
+    <div class="card">
+        <h2>📤 Next Steps for HubSpot</h2>
+        <ol>
+            <li><strong>Upload to HubSpot:</strong>
+                <ul>
+                    <li>Go to Marketing → Files and Templates → Files</li>
+                    <li>Create folder: "tools-lms-section"</li>
+                    <li>Upload <code>index.html</code></li>
+                    <li>Upload all SVG files from the <code>svg/</code> folder</li>
+                </ul>
+            </li>
+            <li><strong>Update File Paths:</strong>
+                <ul>
+                    <li>Edit <code>index.html</code> in HubSpot</li>
+                    <li>Update SVG file paths to HubSpot URLs</li>
+                </ul>
+            </li>
+            <li><strong>Embed on Landing Page:</strong>
+                <ul>
+                    <li>Add Custom HTML module</li>
+                    <li>Insert iframe code (see README.md)</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="card">
+        <h2>📚 Documentation</h2>
+        <p>See <code>README.md</code> for:</p>
+        <ul>
+            <li>Detailed embedding instructions</li>
+            <li>Customization options</li>
+            <li>Troubleshooting guide</li>
+            <li>Browser support information</li>
+        </ul>
+    </div>
+
+    <script>
+        // Check if SVG files exist
+        async function checkFiles() {
+            const files = [
+                'svg/Component 7.svg',
+                'svg/Component 8.svg',
+                'svg/Component 9.svg',
+                'svg/Component 10.svg',
+                'svg/Component 11.svg',
+                'svg/Component 12.svg',
+                'svg/Component 13.svg'
+            ];
+
+            let allExist = true;
+            for (const file of files) {
+                try {
+                    const response = await fetch(file, { method: 'HEAD' });
+                    if (!response.ok) {
+                        console.error(`Missing: ${file}`);
+                        allExist = false;
+                    }
+                } catch (e) {
+                    console.error(`Error checking ${file}:`, e);
+                    allExist = false;
+                }
+            }
+
+            if (allExist) {
+                console.log('%c✓ All SVG files found!', 'color: green; font-weight: bold; font-size: 14px;');
+            } else {
+                console.error('Some SVG files are missing. Check the console above.');
+            }
+        }
+
+        checkFiles();
+    </script>
+</body>
+</html>

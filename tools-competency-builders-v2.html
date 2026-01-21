@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Building Tools Learning Journey — Builders v2</title>
+  <style>
+    :root {
+      --max-w: 1440px;
+    }
+    html, body { margin: 0; padding: 0; background:transparent; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
+    .page { display:flex; justify-content:center; padding:0; }
+    .container { position:relative; width:100%; max-width: var(--max-w); background:#DAE5F1; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
+
+    .component { display:none; position:relative; background:#DAE5F1; }
+    .component.active { display:block; }
+
+    .svg-host { position:relative; width:100%; height:auto; display:block; background:#DAE5F1; }
+    .svg-host img { width:100%; height:auto; display:block; }
+
+    /* Adjust Component 1 (slide 1) horizontal and vertical alignment */
+    .component[data-idx="0"] .svg-host img {
+      transform: translateX(2px) translateY(10px);
+    }
+
+    /* overlay root sits above the image in the svg-host */
+    /* overlay root sits above the image in the svg-host */
+    .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
+    /* Match slide 1's image translation so overlays line up */
+    .component[data-idx="0"] .overlay-root { transform: translate(2px, 10px); }
+    /* Progress bar overlay container - fixed aspect ratio */
+    .progress-overlay { position:absolute; top:0; left:0; width:100%; height:0; padding-bottom:calc(1440/1440*100%); pointer-events:none; z-index:10; }
+    .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; z-index:20; }
+    .click-area.debug { outline: 2px dashed rgba(191,224,2,0.8); background: rgba(191,224,2,0.15); }
+    
+    /* Heading overlay */
+    .heading-overlay { position:absolute; top:30px; left:calc(50% + 6px); transform:translateX(-50%); pointer-events:none; z-index:15; }
+    .heading-overlay img { display:block; height:auto; }
+    
+    /* Adjust heading position on slide 1 to account for the image transform */
+    .component[data-idx="0"] .heading-overlay { top:20px; }
+
+    /* debug controls - hidden */
+    .nav { display:none; }
+  </style>
+</head>
+<body>
+  <input id="debugToggle" type="checkbox" style="display:none;" />
+
+  <div class="page">
+    <div class="container">
+      <!-- components injected here by JS -->
+    </div>
+  </div>
+
+  <script>
+    // Progress bar coordinates for 1440px viewBox (slides 1-14)
+    // 65x65 click areas, repositioned
+    const progressBarSegments1440 = [
+      { to: 0, x: 67, y: 95, w: 65, h: 65 },     // 1: down and left
+      { to: 1, x: 154, y: 95, w: 65, h: 65 },   // 2: down and left
+      { to: 2, x: 247, y: 95, w: 65, h: 65 },   // 3: down and left
+      { to: 3, x: 346, y: 95, w: 65, h: 65 },   // 4: down
+      { to: 4, x: 439, y: 95, w: 65, h: 65 },   // 5: down
+      { to: 5, x: 545, y: 95, w: 65, h: 65 },   // 6: down and right
+      { to: 6, x: 651, y: 95, w: 65, h: 65 },   // 7: down and right
+      { to: 7, x: 744, y: 95, w: 65, h: 65 },   // 8: down and right
+      { to: 8, x: 837, y: 95, w: 65, h: 65 },   // 9: down and right
+      { to: 9, x: 930, y: 95, w: 65, h: 65 },   // 10: down and right
+      { to: 10, x: 1033, y: 95, w: 65, h: 65 }, // 11: down and right
+      { to: 11, x: 1126, y: 95, w: 65, h: 65 }, // 12: down and right
+      { to: 12, x: 1219, y: 95, w: 65, h: 65 }, // 13: down and right
+      { to: 13, x: 1312, y: 95, w: 65, h: 65 }  // 14: down and right
+    ];
+
+    const components = [
+      // Component 1 (Slide 1)
+      {
+        id: 1,
+        file: "builders/v2/Component 1.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1187,
+        overlays: [
+          // Grid items - Row 1
+          { action: "goto", to: 1, x: 60, y: 488, w: 315, h: 158 },   // Grid 1 → Slide 2
+          { action: "goto", to: 2, x: 395, y: 488, w: 315, h: 158 },  // Grid 2 → Slide 3
+          { action: "goto", to: 3, x: 730, y: 488, w: 315, h: 158 },  // Grid 3 → Slide 4
+          { action: "goto", to: 4, x: 1065, y: 488, w: 315, h: 158 }, // Grid 4 → Slide 5
+          // Grid items - Row 2
+          { action: "goto", to: 5, x: 60, y: 666, w: 315, h: 158 },   // Grid 5 → Slide 6
+          { action: "goto", to: 6, x: 395, y: 666, w: 315, h: 158 },  // Grid 6 → Slide 7
+          { action: "goto", to: 7, x: 730, y: 666, w: 315, h: 158 },  // Grid 7 → Slide 8
+          { action: "goto", to: 8, x: 1065, y: 666, w: 315, h: 158 }, // Grid 8 → Slide 9
+          // Grid items - Row 3
+          { action: "goto", to: 9, x: 60, y: 844, w: 315, h: 158 },   // Grid 9 → Slide 10
+          { action: "goto", to: 10, x: 395, y: 844, w: 315, h: 158 }, // Grid 10 → Slide 11
+          { action: "goto", to: 11, x: 730, y: 844, w: 315, h: 158 }, // Grid 11 → Slide 12
+          { action: "goto", to: 12, x: 1065, y: 844, w: 315, h: 158 },// Grid 12 → Slide 13
+          // Next button
+          { action: "next", x: 1173, y: 1071, w: 207, h: 56 }
+        ]
+      },
+      // Component 2 (Slide 2)
+      {
+        id: 2,
+        file: "builders/v2/Component 2.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1512,
+        overlays: [
+          { action: "back", x: 60, y: 1396, w: 142, h: 56 },
+          { action: "next", x: 1169, y: 1396, w: 211, h: 56 }
+        ]
+      },
+      // Component 3 (Slide 3)
+      {
+        id: 3,
+        file: "builders/v2/Component 3.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1308,
+        overlays: [
+          { action: "back", x: 60, y: 1192, w: 142, h: 56 },
+          { action: "next", x: 1144, y: 1192, w: 236, h: 56 }
+        ]
+      },
+      // Component 4 (Slide 4)
+      {
+        id: 4,
+        file: "builders/v2/Component 4.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1454,
+        overlays: [
+          { action: "back", x: 60, y: 1338, w: 142, h: 56 },
+          { action: "next", x: 1148, y: 1338, w: 232, h: 56 }
+        ]
+      },
+      // Component 5 (Slide 5)
+      {
+        id: 5,
+        file: "builders/v2/Component 5.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1402,
+        overlays: [
+          { action: "back", x: 60, y: 1286, w: 142, h: 56 },
+          { action: "next", x: 1126, y: 1286, w: 254, h: 56 }
+        ]
+      },
+      // Component 6 (Slide 6)
+      {
+        id: 6,
+        file: "builders/v2/Component 6.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1402,
+        overlays: [
+          { action: "back", x: 60, y: 1286, w: 142, h: 56 },
+          { action: "next", x: 1124, y: 1286, w: 256, h: 56 }
+        ]
+      },
+      // Component 7 (Slide 7)
+      {
+        id: 7,
+        file: "builders/v2/Component 7.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1402,
+        overlays: [
+          { action: "back", x: 60, y: 1286, w: 142, h: 56 },
+          { action: "next", x: 1164, y: 1286, w: 216, h: 56 }
+        ]
+      },
+      // Component 8 (Slide 8)
+      {
+        id: 8,
+        file: "builders/v2/Component 8.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1402,
+        overlays: [
+          { action: "back", x: 60, y: 1286, w: 142, h: 56 },
+          { action: "next", x: 1159, y: 1286, w: 221, h: 56 }
+        ]
+      },
+      // Component 9 (Slide 9)
+      {
+        id: 9,
+        file: "builders/v2/Component 9.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1402,
+        overlays: [
+          { action: "back", x: 60, y: 1286, w: 142, h: 56 },
+          { action: "next", x: 1159, y: 1286, w: 221, h: 56 }
+        ]
+      },
+      // Component 10 (Slide 10)
+      {
+        id: 10,
+        file: "builders/v2/Component 10.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1402,
+        overlays: [
+          { action: "back", x: 60, y: 1286, w: 142, h: 56 },
+          { action: "next", x: 1159, y: 1286, w: 221, h: 56 }
+        ]
+      },
+      // Component 11 (Slide 11)
+      {
+        id: 11,
+        file: "builders/v2/Component 11.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1402,
+        overlays: [
+          { action: "back", x: 60, y: 1286, w: 142, h: 56 },
+          { action: "next", x: 1159, y: 1286, w: 221, h: 56 }
+        ]
+      },
+      // Component 12 (Slide 12)
+      {
+        id: 12,
+        file: "builders/v2/Component 12.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1629,
+        overlays: [
+          { action: "back", x: 60, y: 1513, w: 142, h: 56 },
+          { action: "url", href: "https://hickory.buildingtools.co/", x: 819, y: 1193, w: 211, h: 56 },
+          { action: "next", x: 1159, y: 1513, w: 221, h: 56 }
+        ]
+      },
+      // Component 13 (Slide 13)
+      {
+        id: 13,
+        file: "builders/v2/Component 13.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1402,
+        overlays: [
+          { action: "back", x: 60, y: 1286, w: 142, h: 56 },
+          { action: "url", href: "https://hickory.buildingtools.co/", x: 91, y: 838, w: 211, h: 56 },
+          { action: "next", x: 1159, y: 1286, w: 221, h: 56 }
+        ]
+      },
+      // Component 14 (Slide 14 - Final)
+      {
+        id: 14,
+        file: "builders/v2/Component 14.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1020,
+        overlays: [
+          { action: "url", href: "https://hickory.buildingtools.co/", x: 619, y: 712, w: 203, h: 56 }
+        ]
+      }
+    ];
+
+    // DOM setup
+    const container = document.querySelector('.container');
+
+    const state = {
+      index: 0,
+      loaded: new Array(components.length).fill(false),
+      viewBox: new Array(components.length).fill(null)
+    };
+
+    function buildDOM() {
+      components.forEach((c, i) => {
+        const comp = document.createElement('div');
+        comp.className = 'component' + (i === 0 ? ' active' : '');
+        comp.dataset.idx = i;
+
+        const host = document.createElement('div');
+        host.className = 'svg-host';
+
+        const img = document.createElement('img');
+        img.src = c.file;
+        img.setAttribute('aria-label', `Component ${c.id}`);
+
+        const overlays = document.createElement('div');
+        overlays.className = 'overlay-root';
+        
+        const progressOverlay = document.createElement('div');
+        progressOverlay.className = 'progress-overlay';
+
+        // Add heading overlay
+        const headingOverlay = document.createElement('div');
+        headingOverlay.className = 'heading-overlay';
+        const headingImg = document.createElement('img');
+        headingImg.src = 'builders/v2/heading/Frame 181.png';
+        headingImg.alt = 'Tools Enterprise Implementation';
+        headingImg.style.width = '1440px';
+        headingImg.style.maxWidth = '100%';
+        headingOverlay.appendChild(headingImg);
+        
+        host.appendChild(img);
+        host.appendChild(headingOverlay);
+        host.appendChild(overlays);
+        host.appendChild(progressOverlay);
+        comp.appendChild(host);
+        container.appendChild(comp);
+
+        state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 1400 };
+        
+        img.addEventListener('load', () => {
+          state.loaded[i] = true;
+          renderOverlays(i);
+        });
+      });
+
+      hookDebug();
+    }
+
+    function renderOverlays(idx) {
+      const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+      if (!compEl) return;
+      const root = compEl.querySelector('.overlay-root');
+      const progressRoot = compEl.querySelector('.progress-overlay');
+      root.innerHTML = '';
+      progressRoot.innerHTML = '';
+      const vb = state.viewBox[idx];
+      if (!vb) return;
+
+      const showDebug = document.getElementById('debugToggle').checked;
+
+      components[idx].overlays.forEach((o, oi) => {
+        const el = document.createElement('div');
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        
+        const leftPct = (o.x / vb.w) * 100;
+        const topPct = (o.y / vb.h) * 100;
+        const widthPct = (o.w / vb.w) * 100;
+        const heightPct = (o.h / vb.h) * 100;
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        el.title = o.action.toUpperCase();
+
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleAction(o);
+        });
+
+        root.appendChild(el);
+      });
+      
+      // Add progress bar navigation overlays to separate container with fixed positioning
+      progressBarSegments1440.forEach((segment) => {
+        const el = document.createElement('div');
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        
+        const leftPct = (segment.x / 1440) * 100;
+        const topPct = (segment.y / 1440) * 100;
+        const widthPct = (segment.w / 1440) * 100;
+        const heightPct = (segment.h / 1440) * 100;
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        el.style.borderRadius = '50%';
+        el.title = `Go to slide ${segment.to + 1}`;
+        
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          goTo(segment.to);
+        });
+        
+        progressRoot.appendChild(el);
+      });
+    }
+
+    function handleAction(o) {
+      if (o.action === 'next') {
+        goTo(state.index + 1);
+      } else if (o.action === 'back') {
+        goTo(state.index - 1);
+      } else if (o.action === 'url' && o.href) {
+        window.open(o.href, '_blank', 'noopener');
+      } else if (o.action === 'goto' && Number.isInteger(o.to)) {
+        goTo(o.to);
+      } else {
+        console.log('Unhandled action:', o);
+      }
+    }
+
+    function goTo(newIndex) {
+      const max = components.length - 1;
+      const clamped = Math.max(0, Math.min(max, newIndex));
+      if (clamped === state.index) return;
+      const prev = container.querySelector(`.component[data-idx="${state.index}"]`);
+      const next = container.querySelector(`.component[data-idx="${clamped}"]`);
+      if (prev) prev.classList.remove('active');
+      if (next) next.classList.add('active');
+      state.index = clamped;
+      if (state.viewBox[clamped]) renderOverlays(clamped);
+      
+      // Notify parent window of new height
+      notifyParentHeight();
+      
+      // Scroll parent window to top
+      if (window.parent !== window) {
+        window.parent.postMessage({ action: 'scrollToTop' }, '*');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function notifyParentHeight() {
+      if (window.parent !== window) {
+        const currentHeight = components[state.index].viewBoxHeight;
+        window.parent.postMessage({ 
+          action: 'resizeIframe', 
+          height: currentHeight 
+        }, '*');
+      }
+    }
+
+    function hookDebug() {
+      const dbg = document.getElementById('debugToggle');
+      dbg.addEventListener('change', () => {
+        if (state.viewBox[state.index]) renderOverlays(state.index);
+      });
+    }
+
+    function hookKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          goTo(state.index + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          goTo(state.index - 1);
+        }
+      });
+    }
+
+    buildDOM();
+    hookKeyboard();
+
+    // Initial height notification
+    window.addEventListener('load', () => {
+      notifyParentHeight();
+      injectParentListener();
+    });
+    
+    // Inject listener script into parent window if in iframe
+    function injectParentListener() {
+      if (window.parent === window) return; // Not in iframe
+      
+      try {
+        // Try to inject script into parent (will fail if cross-origin)
+        const script = window.parent.document.createElement('script');
+        script.textContent = `
+          if (!window.iframeListenerAdded) {
+            window.iframeListenerAdded = true;
+            window.addEventListener('message', function(event) {
+              const iframe = document.getElementById('tools-competency-iframe');
+              if (!iframe) return;
+              const data = event.data;
+              if (data.action === 'resizeIframe' && data.height) {
+                iframe.style.height = data.height + 'px';
+              }
+              if (data.action === 'scrollToTop') {
+                const wrapper = document.getElementById('iframe-wrapper');
+                if (wrapper) {
+                  wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }
+            });
+          }
+        `;
+        window.parent.document.head.appendChild(script);
+      } catch (e) {
+        // Cross-origin restriction - parent needs to add listener manually
+        console.log('Cannot inject parent listener due to cross-origin policy');
+      }
+    }
+  </script>
+</body>
+</html>

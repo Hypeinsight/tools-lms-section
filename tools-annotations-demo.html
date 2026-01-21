@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tools Annotations Demo</title>
+  <style>
+    :root {
+      --primary-blue: #1482FF;
+      --tooltip-bg: #1F2937;
+      --callout-bg: rgba(255, 255, 255, 0.95);
+      --highlight-color: #FEF3C7;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 20px;
+    }
+    
+    .demo-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: var(--primary-blue);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: white;
+      color: var(--primary-blue);
+    }
+    
+    .btn-primary:hover {
+      background: #f0f0f0;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid white;
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .iframe-wrapper {
+      position: relative;
+      width: 100%;
+      height: 800px;
+      background: #DAE5F1;
+    }
+    
+    .tools-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    
+    /* Overlay system */
+    .annotations-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.3s;
+    }
+    
+    .annotations-layer.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    /* Callout boxes */
+    .callout {
+      position: absolute;
+      background: var(--callout-bg);
+      border: 2px solid var(--primary-blue);
+      border-radius: 12px;
+      padding: 15px 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      pointer-events: auto;
+      animation: fadeInScale 0.4s ease-out;
+      max-width: 280px;
+    }
+    
+    .callout-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-blue);
+      margin-bottom: 8px;
+    }
+    
+    .callout-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #4B5563;
+    }
+    
+    /* Arrow pointing from callout */
+    .callout::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+    }
+    
+    .callout.arrow-left::after {
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 10px 10px 10px 0;
+      border-color: transparent var(--primary-blue) transparent transparent;
+    }
+    
+    .callout.arrow-right::after {
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent var(--primary-blue);
+    }
+    
+    .callout.arrow-top::after {
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 10px 10px 10px;
+      border-color: transparent transparent var(--primary-blue) transparent;
+    }
+    
+    .callout.arrow-bottom::after {
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 10px 10px 0 10px;
+      border-color: var(--primary-blue) transparent transparent transparent;
+    }
+    
+    /* Info tooltips */
+    .info-icon {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background: var(--primary-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: all 0.3s;
+      animation: pulse 2s infinite;
+      box-shadow: 0 2px 8px rgba(20, 130, 255, 0.4);
+    }
+    
+    .info-icon:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 16px rgba(20, 130, 255, 0.6);
+    }
+    
+    .info-icon.active {
+      background: #0d6efd;
+      animation: none;
+    }
+    
+    /* Tooltip popup */
+    .tooltip {
+      position: absolute;
+      background: var(--tooltip-bg);
+      color: white;
+      padding: 15px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 300px;
+      pointer-events: auto;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+    
+    .tooltip.visible {
+      display: block;
+      animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .tooltip::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 20px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 8px 8px 8px;
+      border-color: transparent transparent var(--tooltip-bg) transparent;
+    }
+    
+    /* Highlight areas */
+    .highlight-area {
+      position: absolute;
+      border: 3px dashed var(--primary-blue);
+      border-radius: 8px;
+      background: rgba(20, 130, 255, 0.1);
+      pointer-events: none;
+      animation: dashAnimation 20s linear infinite;
+    }
+    
+    /* Curved arrows */
+    .arrow-svg {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+    }
+    
+    .arrow-path {
+      fill: none;
+      stroke: #EF4444;
+      stroke-width: 3;
+      stroke-linecap: round;
+      marker-end: url(#arrowhead);
+    }
+    
+    /* Animations */
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+    
+    @keyframes dashAnimation {
+      to {
+        stroke-dashoffset: -100;
+      }
+    }
+    
+    /* Status message */
+    .status-banner {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(16, 185, 129, 0.95);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 50;
+      pointer-events: auto;
+    }
+    
+    .legend {
+      margin: 20px 30px;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-blue);
+    }
+    
+    .legend h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: #1F2937;
+    }
+    
+    .legend-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #4B5563;
+    }
+    
+    .legend-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .legend-icon.info {
+      background: var(--primary-blue);
+      color: white;
+      font-weight: bold;
+    }
+    
+    .legend-icon.callout {
+      background: var(--callout-bg);
+      border: 2px solid var(--primary-blue);
+    }
+    
+    .legend-icon.highlight {
+      background: rgba(20, 130, 255, 0.1);
+      border: 2px dashed var(--primary-blue);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <div class="header">
+      <h1>🎓 Interactive Tools Annotation Demo</h1>
+      <div class="controls">
+        <button class="btn btn-secondary" id="toggleAnnotations">Hide Annotations</button>
+        <button class="btn btn-primary" id="resetView">Reset View</button>
+      </div>
+    </div>
+    
+    <div class="iframe-wrapper">
+      <!-- Tools app iframe with locked zoom/pan -->
+      <iframe 
+        id="toolsIframe"
+        class="tools-iframe"
+        src="https://app.buildingtools.co/tools/access-stairs-private-handrails-balustrades-ncc2022.2-1.22?v=1&block=f395f28c-dfab-4a9b-9c0d-dc724a0b032b&standard=NCC%202022.2&standard=&menu_id=0-8-1&shareId=FmGcYD-1765161617156&zoom=2.2898&x=570.1130417311147&y=238.7100387198926&action=click&type=0&chromeless=true"
+        allowfullscreen>
+      </iframe>
+      
+      <!-- Annotations overlay layer -->
+      <div class="annotations-layer" id="annotationsLayer">
+        <!-- SVG for curved arrows -->
+        <svg class="arrow-svg" width="100%" height="100%">
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#EF4444" />
+            </marker>
+          </defs>
+          <!-- Example curved arrow -->
+          <path class="arrow-path" d="M 200,100 Q 300,150 400,200" />
+        </svg>
+        
+        <!-- Info icon tooltips -->
+        <div class="info-icon" style="top: 15%; left: 20%;" data-tooltip="search-tooltip">
+          <span>i</span>
+        </div>
+        <div class="tooltip" id="search-tooltip" style="top: 18%; left: 20%;">
+          Use <strong>AI Search</strong> to find content using natural language, or <strong>Text Search</strong> for specific terms in the building code.
+        </div>
+        
+        <div class="info-icon" style="top: 35%; left: 25%;" data-tooltip="hotspot-tooltip">
+          <span>i</span>
+        </div>
+        <div class="tooltip" id="hotspot-tooltip" style="top: 38%; left: 25%;">
+          Click on <strong>Hotspots</strong> (marked with red indicators) to reveal detailed information about specific code requirements.
+        </div>
+        
+        <div class="info-icon" style="top: 55%; left: 45%;" data-tooltip="graphic-tooltip">
+          <span>i</span>
+        </div>
+        <div class="tooltip" id="graphic-tooltip" style="top: 58%; left: 45%;">
+          <strong>Graphic Symbols</strong> are interactive visual elements that explain building code requirements visually.
+        </div>
+        
+        <div class="info-icon" style="top: 45%; left: 70%;" data-tooltip="code-tooltip">
+          <span>i</span>
+        </div>
+        <div class="tooltip" id="code-tooltip" style="top: 48%; left: 70%;">
+          View the actual <strong>Code Values</strong> and requirements directly alongside the visual representation.
+        </div>
+        
+        <div class="info-icon" style="top: 70%; left: 60%;" data-tooltip="citation-tooltip">
+          <span>i</span>
+        </div>
+        <div class="tooltip" id="citation-tooltip" style="top: 73%; left: 60%;">
+          Click <strong>Citations</strong> to see the exact section of the building code being referenced.
+        </div>
+        
+        <!-- Callout boxes -->
+        <div class="callout arrow-left" style="top: 10%; right: 5%;">
+          <div class="callout-title">Visual Search</div>
+          <div class="callout-text">Navigate through building codes using interactive visual diagrams</div>
+        </div>
+        
+        <div class="callout arrow-bottom" style="bottom: 15%; left: 15%;">
+          <div class="callout-title">Zoom Controls</div>
+          <div class="callout-text">Use the zoom tool to focus on specific details of the building requirements</div>
+        </div>
+        
+        <div class="callout arrow-top" style="top: 5%; left: 40%;">
+          <div class="callout-title">Search Methods</div>
+          <div class="callout-text">Choose between AI-powered search or traditional text search</div>
+        </div>
+        
+        <!-- Highlight areas -->
+        <div class="highlight-area" style="top: 30%; left: 15%; width: 25%; height: 35%;"></div>
+        <div class="highlight-area" style="top: 40%; left: 55%; width: 20%; height: 25%;"></div>
+      </div>
+      
+      <!-- Status banner -->
+      <div class="status-banner">
+        ✓ View locked for guided learning · Click info icons for details
+      </div>
+    </div>
+    
+    <div class="legend">
+      <h3>📖 Annotation Guide</h3>
+      <div class="legend-items">
+        <div class="legend-item">
+          <div class="legend-icon info">i</div>
+          <span><strong>Info Icons:</strong> Click to reveal tooltips with explanations</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon callout"></div>
+          <span><strong>Callouts:</strong> Key feature descriptions and guidance</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon highlight"></div>
+          <span><strong>Highlights:</strong> Important areas to focus on</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Toggle annotations visibility
+    const toggleBtn = document.getElementById('toggleAnnotations');
+    const annotationsLayer = document.getElementById('annotationsLayer');
+    let annotationsVisible = true;
+    
+    toggleBtn.addEventListener('click', () => {
+      annotationsVisible = !annotationsVisible;
+      annotationsLayer.classList.toggle('hidden');
+      toggleBtn.textContent = annotationsVisible ? 'Hide Annotations' : 'Show Annotations';
+    });
+    
+    // Reset iframe view
+    const resetBtn = document.getElementById('resetView');
+    const iframe = document.getElementById('toolsIframe');
+    const originalSrc = iframe.src;
+    
+    resetBtn.addEventListener('click', () => {
+      iframe.src = originalSrc;
+    });
+    
+    // Info icon tooltip interactions
+    const infoIcons = document.querySelectorAll('.info-icon');
+    
+    infoIcons.forEach(icon => {
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const tooltipId = icon.getAttribute('data-tooltip');
+        const tooltip = document.getElementById(tooltipId);
+        
+        // Hide all other tooltips
+        document.querySelectorAll('.tooltip').forEach(t => {
+          if (t.id !== tooltipId) {
+            t.classList.remove('visible');
+          }
+        });
+        
+        // Remove active state from all icons
+        document.querySelectorAll('.info-icon').forEach(i => {
+          if (i !== icon) {
+            i.classList.remove('active');
+          }
+        });
+        
+        // Toggle current tooltip
+        tooltip.classList.toggle('visible');
+        icon.classList.toggle('active');
+      });
+    });
+    
+    // Close tooltips when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.info-icon') && !e.target.closest('.tooltip')) {
+        document.querySelectorAll('.tooltip').forEach(t => t.classList.remove('visible'));
+        document.querySelectorAll('.info-icon').forEach(i => i.classList.remove('active'));
+      }
+    });
+    
+    // Listen for messages from iframe (if Tools app supports it)
+    window.addEventListener('message', (event) => {
+      if (event.data.action === 'toolsStateChange') {
+        console.log('Tools state changed:', event.data);
+        // Here you could update annotation positions if needed
+        // updateAnnotationPositions(event.data.zoom, event.data.x, event.data.y);
+      }
+    });
+    
+    // Example: Update annotation positions based on zoom/pan
+    function updateAnnotationPositions(zoom, x, y) {
+      const layer = document.getElementById('annotationsLayer');
+      // Apply transform to sync with iframe content
+      // This would need fine-tuning based on actual iframe behavior
+      layer.style.transform = `scale(${zoom}) translate(${-x}px, ${-y}px)`;
+      layer.style.transformOrigin = 'top left';
+    }
+  </script>
+</body>
+</html>

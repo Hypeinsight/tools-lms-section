@@ -1,0 +1,405 @@
+<!-- Tools Learning Journey Module -->
+<!-- 
+  HUBspot Module Setup:
+  1. Create a new module named "Tools Learning Journey"
+  2. Add the following fields in the right sidebar:
+     
+     - Group: Slides (Repeater) -> Name: "slides"
+       - Image Field -> Name: "image"
+       - Text Field  -> Name: "slide_name"
+     
+     - File Field  -> Name: "intro_video" (Label: Intro Video MP4)
+     - Image Field -> Name: "feedback_gif" (Label: Feedback GIF)
+     
+     - Text Field  -> Name: "app_embed_url" (Label: App Embed URL) 
+       (Default: https://tafesa.buildingtools.co/)
+     
+     - Text Field  -> Name: "portal_link_text" (Label: Portal Link Text)
+       (Default: tafesa.buildingtools.co)
+     
+     - Text Field  -> Name: "portal_link_url" (Label: Portal Link URL)
+       (Default: https://tafesa.buildingtools.co)
+       
+     - Text Field  -> Name: "signup_link_url" (Label: Signup Link URL)
+       (Default: https://tafesa.buildingtools.co/signup?utm_source=tafe_activation)
+-->
+
+<div class="tools-module-wrapper">
+  <div class="tools-container">
+    <div id="component-container">
+      {% for item in module.slides %}
+        <div class="component {% if loop.first %}active{% endif %}" 
+             id="component-{{ loop.index }}" 
+             data-index="{{ loop.index0 }}">
+
+          {# --- Slide 1 (Welcome) Special Crop Class --- #}
+          {% if loop.first %}
+             {% set slide_class = "slide-welcome" %}
+          {% else %}
+             {% set slide_class = "" %}
+          {% endif %}
+
+          <div class="slide-inner {{ slide_class }}">
+            
+            {# --- Slide 2: Video Overlay --- #}
+            {% if loop.index == 2 %}
+              {% if module.intro_video %}
+              <div class="video-overlay">
+                 <video controls>
+                   <source src="{{ module.intro_video }}" type="video/mp4">
+                   Your browser does not support the video tag.
+                 </video>
+              </div>
+              {% endif %}
+            {% endif %}
+
+            {# --- Slide 3 (Component 4): Link Overlays --- #}
+            {% if loop.index == 4 %}
+              <div class="url-patch">
+                  <a href="{{ module.portal_link_url|default('https://tafesa.buildingtools.co') }}" target="_blank">
+                      {{ module.portal_link_text|default('tafesa.buildingtools.co') }}
+                  </a>
+              </div>
+              <a href="{{ module.signup_link_url|default('https://tafesa.buildingtools.co/signup?utm_source=tafe_activation') }}" target="_blank" class="login-click-zone"></a>
+            {% endif %}
+
+            {# --- Slide 7 (Component 7): GIF Overlay --- #}
+            {% if loop.index == 7 %}
+               {% if module.feedback_gif.src %}
+               <div class="gif-overlay">
+                 <img src="{{ module.feedback_gif.src }}" alt="Feedback Demo">
+               </div>
+               {% endif %}
+            {% endif %}
+
+            {# --- Main Slide Image --- #}
+            {% if item.image.src %}
+              <img src="{{ item.image.src }}" alt="{{ item.slide_name }}" class="main-slide-img" loading="eager">
+            {% endif %}
+
+            {# --- Slide 2: App Embed (Below Image) --- #}
+            {% if loop.index == 2 %}
+              <div class="app-embed-container">
+                  <div class="app-embed-overlay">
+                      <iframe src="{{ module.app_embed_url|default('https://tafesa.buildingtools.co/') }}" width="100%" height="100%" frameborder="0"></iframe>
+                  </div>
+              </div>
+            {% endif %}
+
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% require_css %}
+<style>
+  /* Force Full Width Breakout */
+  .tools-module-wrapper {
+    width: 100vw !important;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    background: #ffffff;
+  }
+
+  .tools-container {
+    width: 100%;
+    max-width: 1440px; /* Inner content max width */
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #component-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .component {
+    display: none;
+    width: 100%;
+    position: relative;
+  }
+  .component.active {
+    display: block;
+  }
+
+  .slide-inner {
+    position: relative;
+    width: 100%;
+  }
+
+  .main-slide-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* --- Slide 1 Crop Logic --- */
+  /* Crops the 1943px image to fit 1440px container centered/left-offset */
+  .slide-welcome .main-slide-img {
+    width: 135%; /* 1943 / 1440 approx */
+    margin-left: -16.6%; /* Shift to center crop */
+    max-width: none;
+  }
+
+  /* --- Click Zones --- */
+  .click-overlay {
+    position: absolute;
+    cursor: pointer;
+    z-index: 20;
+    /* background: rgba(255, 0, 0, 0.2); /* Uncomment to debug click zones */
+  }
+
+  /* --- Slide 2 Overlays --- */
+  .video-overlay {
+    position: absolute;
+    z-index: 15;
+    left: 37.5%;
+    top: 28.5%;
+    width: 53.4%;
+    height: 23.6%;
+  }
+  .video-overlay video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .app-embed-container {
+      width: 100%;
+      height: 800px; /* Add height for the app embed below the image */
+      position: relative;
+  }
+  .app-embed-overlay {
+      position: absolute;
+      left: 5%;
+      top: 5%; /* Just below the image which is "above" this container in flow */
+      width: 90%;
+      height: 90%;
+      z-index: 15;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+  }
+
+  /* --- Slide 4 (Link Overlays) --- */
+  .url-patch {
+      position: absolute;
+      left: 24%;
+      top: 12.8%;
+      width: 25%;
+      height: 2.5%;
+      background: white;
+      z-index: 25;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+  }
+  .url-patch a {
+      color: #555;
+      text-decoration: none;
+      font-family: sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+  }
+  .login-click-zone {
+      position: absolute;
+      left: 82%;
+      top: 12.5%;
+      width: 8%;
+      height: 3%;
+      z-index: 25;
+      cursor: pointer;
+  }
+
+  /* --- Slide 7 (GIF Overlay) --- */
+  .gif-overlay {
+    position: absolute;
+    z-index: 15;
+    left: 52%;
+    top: 13%;
+    width: 35%;
+    height: auto;
+  }
+  .gif-overlay img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+</style>
+{% end_require_css %}
+
+{% require_js %}
+<script>
+(function() {
+  const SVG_WIDTH = 1440; 
+  
+  // --- Coordinates Configuration (Fixed for 1440px width) ---
+  // Slide 1 (Index 0) is visually cropped but click coords are shifted by -239px relative to 1943px origin
+  // Slide 7 & 8 (Index 6 & 7) are shifted vertically by -20px
+
+  const circlePositions = {
+      0: [ // Slide 1 (Cropped)
+          { x: 291, y: 80.5, width: 69, height: 69, targetIndex: 1 },
+          { x: 437.5, y: 80.5, width: 74, height: 69, targetIndex: 2 },
+          { x: 593, y: 80.5, width: 69, height: 69, targetIndex: 3 },
+          { x: 743, y: 80.5, width: 75, height: 69, targetIndex: 4 },
+          { x: 899, y: 80.5, width: 69, height: 69, targetIndex: 5 },
+          { x: 1049.5, y: 80.5, width: 74, height: 69, targetIndex: 6 },
+          { x: 1205, y: 80.5, width: 69, height: 69, targetIndex: 7 }
+      ],
+      1: [ // Slides 2-6 (Standard)
+          { x: 303.5, y: 80.5, width: 69, height: 69, targetIndex: 1 },
+          { x: 450, y: 80.5, width: 74, height: 69, targetIndex: 2 },
+          { x: 605.5, y: 80.5, width: 69, height: 69, targetIndex: 3 },
+          { x: 755.5, y: 80.5, width: 75, height: 69, targetIndex: 4 },
+          { x: 911.5, y: 80.5, width: 69, height: 69, targetIndex: 5 },
+          { x: 1062, y: 80.5, width: 74, height: 69, targetIndex: 6 },
+          { x: 1217.5, y: 80.5, width: 69, height: 69, targetIndex: 7 }
+      ],
+      2: [ // Slides 7-8 (Shifted up 20px)
+          { x: 303.5, y: 60.5, width: 69, height: 69, targetIndex: 1 },
+          { x: 450, y: 60.5, width: 74, height: 69, targetIndex: 2 },
+          { x: 605.5, y: 60.5, width: 69, height: 69, targetIndex: 3 },
+          { x: 755.5, y: 60.5, width: 75, height: 69, targetIndex: 4 },
+          { x: 911.5, y: 60.5, width: 69, height: 69, targetIndex: 5 },
+          { x: 1062, y: 60.5, width: 74, height: 69, targetIndex: 6 },
+          { x: 1217.5, y: 60.5, width: 69, height: 69, targetIndex: 7 }
+      ]
+  };
+
+  const buttonConfigs = {
+      0: [{ x: 1202, y: 1743, width: 141, height: 56, action: 'next' }],
+      1: [{ x: 77.5, y: 1348, width: 142, height: 56, action: 'back' }, { x: 1219, y: 1348, width: 141, height: 56, action: 'next' }],
+      2: [{ x: 77.5, y: 2132, width: 142, height: 56, action: 'back' }, { x: 1219, y: 2132, width: 141, height: 56, action: 'next' }],
+      3: [{ x: 80, y: 3401, width: 142, height: 56, action: 'back' }, { x: 1220, y: 3401, width: 141, height: 56, action: 'next' }],
+      4: [{ x: 80, y: 2345, width: 142, height: 56, action: 'back' }, { x: 1220, y: 2345, width: 141, height: 56, action: 'next' }],
+      5: [{ x: 80, y: 1215, width: 142, height: 56, action: 'back' }, { x: 1220, y: 1215, width: 141, height: 56, action: 'next' }],
+      6: [{ x: 80, y: 3937, width: 142, height: 56, action: 'back' }, { x: 1220, y: 3937, width: 141, height: 56, action: 'next' }],
+      7: []
+  };
+
+  let currentIndex = 0;
+  const slides = document.querySelectorAll('.component');
+
+  function init() {
+    // Add click overlays to each slide
+    slides.forEach((comp, i) => {
+      addClickableOverlays(comp, i);
+    });
+    
+    // Keyboard Nav
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigateTo(currentIndex + 1);
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') navigateTo(currentIndex - 1);
+    });
+    
+    // Trigger initial resize
+    setTimeout(sendHeight, 500);
+    window.addEventListener('resize', sendHeight);
+  }
+
+  function sendHeight() {
+    const activeComponent = document.querySelector('.component.active');
+    if (activeComponent) {
+         // Allow browser to render, then grab total height
+         const h = activeComponent.scrollHeight;
+         
+         // If embedded in iframe, send message (Optional, since this is now a native module)
+         if(window.parent) {
+             window.parent.postMessage({ type: 'resize', height: h, scrollToTop: true }, '*');
+         }
+    }
+  }
+
+  function navigateTo(index) {
+      if (index < 0 || index >= slides.length) return;
+      
+      // Pause videos
+      const currentComp = document.querySelector('.component.active');
+      if (currentComp) {
+          const videos = currentComp.querySelectorAll('video');
+          videos.forEach(v => v.pause());
+      }
+      
+      // Switch slides
+      currentComp.classList.remove('active');
+      currentIndex = index;
+      const nextComp = document.getElementById('component-' + (index + 1));
+      nextComp.classList.add('active');
+      
+      // Resize
+      sendHeight();
+      
+      // Scroll Top
+      const container = document.querySelector('.tools-module-wrapper');
+      if(container) {
+          container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+  }
+
+  function addClickableOverlays(componentDiv, componentIndex) {
+      // Calculate height reference based on the image naturally
+      // We simply use a ratio based on 1440px width
+      
+      // Height isn't strictly needed if we use % based on the container which is fixed ratio? 
+      // No, container height varies.
+      // We need to use the dataset height from our hardcoded known heights for the BUTTON positions to match the background image.
+      
+      // Hardcoded original heights for coordinate mapping
+      const knownHeights = [1865, 1727, 2431, 3516, 2739, 1321, 4271, 993];
+      const coordHeight = knownHeights[componentIndex] || 1440;
+      
+      if (componentIndex < 7) {
+          let circleSet = 1;
+          if (componentIndex === 0) circleSet = 0;
+          if (componentIndex >= 6) circleSet = 2; 
+          
+          const circles = circlePositions[circleSet];
+          if(circles) {
+              circles.forEach(circle => {
+                  const overlay = createOverlay(circle.x, circle.y, circle.width, circle.height, SVG_WIDTH, coordHeight);
+                  overlay.onclick = () => navigateTo(circle.targetIndex);
+                  componentDiv.appendChild(overlay);
+              });
+          }
+      }
+      
+      const buttons = buttonConfigs[componentIndex] || [];
+      buttons.forEach(btn => {
+          const overlay = createOverlay(btn.x, btn.y, btn.width, btn.height, SVG_WIDTH, coordHeight);
+          if (btn.action === 'next') overlay.onclick = () => navigateTo(currentIndex + 1);
+          else if (btn.action === 'back') overlay.onclick = () => navigateTo(currentIndex - 1);
+          componentDiv.appendChild(overlay);
+      });
+  }
+
+  function createOverlay(x, y, width, height, svgWidth, svgHeight) {
+      const overlay = document.createElement('div');
+      overlay.className = 'click-overlay';
+      overlay.style.left = ((x / svgWidth) * 100) + '%';
+      // For top %, we use the original SVG height as the denominator
+      overlay.style.top = ((y / svgHeight) * 100) + '%';
+      overlay.style.width = ((width / svgWidth) * 100) + '%';
+      overlay.style.height = ((height / svgHeight) * 100) + '%';
+      return overlay;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+{% end_require_js %}

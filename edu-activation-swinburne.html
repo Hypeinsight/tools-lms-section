@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EDU Activation — Swinburne</title>
+  <style>
+    :root {
+      --max-w: 1440px;
+    }
+    html, body { margin: 0; padding: 0; background:transparent; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
+    .page { display:flex; justify-content:center; padding:0; }
+    .container { position:relative; width:100%; max-width: var(--max-w); background:#DAE5F1; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
+
+    .component { display:none; position:relative; background:#DAE5F1; }
+    .component.active { display:block; }
+
+    .svg-host { position:relative; width:100%; height:auto; display:block; background:#DAE5F1; }
+    .svg-host img { width:100%; height:auto; display:block; }
+
+    /* overlay root sits above the image in the svg-host */
+    .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
+    .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
+    .video-embed { position:absolute; pointer-events:auto; border:none; border-radius:24px; }
+    .image-embed { position:absolute; pointer-events:none; border-radius:32px; }
+
+    /* Image Modal */
+    .image-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .image-modal.active {
+      display: flex;
+    }
+    .image-modal img {
+      max-width: 90%;
+      max-height: 90vh;
+      border-radius: 8px;
+    }
+    .image-modal .close-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      color: #252D36;
+      font-weight: 700;
+    }
+    .image-modal .close-button:hover {
+      background: white;
+    }
+
+    /* FAQ Accordion Styles */
+    .faq-accordion { position: absolute; pointer-events: auto; z-index: 20; }
+    .faq-item { background: white; margin-bottom: 12px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+    .faq-item:last-child { margin-bottom: 0; }
+    .faq-question { padding: 24px 70px 24px 30px; font-weight: 600; font-size: 18px; color: #1F2937; position: relative; user-select: none; line-height: 1.4; }
+    .faq-question::after { content: '+'; position: absolute; right: 30px; top: 50%; transform: translateY(-50%); font-size: 32px; font-weight: 300; color: #1482FF; transition: transform 0.3s ease; }
+    .faq-item.active .faq-question::after { content: '−'; transform: translateY(-50%) rotate(180deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
+    .faq-item.active .faq-answer { max-height: 600px; }
+    .faq-answer-content { padding: 0 30px 24px 30px; font-size: 16px; line-height: 1.7; color: #4B5563; }
+    .faq-item:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="container">
+      <!-- components injected here by JS -->
+    </div>
+  </div>
+
+  <!-- Image Modal -->
+  <div class="image-modal" id="imageModal">
+    <button class="close-button" id="closeModal">&times;</button>
+    <img id="modalImage" src="" alt="Answer" />
+  </div>
+
+  <script>
+    const components = [
+      // Slide 1 - Transform Student Learning
+      {
+        id: 1,
+        file: "EDU Activation/1 - Transform Student Learning.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1175,
+        overlays: [
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1169, y: 1057, w: 207, h: 56 }
+        ]
+      },
+      // Slide 2 - Understand what Tools™ Does for Swinburne
+      {
+        id: 2,
+        file: "EDU Activation/Swinburne/2 - Understand what Tools™ Does for Swinburne.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2410,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://www.youtube.com/watch?v=CPSO4nUpb8Y", x: 60, y: 1077, w: 420, h: 231 },
+          { action: "url", url: "https://www.youtube.com/watch?v=I3hgrQFCnKs", x: 510, y: 1077, w: 420, h: 231 },
+          { action: "url", url: "https://www.youtube.com/watch?v=7iX_p2pcVHA", x: 960, y: 1077, w: 420, h: 231 },
+          { action: "back", x: 60, y: 2294, w: 142, h: 56 },
+          { action: "next", x: 947, y: 2294, w: 433, h: 56 }
+        ],
+        videos: [
+          { src: "https://info.buildingtools.co/hubfs/20832146/EDU%20Intro%20V3-1.mp4", x: 561, y: 328, w: 769, h: 409 }
+        ],
+        images: [
+          { src: "EDU Activation/image (8).png", x: 60, y: 1547, w: 1320, h: 650 }
+        ]
+      },
+      // Slide 3 - Understand what Tools™ Does for Swinburne
+      {
+        id: 3,
+        file: "EDU Activation/Swinburne/3 - Understand what Tools™ Does for Swinburne.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1961,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://swinburne.buildingtools.co/", x: 220.891, y: 466.8, w: 135, h: 20 },
+          { action: "url", url: "https://swinburne.buildingtools.co/", x: 60, y: 491, w: 129, h: 44 },
+          { action: "back", x: 60, y: 1845, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1845, w: 433, h: 56 }
+        ]
+      },
+      // Slide 4 - Understand what Tools™ Does
+      {
+        id: 4,
+        file: "EDU Activation/4 - Understand what Tools™ Does.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2668,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://buildingtools.co/r/SpFGDD?click=t&type=1", x: 590.992, y: 1307.05, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-12 at 03-29-15.png", x: 788, y: 1307.05, w: 98, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/GJZzAI?click=t&type=0", x: 590.992, y: 1473.05, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-12 at 04-35-39.png", x: 788, y: 1473.05, w: 98, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/hfbEgp?click=t&type=0", x: 590.992, y: 1618.05, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Annotation on 2026-01-14 at 08-15-37.png", x: 788, y: 1618.05, w: 98, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/RbORCD?click=t&type=0", x: 590.992, y: 1784.05, w: 106, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-16 at 16-46-16.png", x: 788, y: 1784.05, w: 98, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/qbRBGP?click=t&type=0", x: 590.992, y: 1992.05, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-14 at 02-08-43.png", x: 788, y: 1992.05, w: 98, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/p5Ia5p?click=t&type=0", x: 590.992, y: 2231.55, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-14 at 02-38-13.png", x: 788, y: 2231.55, w: 98, h: 20 },
+          { action: "back", x: 60, y: 2456, w: 142, h: 56 },
+          { action: "next", x: 947, y: 2456, w: 433, h: 56 }
+        ]
+      },
+      // Slide 5 - code coverage & citations
+      {
+        id: 5,
+        file: "EDU Activation/5 - code coverage & citations.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 3250,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "back", x: 60, y: 3134, w: 142, h: 56 },
+          { action: "next", x: 947, y: 3134, w: 433, h: 56 }
+        ],
+        covers: [
+          { x: 60, y: 650, w: 420, h: 230 },
+          { x: 510, y: 650, w: 420, h: 230 },
+          { x: 960, y: 650, w: 420, h: 230 },
+          { x: 60, y: 1220, w: 420, h: 230 },
+          { x: 510, y: 1220, w: 420, h: 230 },
+          { x: 960, y: 1220, w: 420, h: 230 }
+        ],
+        images: [
+          { src: "Hickory Activation/Activation GIFs/Module 3/Ncc codes.gif", x: 60, y: 650, w: 420, h: 230 },
+          { src: "Hickory Activation/Activation GIFs/Module 3/Ac codes.gif", x: 510, y: 650, w: 420, h: 230 },
+          { src: "Hickory Activation/Activation GIFs/Module 3/Other Quality Standards.gif", x: 960, y: 650, w: 420, h: 230 },
+          { src: "Hickory Activation/Activation GIFs/Module 3/NCC Codes  2.gif", x: 60, y: 1220, w: 420, h: 230 },
+          { src: "Hickory Activation/Activation GIFs/Module 3/Hotspot.gif", x: 510, y: 1220, w: 420, h: 230 },
+          { src: "Hickory Activation/Activation GIFs/Module 3/Side panel.gif", x: 960, y: 1220, w: 420, h: 230 }
+        ]
+      },
+      // Slide 6 - Basic Sharing - Link, QR, PDF
+      {
+        id: 6,
+        file: "EDU Activation/6 - Basic Sharing - Link, QR, PDF.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2127,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "back", x: 60, y: 2011, w: 142, h: 56 },
+          { action: "next", x: 947, y: 2011, w: 433, h: 56 }
+        ],
+        covers: [
+          { x: 800, y: 273, w: 580, h: 691 }
+        ],
+        images: [
+          { src: "EDU Activation/GIFs/Share Link into a GIF - Survival Tools.gif", x: 800, y: 273, w: 580, h: 691 }
+        ]
+      },
+      // Slide 7 - Understanding Student Access
+      {
+        id: 7,
+        file: "EDU Activation/7 - Understanding Student Access.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1794,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "back", x: 60, y: 1622, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1622, w: 433, h: 56 }
+        ]
+      },
+      // Slide 8 - Support
+      {
+        id: 8,
+        file: "EDU Activation/8 - Support.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 3284,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/function", x: 61.9489, y: 1348.36, w: 93, h: 20 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/building-code", x: 511.949, y: 1356.36, w: 93, h: 20 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/citation", x: 961.949, y: 1356.36, w: 93, h: 20 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/share-links", x: 61.9489, y: 1798.36, w: 93, h: 20 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/-playlist", x: 511.949, y: 1798.36, w: 93, h: 20 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/your-tools", x: 961.949, y: 1798.36, w: 93, h: 20 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base", x: 636.5, y: 1864, w: 167, h: 52 },
+          { action: "back", x: 60, y: 3168, w: 142, h: 56 },
+          { action: "next", x: 947, y: 3168, w: 433, h: 56 }
+        ],
+        images: [
+          { src: "creatives/Tools feedback V2.gif", x: 710, y: 325, w: 610, h: 377 }
+        ],
+        faq: {
+          x: 130,
+          y: 2140,
+          w: 1180,
+          items: [
+            { q: "What is Tools™ & how can it help me?", a: "Tools™ is a platform that transforms complex Building Codes & Australian Standards (AS) into clear, interactive graphics. It helps users quickly understand & apply building regulations, saving time & improving accuracy." },
+            { q: "Can I access Tools™ on mobile devices?", a: "Yes, Tools™ can be accessed via the web platform & mobile apps. While the web platform offers full functionality, the mobile app is designed for quick viewing & on-the-go access." },
+            { q: "What kind of resources can I share using Tools™?", a: "Tools™ allows you to share resources using links, QR Codes, and PDFs. You can easily share these with colleagues or students for efficient access to building management content." },
+            { q: "How do I read and navigate the interactive graphics in Tools™?", a: "The interactive graphics are designed to be intuitive. Simply click on the elements for more information, including compliance notes, best-practice prompts, & Code citations, all in a visual format." },
+            { q: "How often is the content in Tools™ updated?", a: "Tools™ regularly updates its content to ensure you have access to the most current building Codes, standards, & compliance guidelines. Updates are reflected as soon as they are available." },
+            { q: "Can I access Tools™ offline?", a: "Currently, Tools™ requires an internet connection to access its full functionality. The mobile app allows you to view content offline, but full functionality is available only through the web platform." },
+            { q: "Is Tools™ compatible with all Learning Management Systems (LMS)?", a: "Yes, Tools™ can be integrated with most major Learning Management Systems (LMS). If you're unsure about compatibility, consult our integration guide or contact support for assistance." },
+            { q: "Can I customise the tools within the platform for my specific needs?", a: "While Tools™ provides predefined content, you can create & share custom playlists to organise resources that are most relevant to your curriculum or building management needs." },
+            { q: "What is the difference between Tools™ & traditional building management resources?", a: "Unlike traditional resources, which can be dense & text-heavy, Tools™ simplifies complex Codes & standards into interactive, visual formats, allowing for quicker & easier understanding and application." },
+            { q: "Can I use Tools™ for specific Building Codes other than NCC & AS?", a: "Currently, Tools™ focuses on Australian Standards (AS) & the National Construction Code (NCC). We are constantly working on expanding our coverage, so check for future updates." }
+          ]
+        }
+      },
+      // Slide 9 - All set
+      {
+        id: 9,
+        file: "EDU Activation/9 - All set.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 756,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://swinburne.buildingtools.co/", x: 453.016, y: 548, w: 203, h: 56 },
+          { action: "url", url: "https://info.buildingtools.co/edu-practical-guide-implementation", x: 688.016, y: 548, w: 300, h: 56 }
+        ]
+      }
+    ];
+
+    // DOM setup
+    const container = document.querySelector('.container');
+
+    const state = {
+      index: 0, // 0..8
+      loaded: new Array(components.length).fill(false),
+      viewBox: new Array(components.length).fill(null) // {w,h}
+    };
+
+    function buildDOM() {
+      components.forEach((c, i) => {
+        const comp = document.createElement('div');
+        comp.className = 'component' + (i === 0 ? ' active' : '');
+        comp.dataset.idx = i;
+
+        const host = document.createElement('div');
+        host.className = 'svg-host';
+
+        const img = document.createElement('img');
+        img.src = c.file;
+        img.setAttribute('aria-label', `Slide ${c.id}`);
+
+        const overlays = document.createElement('div');
+        overlays.className = 'overlay-root';
+
+        host.appendChild(img);
+        host.appendChild(overlays);
+        comp.appendChild(host);
+        container.appendChild(comp);
+
+        // Use fixed viewBox dimensions from component config
+        state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 2500 };
+        
+        // Wait for image to load before rendering overlays
+        img.addEventListener('load', () => {
+          state.loaded[i] = true;
+          renderOverlays(i);
+        });
+      });
+
+    }
+
+    function renderOverlays(idx) {
+      const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+      if (!compEl) return;
+      const root = compEl.querySelector('.overlay-root');
+      root.innerHTML = '';
+      const vb = state.viewBox[idx];
+      if (!vb) return;
+
+      const showDebug = false;
+
+      // Render cover rectangles first (to cover sections)
+      if (components[idx].covers) {
+        components[idx].covers.forEach((cover) => {
+          const coverEl = document.createElement('div');
+          coverEl.style.position = 'absolute';
+          coverEl.style.left = (cover.x / vb.w) * 100 + '%';
+          coverEl.style.top = (cover.y / vb.h) * 100 + '%';
+          coverEl.style.width = (cover.w / vb.w) * 100 + '%';
+          coverEl.style.height = (cover.h / vb.h) * 100 + '%';
+          coverEl.style.backgroundColor = '#DAE5F1';
+          coverEl.style.borderRadius = '8px';
+          coverEl.style.pointerEvents = 'none';
+          
+          root.appendChild(coverEl);
+        });
+      }
+
+      // Render images
+      if (components[idx].images) {
+        components[idx].images.forEach((img) => {
+          const imgEl = document.createElement('img');
+          imgEl.className = 'image-embed';
+          imgEl.src = img.src;
+          imgEl.style.position = 'absolute';
+          imgEl.style.left = (img.x / vb.w) * 100 + '%';
+          imgEl.style.top = (img.y / vb.h) * 100 + '%';
+          imgEl.style.width = (img.w / vb.w) * 100 + '%';
+          imgEl.style.height = (img.h / vb.h) * 100 + '%';
+          imgEl.style.objectFit = 'contain';
+          
+          root.appendChild(imgEl);
+        });
+      }
+
+      // Render videos
+      if (components[idx].videos) {
+        components[idx].videos.forEach((v) => {
+          const videoEl = document.createElement('video');
+          videoEl.className = 'video-embed';
+          videoEl.controls = true;
+          videoEl.style.left = (v.x / vb.w) * 100 + '%';
+          videoEl.style.top = (v.y / vb.h) * 100 + '%';
+          videoEl.style.width = (v.w / vb.w) * 100 + '%';
+          videoEl.style.height = (v.h / vb.h) * 100 + '%';
+          
+          const source = document.createElement('source');
+          source.src = v.src;
+          source.type = 'video/mp4';
+          videoEl.appendChild(source);
+          
+          root.appendChild(videoEl);
+        });
+      }
+
+      components[idx].overlays.forEach((o) => {
+        const el = document.createElement('div');
+        el.className = 'click-area';
+        
+        // Convert SVG coordinates to percentage based on viewBox
+        let leftPct = (o.x / vb.w) * 100;
+        const topPct = (o.y / vb.h) * 100;
+        let widthPct = (o.w / vb.w) * 100;
+        const heightPct = (o.h / vb.h) * 100;
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        el.title = o.action.toUpperCase();
+
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleAction(o);
+        });
+
+        root.appendChild(el);
+      });
+
+      // Render FAQ accordion if component has one
+      if (components[idx].faq) {
+        const faq = components[idx].faq;
+        const faqContainer = document.createElement('div');
+        faqContainer.className = 'faq-accordion';
+        faqContainer.style.left = (faq.x / vb.w) * 100 + '%';
+        faqContainer.style.top = (faq.y / vb.h) * 100 + '%';
+        faqContainer.style.width = (faq.w / vb.w) * 100 + '%';
+
+        faq.items.forEach((item, i) => {
+          const itemEl = document.createElement('div');
+          itemEl.className = 'faq-item';
+          
+          const questionEl = document.createElement('div');
+          questionEl.className = 'faq-question';
+          questionEl.textContent = item.q;
+          
+          const answerEl = document.createElement('div');
+          answerEl.className = 'faq-answer';
+          
+          const answerContent = document.createElement('div');
+          answerContent.className = 'faq-answer-content';
+          answerContent.textContent = item.a;
+          
+          answerEl.appendChild(answerContent);
+          itemEl.appendChild(questionEl);
+          itemEl.appendChild(answerEl);
+          
+          itemEl.addEventListener('click', () => {
+            itemEl.classList.toggle('active');
+          });
+          
+          faqContainer.appendChild(itemEl);
+        });
+        
+        root.appendChild(faqContainer);
+      }
+    }
+
+    function handleAction(o) {
+      if (o.action === 'next') {
+        goTo(state.index + 1, 'button');
+      } else if (o.action === 'back') {
+        goTo(state.index - 1, 'button');
+      } else if (o.action === 'url' && o.url) {
+        window.open(o.url, '_blank', 'noopener');
+      } else if (o.action === 'image' && o.src) {
+        showImageModal(o.src);
+      } else {
+        console.log('Unhandled action:', o);
+      }
+    }
+
+    function showImageModal(src) {
+      const modal = document.getElementById('imageModal');
+      const img = document.getElementById('modalImage');
+      img.src = src;
+      modal.classList.add('active');
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.classList.remove('active');
+    }
+
+    function goTo(newIndex, method = 'button') {
+      const max = components.length - 1;
+      const clamped = Math.max(0, Math.min(max, newIndex));
+      if (clamped === state.index) return;
+      
+      const prev = container.querySelector(`.component[data-idx="${state.index}"]`);
+      const next = container.querySelector(`.component[data-idx="${clamped}"]`);
+      if (prev) prev.classList.remove('active');
+      if (next) next.classList.add('active');
+      state.index = clamped;
+      
+      if (state.viewBox[clamped]) renderOverlays(clamped);
+      
+      // Notify parent window of new height
+      notifyParentHeight();
+      
+      // Scroll parent window to top
+      if (window.parent !== window) {
+        window.parent.postMessage({ action: 'scrollToTop' }, '*');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function notifyParentHeight() {
+      if (window.parent !== window) {
+        const currentHeight = components[state.index].viewBoxHeight;
+        window.parent.postMessage({ 
+          action: 'resizeIframe', 
+          height: currentHeight 
+        }, '*');
+      }
+    }
+
+    function hookDebug() {
+      // Debug functionality removed for production
+    }
+
+    function hookKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          goTo(state.index + 1, 'keyboard');
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          goTo(state.index - 1, 'keyboard');
+        } else if (e.key === 'Escape') {
+          closeImageModal();
+        }
+      });
+    }
+
+    function hookModal() {
+      const modal = document.getElementById('imageModal');
+      const closeBtn = document.getElementById('closeModal');
+      
+      closeBtn.addEventListener('click', closeImageModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeImageModal();
+        }
+      });
+    }
+
+    // init
+    buildDOM();
+    hookKeyboard();
+    hookModal();
+    
+    // Notify parent of initial height after DOM is ready
+    window.addEventListener('load', () => {
+      notifyParentHeight();
+    });
+  </script>
+</body>
+</html>
