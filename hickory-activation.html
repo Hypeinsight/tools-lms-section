@@ -23,9 +23,46 @@
     .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
     .video-embed { position:absolute; pointer-events:auto; border:none; border-radius:24px; }
     .image-embed { position:absolute; pointer-events:none; border-radius:32px; }
+    
+    /* Coordinate display */
+    .coord-display {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      z-index: 9999;
+      padding: 8px 12px;
+      background: rgba(37, 45, 54, 0.95);
+      color: #BFE002;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      pointer-events: none;
+      display: none;
+    }
+    .coord-display.active {
+      display: block;
+    }
+    .debug-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      padding: 10px 20px;
+      background: #252D36;
+      color: #BFE002;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
+  <input id="debugToggle" type="checkbox" style="display:none;" />
+  <button class="debug-toggle" id="debugButton">Show Click Areas</button>
+  <div class="coord-display" id="coordDisplay">Click to see coordinates</div>
+  
   <div class="page">
     <div class="container">
       <!-- components injected here by JS -->
@@ -39,16 +76,13 @@
         id: 1,
         file: "Hickory Activation/1 - Get Started.svg",
         viewBoxWidth: 1440,
-        viewBoxHeight: 2488,
+        viewBoxHeight: 3846,
+        videos: [
+          { src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/EDU%20Intro%20V3%20(2)%20(1).mp4", x: 561, y: 1125, w: 769, h: 409 }
+        ],
         overlays: [
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
-          { action: "next", x: 947, y: 2372, w: 433, h: 56 }
-        ],
-        videos: [
-          { src: "http://info.buildingtools.co/hubfs/20832146/EDU%20Intro%20V3-1.mp4", x: 561, y: 1125, w: 769, h: 409 }
-        ],
-        images: [
-          { src: "EDU Activation/image (8).png", x: 60, y: 1624, w: 1320, h: 647 }
+          { action: "next", x: 1174.500, y: 3751.5, w: 200, h: 50 }
         ]
       },
       // Slide 2 - How to achieve Quality?
@@ -76,9 +110,9 @@
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
-          { action: "url", url: "https://hickory.buildingtools.co/signup", x: 60, y: 481, w: 129, h: 44 },
-          { action: "back", x: 60, y: 1875, w: 142, h: 56 },
-          { action: "next", x: 947, y: 1875, w: 433, h: 56 }
+          { action: "url", url: "https://hickory.buildingtools.co/signup", x: 60, y: 458, w: 129, h: 44 },
+          { action: "back", x: 60, y: 1819, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1819, w: 433, h: 56 }
         ]
       },
       // Slide 4 - Code Coverage & Citations
@@ -86,35 +120,23 @@
         id: 4,
         file: "Hickory Activation/4 - Code Coverage & Citations.svg",
         viewBoxWidth: 1440,
-        viewBoxHeight: 3443,
+        viewBoxHeight: 2078,
+        images: [
+          { src: "Hickory Activation/Activation GIFs/Module 3/Ncc codes.gif", x: 284.500, y: 804, w: 200, h: 50 },
+          { src: "Hickory Activation/Activation GIFs/Module 3/Ac codes.gif", x: 722.500, y: 801, w: 200, h: 50 }
+        ],
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
           { action: "url", url: "https://buildingtools.co/r/fbF6yI?click=t&type=0", x: 747.278, y: 1810.7, w: 200, h: 20 },
-          { action: "back", x: 60, y: 3327, w: 142, h: 56 },
-          { action: "next", x: 947, y: 3327, w: 433, h: 56 }
-        ],
-        covers: [
-          { x: 60, y: 650, w: 420, h: 230 },
-          { x: 510, y: 650, w: 420, h: 230 },
-          { x: 960, y: 650, w: 420, h: 230 },
-          { x: 60, y: 1220, w: 420, h: 230 },
-          { x: 510, y: 1220, w: 420, h: 230 },
-          { x: 960, y: 1220, w: 420, h: 230 }
-        ],
-        images: [
-          { src: "Hickory Activation/Activation GIFs/Module 3/Ncc codes.gif", x: 60, y: 650, w: 420, h: 230 },
-          { src: "Hickory Activation/Activation GIFs/Module 3/Ac codes.gif", x: 510, y: 650, w: 420, h: 230 },
-          { src: "Hickory Activation/Activation GIFs/Module 3/Other Quality Standards.gif", x: 960, y: 650, w: 420, h: 230 },
-          { src: "Hickory Activation/Activation GIFs/Module 3/NCC Codes  2.gif", x: 60, y: 1220, w: 420, h: 230 },
-          { src: "Hickory Activation/Activation GIFs/Module 3/Hotspot.gif", x: 510, y: 1220, w: 420, h: 230 },
-          { src: "Hickory Activation/Activation GIFs/Module 3/Side panel.gif", x: 960, y: 1220, w: 420, h: 230 }
+          { action: "back", x: 60, y: 1962, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1962, w: 433, h: 56 }
         ]
       },
       // Slide 5 - Sharing - Link, QR, PDF
       {
         id: 5,
-        file: "Hickory Activation/5 - Sharing - Link, QR, PDF.svg",
+        file: "Hickory Activation/5 - Sharing - Link, QR, PDF (1).svg",
         viewBoxWidth: 1440,
         viewBoxHeight: 2329,
         overlays: [
@@ -122,12 +144,6 @@
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
           { action: "back", x: 60, y: 2213, w: 142, h: 56 },
           { action: "next", x: 947, y: 2213, w: 433, h: 56 }
-        ],
-        covers: [
-          { x: 800, y: 365, w: 580, h: 691 }
-        ],
-        images: [
-          { src: "Hickory Activation/Activation GIFs/Module 4/Share Link into a GIF - Survival Tools.gif", x: 800, y: 365, w: 580, h: 691 }
         ]
       },
       // Slide 6 - Access for External Teams
@@ -161,15 +177,12 @@
           { action: "url", url: "https://info.buildingtools.co/knowledge-base", x: 636.5, y: 1945, w: 167, h: 52 },
           { action: "back", x: 60, y: 2118, w: 142, h: 56 },
           { action: "next", x: 947, y: 2118, w: 433, h: 56 }
-        ],
-        images: [
-          { src: "creatives/Tools feedback V2.gif", x: 710, y: 426, w: 610, h: 377 }
         ]
       },
-      // Slide 8 - Youre all set
+      // Slide 8 - You're all set
       {
         id: 8,
-        file: "Hickory Activation/8 - Youre all set.svg",
+        file: "Hickory Activation/8 - You%E2%80%99re all set.svg",
         viewBoxWidth: 1440,
         viewBoxHeight: 826,
         overlays: [
@@ -365,6 +378,90 @@
         }
       });
     }
+
+    // Debug toggle
+    document.getElementById('debugButton').addEventListener('click', () => {
+      const toggle = document.getElementById('debugToggle');
+      toggle.checked = !toggle.checked;
+      const clickAreas = document.querySelectorAll('.click-area');
+      clickAreas.forEach(area => {
+        if (toggle.checked) {
+          area.style.background = 'rgba(255, 0, 0, 0.2)';
+          area.style.border = '2px solid red';
+        } else {
+          area.style.background = '';
+          area.style.border = '';
+        }
+      });
+    });
+
+    // Coordinate display on hover
+    const coordDisplay = document.getElementById('coordDisplay');
+    container.addEventListener('mousemove', (e) => {
+      const comp = e.target.closest('.component.active');
+      if (!comp) return;
+      
+      const idx = parseInt(comp.dataset.idx);
+      const vb = state.viewBox[idx];
+      if (!vb) return;
+      
+      const host = comp.querySelector('.svg-host');
+      const rect = host.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * vb.w;
+      const y = ((e.clientY - rect.top) / rect.height) * vb.h;
+      
+      coordDisplay.textContent = `x: ${x.toFixed(3)}, y: ${y.toFixed(3)}`;
+      coordDisplay.classList.add('active');
+    });
+
+    container.addEventListener('mouseleave', () => {
+      coordDisplay.classList.remove('active');
+    });
+
+    // Ctrl+Click to capture coordinates
+    document.addEventListener('click', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        const comp = container.querySelector('.component.active');
+        if (!comp) return;
+        
+        const idx = parseInt(comp.dataset.idx);
+        const vb = state.viewBox[idx];
+        if (!vb) return;
+        
+        const host = comp.querySelector('.svg-host');
+        if (!host) return;
+        
+        const rect = host.getBoundingClientRect();
+        
+        // Check if click is within the host bounds
+        if (e.clientX < rect.left || e.clientX > rect.right || 
+            e.clientY < rect.top || e.clientY > rect.bottom) {
+          return;
+        }
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const x = ((e.clientX - rect.left) / rect.width) * vb.w;
+        const y = ((e.clientY - rect.top) / rect.height) * vb.h;
+        
+        const coordText = `Slide ${idx + 1}: x: ${x.toFixed(3)}, y: ${y.toFixed(3)}, w: 200, h: 50`;
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(coordText).then(() => {
+          console.log('=== CLICK AREA COORDINATE ===');
+          console.log('Slide:', idx + 1, '(' + components[idx].file + ')');
+          console.log('X:', x.toFixed(3));
+          console.log('Y:', y.toFixed(3));
+          console.log('Copied to clipboard:', coordText);
+          
+          alert(`✓ Copied to clipboard!\n\nSlide ${idx + 1}\nX: ${x.toFixed(3)}\nY: ${y.toFixed(3)}\nW: 200, H: 50`);
+        }).catch(err => {
+          console.error('Failed to copy:', err);
+          alert(`Coordinates:\n\nSlide ${idx + 1}\nX: ${x.toFixed(3)}\nY: ${y.toFixed(3)}\nW: 200, H: 50\n\n(Copy failed - check console)`);
+        });
+      }
+    }, true);
 
     // init
     buildDOM();
