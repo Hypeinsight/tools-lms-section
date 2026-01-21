@@ -21,7 +21,11 @@
     /* overlay root sits above the image in the svg-host */
     .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
     .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
+    .click-area.debug { outline: 2px dashed rgba(191,224,2,0.8); background: rgba(191,224,2,0.15); }
     .video-embed { position:absolute; pointer-events:auto; border:none; border-radius:24px; }
+    .debug-toggle { position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 12px 20px; background: #7E0EB3; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.2s; }
+    .debug-toggle:hover { background: #6A0B99; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+    .debug-toggle.active { background: #BFE002; color: #252D36; }
     .image-embed { position:absolute; pointer-events:none; border-radius:32px; }
 
     /* Image Modal */
@@ -78,6 +82,8 @@
   </style>
 </head>
 <body>
+  <input id="debugToggle" type="checkbox" style="display:none;" />
+  <button class="debug-toggle" id="debugButton">Show Click Areas</button>
   <div class="page">
     <div class="container">
       <!-- components injected here by JS -->
@@ -88,6 +94,14 @@
   <div class="image-modal" id="imageModal">
     <button class="close-button" id="closeModal">&times;</button>
     <img id="modalImage" src="" alt="Answer" />
+  </div>
+
+  <!-- Video Modal -->
+  <div class="image-modal" id="videoModal">
+    <button class="close-button" id="closeVideoModal">&times;</button>
+    <video id="modalVideo" controls style="max-width: 90%; max-height: 90vh; border-radius: 8px;">
+      <source id="modalVideoSource" src="" type="video/mp4" />
+    </video>
   </div>
 
   <script>
@@ -103,66 +117,67 @@
           { action: "next", x: 1169, y: 1057, w: 207, h: 56 }
         ]
       },
-      // Slide 2 - Understand what Tools™ Does (RMIT version)
+      // Slide 2 - Understand what Tools™ Does
       {
         id: 2,
-        file: "EDU Activation/RMIT/2 - RMIT Understand what Tools™ Does.svg",
+        file: "EDU Activation/2 - Understand what Tools™ Does.svg",
         viewBoxWidth: 1440,
-        viewBoxHeight: 2410,
+        viewBoxHeight: 3781,
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Module%201%20-%20Understand%20what%20tools%20does.mp4", x: 1214, y: 180, w: 166, h: 48 },
           { action: "url", url: "https://www.youtube.com/watch?v=CPSO4nUpb8Y", x: 60, y: 1077, w: 420, h: 231 },
           { action: "url", url: "https://www.youtube.com/watch?v=I3hgrQFCnKs", x: 510, y: 1077, w: 420, h: 231 },
           { action: "url", url: "https://www.youtube.com/watch?v=7iX_p2pcVHA", x: 960, y: 1077, w: 420, h: 231 },
-          { action: "back", x: 60, y: 2294, w: 142, h: 56 },
-          { action: "next", x: 947, y: 2294, w: 433, h: 56 }
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/How%20to%20Read%20a%20Tool.webm", x: 1214, y: 1467, w: 166, h: 48 },
+          { action: "back", x: 60, y: 3583, w: 142, h: 56 },
+          { action: "next", x: 980, y: 3583, w: 400, h: 56 }
         ],
         videos: [
-          { src: "http://info.buildingtools.co/hubfs/20832146/EDU%20Intro%20V3-1.mp4", x: 561, y: 328, w: 769, h: 409 }
-        ],
-        images: [
-          { src: "EDU Activation/image (8).png", x: 60, y: 1547, w: 1320, h: 650 }
+          { src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/EDU%20Intro%20V3%20(2)%20(1).mp4", x: 561, y: 328, w: 769, h: 409 }
         ]
       },
-      // Slide 3 - Understand what Tools™ Does (RMIT)
+      // Slide 3 - RMIT Specific
       {
         id: 3,
-        file: "EDU Activation/RMIT/3 - RMIT Understand what Tools™ Does.svg",
-        viewBoxWidth: 1440,
-        viewBoxHeight: 2668,
-        overlays: [
-          { action: "back", x: 101, y: 55, w: 50, h: 50 },
-          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
-          { action: "url", url: "https://buildingtools.co/r/SpFGDD?click=t&type=1", x: 595.086, y: 1367.05, w: 98, h: 20 },
-          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-12 at 03-29-15.png", x: 796.086, y: 1367.05, w: 98, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/GJZzAI?click=t&type=0", x: 595.086, y: 1544.5, w: 98, h: 20 },
-          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-12 at 04-35-39.png", x: 792.086, y: 1544.5, w: 98, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/hfbEgp?click=t&type=0", x: 595.086, y: 1689.5, w: 98, h: 20 },
-          { action: "image", src: "EDU Activation/Chat GPT/Annotation on 2026-01-14 at 08-15-37.png", x: 792.086, y: 1689.5, w: 98, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/RbORCD?click=t&type=0", x: 595.086, y: 1875.5, w: 106, h: 20 },
-          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-16 at 16-46-16.png", x: 792.086, y: 1875.5, w: 98, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/qbRBGP?click=t&type=0", x: 595.086, y: 2093.5, w: 98, h: 20 },
-          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-14 at 02-08-43.png", x: 792.086, y: 2093.5, w: 98, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/p5Ia5p?click=t&type=0", x: 595.086, y: 2343, w: 98, h: 20 },
-          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-14 at 02-38-13.png", x: 792.086, y: 2343, w: 98, h: 20 },
-          { action: "back", x: 60, y: 2576, w: 142, h: 56 },
-          { action: "next", x: 947, y: 2576, w: 433, h: 56 }
-        ]
-      },
-      // Slide 4 - Understand what Tools™ Does (RMIT)
-      {
-        id: 4,
-        file: "EDU Activation/RMIT/4 - RMIT Understand what Tools™ Does.svg",
+        file: "EDU Activation/RMIT/3 - RMIT How to Access Tools™.svg",
         viewBoxWidth: 1440,
         viewBoxHeight: 1874,
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/How%20to%20Access%20Tools.webm", x: 1216, y: 170, w: 166, h: 48 },
           { action: "url", url: "https://rmit.buildingtools.co/", x: 185.398, y: 379.8, w: 184.198, h: 20 },
           { action: "url", url: "https://rmit.buildingtools.co/", x: 60, y: 404, w: 129, h: 44 },
           { action: "back", x: 60, y: 1758, w: 142, h: 56 },
           { action: "next", x: 947, y: 1758, w: 433, h: 56 }
+        ]
+      },
+      // Slide 4 - Chat GPT Examples
+      {
+        id: 4,
+        file: "EDU Activation/4 - Understand what Tools™ Does.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2241,
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Gen%20Ai%20vs.%20Tools.mp4", x: 1214, y: 170, w: 166, h: 48 },
+          { action: "url", url: "https://rmit.buildingtools.co/tools/waterproofing-floor-waste-bathroom-internal-ncc2022.2-1.21?point=599cdc25-d40f-496c-8c12-1ea904608359&shareId=XLya3n-1768191781067&standard=&zoom=2.1828745883819374&x=358.44767904921184&y=215.99947042195916&action=click&type=1", x: 560.992, y: 1286.05, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-12 at 03-29-15.png", x: 711.992, y: 1286.05, w: 98, h: 20 },
+          { action: "url", url: "https://rmit.buildingtools.co/tools/structure-concrete-overview-ncc2022.2-1.15?point=cee973e4-2248-4b3b-941f-58e2bdee0bae&shareId=XLya3n-1768191781067&standard=&zoom=3.2382221334321435&x=473.0010970095049&y=395.5932716299341&action=click&type=1&standard=&action=click&type=0", x: 560.992, y: 1399.55, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-12 at 04-35-39.png", x: 711.992, y: 1399.55, w: 98, h: 20 },
+          { action: "url", url: "https://rmit.buildingtools.co/tools/fire-swing-door-ncc2022.2-1.31?v=1768338457926&shareId=XLya3n-1768338441403&zoom=1.225043&menu_id=6-4-0&x=387.031170769994&y=431.5231071357872&standard=&action=click&type=0", x: 560.992, y: 1502.55, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Annotation on 2026-01-14 at 08-15-37.png", x: 711.992, y: 1502.55, w: 98, h: 20 },
+          { action: "url", url: "https://rmit.buildingtools.co/tools/hot-water-service-ncc2022.2-1.6?point=94c4ec43-6c9c-48fa-8af2-5697b47d4cd0&shareId=ch6ODI-1768542269781&zoom=2.14&x=298.7642464911452&y=215.5823576162231&standard=&action=click&type=0", x: 560.992, y: 1616.05, w: 106, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-16 at 16-46-16.png", x: 711.992, y: 1616.05, w: 98, h: 20 },
+          { action: "url", url: "https://rmit.buildingtools.co/tools/services-separation-covering-electrical-cat-b-ncc2022.2-1.8?r=1&x=500.84437430230577&y=197.73771570111884&zoom=0.9345794392523364&shareId=XLya3n-1768338441403&menu_id=6-4-8&standard=&action=click&type=0", x: 560.992, y: 1750.55, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-14 at 02-08-43.png", x: 711.992, y: 1750.55, w: 98, h: 20 },
+          { action: "url", url: "https://rmit.buildingtools.co/tools/services-service-penetration-wall-floor-framing-ncc2022.2-1.10?v=1768362200764&shareId=XLya3n-1768338441403&zoom=1.6057814764784306&menu_id=6-0-3&x=475.08397573358434&y=325.24575416878093&standard=&action=click&type=0", x: 560.992, y: 1906.05, w: 98, h: 20 },
+          { action: "image", src: "EDU Activation/Chat GPT/Screenshot on 2026-01-14 at 02-38-13.png", x: 711.992, y: 1906.05, w: 98, h: 20 },
+          { action: "back", x: 60, y: 2096, w: 142, h: 56 },
+          { action: "next", x: 947, y: 2096, w: 433, h: 56 }
         ]
       },
       // Slide 5 - code coverage & citations
@@ -170,12 +185,13 @@
         id: 5,
         file: "EDU Activation/5 - code coverage & citations.svg",
         viewBoxWidth: 1440,
-        viewBoxHeight: 3250,
+        viewBoxHeight: 1907,
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
-          { action: "back", x: 60, y: 3134, w: 142, h: 56 },
-          { action: "next", x: 947, y: 3134, w: 433, h: 56 }
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Code%20Coverage.webm", x: 1214, y: 170, w: 166, h: 48 },
+          { action: "back", x: 60, y: 1772, w: 142, h: 56 },
+          { action: "next", x: 1059, y: 1772, w: 321, h: 56 }
         ],
         covers: [
           { x: 60, y: 650, w: 420, h: 230 },
@@ -203,6 +219,7 @@
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Basic%20Sharing.mp4", x: 1213, y: 170, w: 167, h: 48 },
           { action: "back", x: 60, y: 2011, w: 142, h: 56 },
           { action: "next", x: 947, y: 2011, w: 433, h: 56 }
         ],
@@ -222,6 +239,7 @@
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Understanding%20Student%20Access.webm", x: 1214, y: 170, w: 166, h: 48 },
           { action: "back", x: 60, y: 1622, w: 142, h: 56 },
           { action: "next", x: 947, y: 1622, w: 433, h: 56 }
         ]
@@ -235,6 +253,7 @@
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Support.mp4", x: 1214, y: 170, w: 166, h: 48 },
           { action: "url", url: "https://info.buildingtools.co/knowledge-base/function", x: 61.9489, y: 1348.36, w: 93, h: 20 },
           { action: "url", url: "https://info.buildingtools.co/knowledge-base/building-code", x: 511.949, y: 1356.36, w: 93, h: 20 },
           { action: "url", url: "https://info.buildingtools.co/knowledge-base/citation", x: 961.949, y: 1356.36, w: 93, h: 20 },
@@ -275,7 +294,7 @@
         overlays: [
           { action: "back", x: 101, y: 55, w: 50, h: 50 },
           { action: "url", url: "https://rmit.buildingtools.co/", x: 453.016, y: 548, w: 203, h: 56 },
-          { action: "url", url: "https://info.buildingtools.co/edu-practical-guide-implementation", x: 688.016, y: 548, w: 300, h: 56 }
+          { action: "url", url: "https://info.buildingtools.co/11ways-rmit", x: 688.016, y: 548, w: 300, h: 56 }
         ]
       }
     ];
@@ -330,7 +349,7 @@
       const vb = state.viewBox[idx];
       if (!vb) return;
 
-      const showDebug = false;
+      const showDebug = document.getElementById('debugToggle')?.checked || false;
 
       // Render cover rectangles first (to cover sections)
       if (components[idx].covers) {
@@ -388,7 +407,7 @@
 
       components[idx].overlays.forEach((o) => {
         const el = document.createElement('div');
-        el.className = 'click-area';
+        el.className = 'click-area' + (showDebug ? ' debug' : '');
         
         // Convert SVG coordinates to percentage based on viewBox
         let leftPct = (o.x / vb.w) * 100;
@@ -459,6 +478,8 @@
         window.open(o.url, '_blank', 'noopener');
       } else if (o.action === 'image' && o.src) {
         showImageModal(o.src);
+      } else if (o.action === 'video' && o.src) {
+        showVideoModal(o.src);
       } else {
         console.log('Unhandled action:', o);
       }
@@ -473,6 +494,24 @@
 
     function closeImageModal() {
       const modal = document.getElementById('imageModal');
+      modal.classList.remove('active');
+    }
+
+    function showVideoModal(src) {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('modalVideo');
+      const source = document.getElementById('modalVideoSource');
+      const extension = src.split('.').pop().toLowerCase();
+      source.type = extension === 'webm' ? 'video/webm' : 'video/mp4';
+      source.src = src;
+      video.load();
+      modal.classList.add('active');
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('modalVideo');
+      video.pause();
       modal.classList.remove('active');
     }
 
@@ -539,6 +578,7 @@
           goTo(state.index - 1, 'keyboard');
         } else if (e.key === 'Escape') {
           closeImageModal();
+          closeVideoModal();
         }
       });
     }
@@ -553,10 +593,21 @@
           closeImageModal();
         }
       });
+
+      const videoModal = document.getElementById('videoModal');
+      const closeVideoBtn = document.getElementById('closeVideoModal');
+      
+      closeVideoBtn.addEventListener('click', closeVideoModal);
+      videoModal.addEventListener('click', (e) => {
+        if (e.target === videoModal) {
+          closeVideoModal();
+        }
+      });
     }
 
     // init
     buildDOM();
+    hookDebug();
     hookKeyboard();
     hookModal();
     
