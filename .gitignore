@@ -7,6 +7,11 @@ __pycache__/
 # Embedded versions (too large for git)
 final-for-hubspot/
 
+# Large video files
+creatives/EDU Intro V3.mp4
+creatives/Playlist video/*.mp4
+encoded-assets.json
+
 # OS files
 .DS_Store
 Thumbs.db
