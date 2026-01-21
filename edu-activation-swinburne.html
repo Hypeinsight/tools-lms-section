@@ -541,6 +541,8 @@
     }
 
     function hookKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
           e.preventDefault();
           goTo(state.index + 1, 'keyboard');
         } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
