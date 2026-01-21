@@ -490,6 +490,16 @@
     }
 
     function showVideoModal(src) {
+      // If we're in an iframe, send message to parent window to show modal there
+      if (window.parent !== window) {
+        window.parent.postMessage({ 
+          action: 'showVideoModal', 
+          videoSrc: src 
+        }, '*');
+        return;
+      }
+      
+      // Otherwise show modal within this page
       const modal = document.getElementById('videoModal');
       const video = document.getElementById('modalVideo');
       const source = document.getElementById('modalVideoSource');
