@@ -21,11 +21,7 @@
     /* overlay root sits above the image in the svg-host */
     .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
     .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
-    .click-area.debug { outline: 2px dashed rgba(191,224,2,0.8); background: rgba(191,224,2,0.15); }
     .video-embed { position:absolute; pointer-events:auto; border:none; border-radius:24px; }
-    .debug-toggle { position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 12px 20px; background: #7E0EB3; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.2s; }
-    .debug-toggle:hover { background: #6A0B99; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
-    .debug-toggle.active { background: #BFE002; color: #252D36; }
     .image-embed { position:absolute; pointer-events:none; border-radius:32px; }
 
     /* Image Modal */
@@ -82,8 +78,6 @@
   </style>
 </head>
 <body>
-  <input id="debugToggle" type="checkbox" style="display:none;" />
-  <button class="debug-toggle" id="debugButton">Show Click Areas</button>
   <div class="page">
     <div class="container">
       <!-- components injected here by JS -->
@@ -349,8 +343,6 @@
       const vb = state.viewBox[idx];
       if (!vb) return;
 
-      const showDebug = document.getElementById('debugToggle')?.checked || false;
-
       // Render cover rectangles first (to cover sections)
       if (components[idx].covers) {
         components[idx].covers.forEach((cover) => {
@@ -407,7 +399,7 @@
 
       components[idx].overlays.forEach((o) => {
         const el = document.createElement('div');
-        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        el.className = 'click-area';
         
         // Convert SVG coordinates to percentage based on viewBox
         let leftPct = (o.x / vb.w) * 100;
@@ -548,27 +540,7 @@
       }
     }
 
-    function hookDebug() {
-      const dbg = document.getElementById('debugToggle');
-      const btn = document.getElementById('debugButton');
-      
-      btn.addEventListener('click', () => {
-        dbg.checked = !dbg.checked;
-        btn.textContent = dbg.checked ? 'Hide Click Areas' : 'Show Click Areas';
-        btn.classList.toggle('active', dbg.checked);
-        if (state.viewBox[state.index]) renderOverlays(state.index);
-      });
-      
-      dbg.addEventListener('change', () => {
-        btn.textContent = dbg.checked ? 'Hide Click Areas' : 'Show Click Areas';
-        btn.classList.toggle('active', dbg.checked);
-        if (state.viewBox[state.index]) renderOverlays(state.index);
-      });
-    }
-
     function hookKeyboard() {
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
           e.preventDefault();
           goTo(state.index + 1, 'keyboard');
         } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
@@ -605,7 +577,6 @@
 
     // init
     buildDOM();
-    hookDebug();
     hookKeyboard();
     hookModal();
     
