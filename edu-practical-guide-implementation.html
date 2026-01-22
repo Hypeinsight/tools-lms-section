@@ -68,6 +68,42 @@
     .coord-display.active {
       display: block;
     }
+    
+    /* Video Modal */
+    .video-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+    }
+    .video-modal.active {
+      display: flex;
+    }
+    .video-modal .close-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      color: #252D36;
+      font-weight: 700;
+      z-index: 100000;
+    }
+    .video-modal .close-button:hover {
+      background: white;
+    }
   </style>
 </head>
 <body>
@@ -79,6 +115,14 @@
     <div class="container">
       <!-- components injected here by JS -->
     </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div class="video-modal" id="videoModal">
+    <button class="close-button" id="closeVideoModal">&times;</button>
+    <video id="modalVideo" controls style="max-width: 90%; max-height: 90vh; border-radius: 8px;">
+      <source id="modalVideoSource" src="" type="video/mp4" />
+    </video>
   </div>
 
   <script>
@@ -110,6 +154,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/Module%201%20-%20Compres%20Tools%20to%20NCC%20AS.mp4", x: 1214, y: 220, w: 166, h: 48 },
           { action: "url", url: "https://buildingtools.co/r/QanA9p?click=t&type=1", x: 176.734, y: 585, w: 148.61, h: 24 },
           { action: "url", url: "https://ncc.abcb.gov.au/editions/ncc-2022/adopted/housing-provisions/11-safe-movement-and-access/part-112-stairway-and-ramp-construction", x: 366.359, y: 661, w: 196.633, h: 24 },
           { action: "back", x: 60, y: 823, w: 142, h: 56 },
@@ -122,70 +167,63 @@
         file: "EDU Practical Guide (Implementation)/3 - Foundational Tools for Education.svg",
         viewBoxWidth: 1440,
         viewBoxHeight: 6092,
+        overlays: [
+            { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/2.%20Foundational%20Tools.webm", x: 1208.5, y: 839.653, w: 169, h: 177.991 },
+        ],
         accordions: [
-          { id: 'acc1', collapsed: "EDU Practical Guide (Implementation)/Accordion/1 - Construction Basics Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/1 - Construction Basics Open.svg", y: 170, hC: 62, hE: 417,
+          { id: 'acc1', collapsed: "EDU Practical Guide (Implementation)/Accordion/1 - Construction Basics Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/1 - Construction Basics Open.svg", y: 290, hC: 62, hE: 417,
             links: [
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 77, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 443, y: 77, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 878, y: 77, w: 122.742, h: 18.3984 }
+              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 339.531, w: 112.992, h: 18 },
+              { url: "https://app.buildingtools.co/tools/skills-whos-who-building-zoo-developer-owner-ncc2022.2-1.21?r=1&x=509.857985606684&y=234.04643013822002&zoom=1.1449&shareId=ch6ODI-1766983736919&menu_id=10-1-11&standard=&action=click&type=0", x: 443, y: 339.531, w: 179.078, h: 18 },
+              { url: "https://app.buildingtools.co/tools/skills-ncc-compliance-overview-build-right-ncc2022.2-1.1?menu_id=10-1-2&shareId=ch6ODI-1766983736919&zoom=1.6057814764784306&x=526.9181106276394&y=431.8785599789935&point=a024f212-ce4f-465b-be3a-7ee8ad71b327&standard=&action=click&type=0", x: 878, y: 339.531, w: 135.23, h: 18 }
             ]
           },
-          { id: 'acc2', collapsed: "EDU Practical Guide (Implementation)/Accordion/2 - Science of Construction Quality Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/2 - Science of Construction Quality Open.svg", y: 242, hC: 62, hE: 417,
+          { id: 'acc2', collapsed: "EDU Practical Guide (Implementation)/Accordion/2 - Science of Construction Quality Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/2 - Science of Construction Quality Open.svg", y: 362, hC: 62, hE: 417,
             links: [
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 443, y: 67, w: 122.742, h: 18.3984 }
+              { url: "https://app.buildingtools.co/tools/ncc-bca-building-classification-ncc2022-1.4?menu_id=10-0-0&shareId=ch6ODI-1766983736919&zoom=1.07&x=470.1127355439253&y=272.3830200186916&standard=&action=click&type=0", x: 8, y: 317.531, w: 138.844, h: 18 },
+              { url: "https://app.buildingtools.co/tools/skills-designer-construction-set-out-ncc2022.2-1.10?menu_id=10-0-1&shareId=ch6ODI-1766983736919&zoom=1.5007303518490005&x=158.42309947685015&y=328.18551986939093&standard=&action=click&type=0", x: 443, y: 317.531, w: 188.703, h: 18 }
             ]
           },
-          { id: 'acc3', collapsed: "EDU Practical Guide (Implementation)/Accordion/3 - Design Fundamentals Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/3 - Design Fundamentals Open.svg", y: 314, hC: 62, hE: 417,
+          { id: 'acc3', collapsed: "EDU Practical Guide (Implementation)/Accordion/3 - Design Fundamentals Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/3 - Design Fundamentals Open.svg", y: 434, hC: 62, hE: 417,
             links: [
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 443, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 878, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 259, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 443, y: 259, w: 122.742, h: 18.3984 }
+              { url: "https://app.buildingtools.co/tools/ncc-bca-building-classification-ncc2022-1.4?menu_id=10-0-0&shareId=ch6ODI-1766983736919&zoom=1.07&x=470.1127355439253&y=272.3830200186916&standard=&action=click&type=0", x: 8, y: 337.531, w: 177.953, h: 18 },
+              { url: "https://app.buildingtools.co/tools/skills-designer-construction-set-out-ncc2022.2-1.10?menu_id=10-0-1&shareId=ch6ODI-1766983736919&zoom=1.5007303518490005&x=158.42309947685015&y=328.18551986939093&standard=&action=click&type=0", x: 443, y: 337.531, w: 100, h: 18 }
             ]
           },
-          { id: 'acc4', collapsed: "EDU Practical Guide (Implementation)/Accordion/4 - Plumbing Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/4 - Plumbing Open.svg", y: 386, hC: 62, hE: 417,
+          { id: 'acc4', collapsed: "EDU Practical Guide (Implementation)/Accordion/4 - Plumbing Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/4 - Plumbing Open.svg", y: 506, hC: 62, hE: 417,
             links: [
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 443, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 878, y: 67, w: 122.742, h: 18.3984 }
+              { url: "https://app.buildingtools.co/tools/services-plumbing-overview-ncc2022.2-1.7?menu_id=6-4-0&shareId=ch6ODI-1767061462569&zoom=1.4025517307000004&x=533.7488731200478&y=312.0087601678406&standard=&action=click&type=0", x: 8, y: 337.531, w: 153.938, h: 18 },
+              { url: "https://app.buildingtools.co/tools/hot-water-service-ncc2022.2-1.7?v=1767061873557&shareId=ch6ODI-1767061462569&zoom=0.9345794392523364&menu_id=6-4-0&x=445.37797015287833&y=311.4518705626312&standard=&action=click&type=0", x: 443, y: 337.531, w: 135.266, h: 18 },
+              { url: "https://app.buildingtools.co/tools/services-plumbing-sanitary-floor-waste-gully-fwg-ncc2022.2-1.0?menu_id=6-4-2&shareId=ch6ODI-1767061462569&zoom=1.07&x=489.3701400440726&y=310.82728075525284&standard=&action=click&type=0", x: 878, y: 337.531, w: 140.88, h: 18 }
             ]
           },
-          { id: 'acc5', collapsed: "EDU Practical Guide (Implementation)/Accordion/5 - Carpentry Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/5 - Carpentry Open.svg", y: 458, hC: 62, hE: 717,
+          { id: 'acc5', collapsed: "EDU Practical Guide (Implementation)/Accordion/5 - Carpentry Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/5 - Carpentry Open.svg", y: 578, hC: 62, hE: 717,
             links: [
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 443, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 878, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 259, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 177.5, y: 779.963, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 588, y: 591.112, w: 122.742, h: 18.3984 }
+              { url: "https://app.buildingtools.co/tools/structure-framing-overview-timber-ncc2022.2-1.16?zoom=1.1449&shareId=ch6ODI-1767061462569&menu_id=8-3-0&x=521.2178444254037&y=283.3007067635197&standard=&action=click&type=0", x: 8, y: 337.531, w: 194.594, h: 18 },
+              { url: "https://app.buildingtools.co/tools/structure-timber-balconies-decks-ncc2022.2-1.10?menu_id=8-3-1&shareId=ch6ODI-1767061462569&zoom=1.3107960100000002&x=426.82889203691633&y=287.85782435940337&standard=&action=click&type=0", x: 443, y: 337.531, w: 143.312, h: 18 },
+              { url: "https://app.buildingtools.co/tools/structure-timber-wall-framing-ncc2022.2-1.9?v=1767063437398&shareId=ch6ODI-1767061462569&zoom=1.1449&menu_id=8-3-8&x=328.2583383360814&y=286.27975152405344&standard=&action=click&type=0", x: 878, y: 337.531, w: 156.31, h: 18 },
+              { url: "https://app.buildingtools.co/tools/structure-timber-girder-saddle-truss-ncc2022.2-1.0?menu_id=8-3-3&shareId=ch6ODI-1767061462569&zoom=1.225043&x=517.2776215098921&y=267.94657116752524&standard=&action=click&type=0", x: 8, y: 664.531, w: 168.203, h: 18 }
             ]
           },
-          { id: 'acc6', collapsed: "EDU Practical Guide (Implementation)/Accordion/6 - Electrical Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/6 - Electrical Open.svg", y: 530, hC: 62, hE: 417,
+          { id: 'acc6', collapsed: "EDU Practical Guide (Implementation)/Accordion/6 - Electrical Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/6 - Electrical Open.svg", y: 650, hC: 62, hE: 417,
             links: [
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 443, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 878, y: 67, w: 122.742, h: 18.3984 }
+              { url: "https://app.buildingtools.co/tools/wet-area-bathroom-electrical-safety-ncc2022.2-1.26?point=dd51959e-d7a6-4e25-a4e7-1fb86fcbc04a&shareId=ch6ODI-1767061462569&standard=&zoom=2.5785341502012487&x=412.43253055204093&y=279.2656544948571&action=click&type=1", x: 8, y: 345.531, w: 144.188, h: 18 },
+              { url: "https://app.buildingtools.co/tools/services-aerial-wiring-clearance-insulated-ncc2022.2-1.1?menu_id=6-0-0&shareId=ch6ODI-1767061462569&zoom=1.576439032602215&x=500.90786776856737&y=413.78667889763096&standard=&action=click&type=0", x: 443, y: 345.531, w: 183.391, h: 18 },
+              { url: "https://app.buildingtools.co/tools/services-electrical-meter-box-residential-ncc2022.2-1.9?x=513.2609407909374&y=238.33392018786876&zoom=1.7180816100355623&shareId=ch6ODI-1767061462569&menu_id=6-0-3&standard=&action=click&type=0", x: 878, y: 345.531, w: 75.625, h: 18 }
             ]
           },
-          { id: 'acc7', collapsed: "EDU Practical Guide (Implementation)/Accordion/7 - Waterproofing Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/7 - Waterproofing Open.svg", y: 602, hC: 62, hE: 417,
+          { id: 'acc7', collapsed: "EDU Practical Guide (Implementation)/Accordion/7 - Waterproofing Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/7 - Waterproofing Open.svg", y: 722, hC: 62, hE: 417,
             links: [
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 8, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 443, y: 67, w: 122.742, h: 18.3984 },
-              { url: "https://buildingtools.co/r/O8KA6i?click=t&type=0", x: 878, y: 67, w: 122.742, h: 18.3984 }
+              { url: "https://app.buildingtools.co/tools/waterproofing-sub-sill-sliding-door-window-ncc2022.2-1.29?v=1767063868155&shareId=ch6ODI-1767061462569&zoom=1.3107960100000002&menu_id=9-1-0&x=519.5816757512367&y=269.62559700389886&standard=&action=click&type=0", x: 8, y: 345.531, w: 322.094, h: 18 },
+              { url: "https://app.buildingtools.co/tools/waterproofing-cavity-slide-door-waterstop-ncc2022.2-1.26?menu_id=9-2-5-0&shareId=ch6ODI-1767061462569&zoom=1.225043&x=394.1901338301639&y=371.5158489408847&standard=&action=click&type=0", x: 443, y: 345.531, w: 143.25, h: 18 },
+              { url: "https://app.buildingtools.co/tools/waterproofing-waterstop-shower-screen-enclosed-setdown-ncc2022.2-1.13?menu_id=9-2-4-4&shareId=ch6ODI-1767061462569&zoom=1&x=470.2773459056153&y=272.28375747277363&standard=&action=click&type=0", x: 878, y: 345.531, w: 131.67, h: 18 }
             ]
           }
         ],
         postAccordionImage: {
           file: "EDU Practical Guide (Implementation)/Frame 90.svg",
           width: 1281,
-          height: 1784,
-          overlays: [
-            { action: "url", url: "#", x: 1214, y: 219.5, w: 166, h: 48 }, // Show me button
-            { action: "back", x: 60, y: 2522, w: 142, h: 56 }, // Back button at bottom
-            { action: "next", x: 1198, y: 2522, w: 182, h: 56 } // Next/Module 3 button
-          ]
+          height: 1784
         },
       },
       // Slide 4 - Embed Tools into Current Lesson Plans
@@ -197,6 +235,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/Embed%20Tools%20into%20Lesson%20Plans.webm", x: 1214, y: 220, w: 166, h: 48 },
           { action: "back", x: 60, y: 904, w: 142, h: 56 },
           { action: "next", x: 1198, y: 904, w: 182, h: 56 }
         ]
@@ -210,6 +249,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/Playlists.webm", x: 1214, y: 220, w: 166, h: 48 },
           { action: "gif", url: "EDU Practical Guide (Implementation)/GIF/image (9).gif", x: 748, y: 338, w: 632, h: 487 },
           { action: "back", x: 60, y: 926, w: 142, h: 56 },
           { action: "next", x: 1199, y: 926, w: 181, h: 56 }
@@ -224,6 +264,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/Real%20Life%20vs%20Code.mp4", x: 1214, y: 220, w: 166, h: 48 },
           { action: "url", url: "https://buildingtools.co/r/sEiPKa?click=t&type=0", x: 119.641, y: 442.905, w: 172.625, h: 20 },
           { action: "url", url: "https://buildingtools.co/r/eUxoLN?click=t&type=0", x: 119.641, y: 1003.189, w: 163.093, h: 20 },
           { action: "url", url: "https://buildingtools.co/r/McNQZz?click=t&type=0", x: 494.422, y: 1559.221, w: 137.32, h: 20 },
@@ -240,9 +281,13 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/Treasure%20Hunt.mp4", x: 1214, y: 220, w: 166, h: 48 },
           { action: "url", url: "https://buildingtools.co/r/HlTJg5?click=t&type=0", x: 292, y: 496.719, w: 188, h: 20 },
+          { action: "url", url: "https://app.buildingtools.co/tools/services-plumbing-sanitary-floor-waste-gully-fwg-ncc2022.2-1.0?point=a13aebff-2beb-4655-a2a3-70826d8f8868&shareId=FmGcYD-1768448620244&standard=&zoom=1.4259723589673365&x=355.2729161003957&y=340.1958997741094&action=click&type=1", x: 60, y: 1165.249, w: 203, h: 52 },
           { action: "url", url: "https://buildingtools.co/r/TBSqx4?click=t&type=0", x: 288, y: 1342.800, w: 168, h: 20 },
+          { action: "url", url: "https://app.buildingtools.co/tools/services-electrical-meter-box-residential-ncc2022.2-1.9?point=377eed32-5df1-42a8-8679-f546dd31a6ab&shareId=ch6ODI-1767066101738&standard=&zoom=3.676918424840311&x=438.9728366541588&y=520.999939025093&action=click&type=1", x: 60, y: 2012.259, w: 201, h: 52 },
           { action: "url", url: "https://buildingtools.co/r/SgRi8P?click=t&type=0", x: 484, y: 2194.459, w: 210, h: 20 },
+          { action: "url", url: "https://app.buildingtools.co/tools/services-electrical-meter-box-residential-ncc2022.2-1.9?point=377eed32-5df1-42a8-8679-f546dd31a6ab&shareId=ch6ODI-1767066101738&standard=&zoom=3.676918424840311&x=438.9728366541588&y=520.999939025093&action=click&type=1", x: 60, y: 2858.340, w: 215, h: 52 },
           { action: "back", x: 60, y: 3127, w: 142, h: 56 },
           { action: "next", x: 1199, y: 3127, w: 181, h: 56 }
         ]
@@ -256,6 +301,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/7%20Best%20Practices.webm", x: 1190, y: 219, w: 166, h: 48 },
           { action: "url", url: "https://buildingtools.co/r/31C7Di?click=t&type=0", x: 421.281, y: 530, w: 199.383, h: 20 },
           { action: "url", url: "https://buildingtools.co/r/Jo9Mbl?click=t&type=0", x: 757.906, y: 1324, w: 276.764, h: 20 },
           { action: "url", url: "https://buildingtools.co/r/8VOkqY?click=t&type=0", x: 223, y: 2111, w: 139, h: 20 },
@@ -272,6 +318,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/8%20Student%20Presentation.webm", x: 1214, y: 220, w: 166, h: 48 },
           { action: "url", url: "https://swinburne.buildingtools.co/tools/site-works-pool-safety-fence-gate?v=1&menu_id=5-6&shareId=ch6ODI-1761100718604&zoom=2.1048519522998363&x=495.0831070206157&y=310.2727794476419", x: 118, y: 570, w: 45.094, h: 48 },
           { action: "url", url: "https://buildingtools.co/r/sJq2L6?click=t&type=0", x: 167.547, y: 598, w: 85.422, h: 20 },
           { action: "url", url: "https://buildingtools.co/r/sJq2L6?click=t&type=0", x: 934, y: 258, w: 42, h: 20 },
@@ -289,6 +336,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/9%20Specblocks.mp4", x: 1214, y: 220, w: 166, h: 48 },
           { action: "url", url: "https://buildingtools.co/install-tools-revit-add-on/", x: 120, y: 405, w: 278, h: 20 },
           { action: "url", url: "https://buildingtools.co/install-tools-revit-add-on/", x: 80, y: 442, w: 432, h: 20 },
           { action: "back", x: 60, y: 903, w: 142, h: 56 },
@@ -304,11 +352,11 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
-          { action: "url", url: "https://buildingtools.co/r/9cirGa?click=t&type=0", x: 205.203, y: 540, w: 142.594, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/Q9hPDG?click=t&type=0", x: 210.164, y: 578, w: 116.969, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/KwdAG2?click=t&type=0", x: 265.484, y: 616, w: 163.735, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/6tgg0a?click=t&type=0", x: 400.75, y: 644, w: 36.469, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/1h41LS?click=t&type=1", x: 382.391, y: 710, w: 72.078, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/9cirGa?click=t&type=0", x: 205.203, y: 504, w: 142.594, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/Q9hPDG?click=t&type=0", x: 210.164, y: 542, w: 116.969, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/KwdAG2?click=t&type=0", x: 265.484, y: 580, w: 163.735, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/6tgg0a?click=t&type=0", x: 400.75, y: 608, w: 36.469, h: 20 },
+          { action: "url", url: "https://buildingtools.co/r/1h41LS?click=t&type=1", x: 382.391, y: 674, w: 72.078, h: 20 },
           { action: "back", x: 60, y: 1153, w: 142, h: 56 },
           { action: "next", x: 1193, y: 1153, w: 187, h: 56 }
         ]
@@ -322,6 +370,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/11%20Critical%20thinking.webm", x: 1214, y: 220, w: 166, h: 48 },
           { action: "back", x: 60, y: 1275, w: 142, h: 56 },
           { action: "next", x: 1156, y: 1275, w: 224, h: 56 }
         ]
@@ -406,17 +455,24 @@
       // Calculate dynamic height for accordion slides
       let dynamicHeight = vb.h;
       if (current.accordions) {
-        // Calculate actual content height: header + accordions + post-image + footer
-        const headerHeight = 170; // Space before accordions
-        const footerHeight = 100; // Space for navigation buttons at bottom
-        
+        // Calculate height: header + accordions + postAccordionImage + nav buttons
+        const headerHeight = 290;
         let accordionTotalHeight = 0;
         current.accordions.forEach((acc) => {
           const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
           accordionTotalHeight += expanded ? acc.hE : acc.hC;
         });
+        const accordionSpacing = 150; // Space after accordions
+        const postImageHeight = current.postAccordionImage ? current.postAccordionImage.height : 0;
+        const navButtonHeight = 107;
+        const navButtonSpacing = 50; // Space before nav buttons
+        const footerPadding = 50; // Space after nav buttons
         
-        dynamicHeight = headerHeight + accordionTotalHeight + footerHeight;
+        const accordionsEndY = headerHeight + accordionTotalHeight;
+        const postImageY = accordionsEndY + accordionSpacing;
+        const navButtonY = postImageY + postImageHeight + navButtonSpacing;
+        
+        dynamicHeight = navButtonY + navButtonHeight + footerPadding;
         
         // Add post-accordion image height if present
         if (current.postAccordionImage) {
@@ -430,12 +486,32 @@
 
       // Cover middle content on slide 3 with background color
       if (idx === 2 && current.accordions) {
+        // Calculate the actual height we need to cover
+        const hostRect = host.getBoundingClientRect();
+        const scale = hostRect.width / vb.w;
+        
+        // Calculate where things end
+        let accordionTotalHeight = 0;
+        current.accordions.forEach((acc) => {
+          const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
+          accordionTotalHeight += expanded ? acc.hE : acc.hC;
+        });
+        const accordionSpacing = 150;
+        const postImageHeight = current.postAccordionImage ? current.postAccordionImage.height : 0;
+        const navButtonSpacing = 50;
+        const navButtonHeight = 107;
+        
+        const accordionsEndY = 290 + accordionTotalHeight;
+        const postImageY = accordionsEndY + accordionSpacing;
+        const navButtonY = postImageY + postImageHeight + navButtonSpacing;
+        const coverHeight = navButtonY + navButtonHeight + 100; // Add some padding
+        
         const coverEl = document.createElement('div');
         coverEl.style.position = 'absolute';
         coverEl.style.left = '0';
-        coverEl.style.top = '160px';
+        coverEl.style.top = (280 * scale) + 'px';
         coverEl.style.width = '100%';
-        coverEl.style.height = '6000px'; // Cover everything in the middle
+        coverEl.style.height = (coverHeight * scale) + 'px';
         coverEl.style.background = '#dbe5f1';
         coverEl.style.pointerEvents = 'none';
         coverEl.style.zIndex = '1';
@@ -576,7 +652,7 @@
           const scale = hostRect.width / vb.w; // Use same width-based scale
           
           // Calculate Y position after all accordions (add 150px spacing)
-          const accordionEndY = 170 + current.accordions.reduce((sum, acc) => {
+          const accordionEndY = 290 + current.accordions.reduce((sum, acc) => {
             const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
             return sum + (expanded ? acc.hE : acc.hC);
           }, 0) + 150;
@@ -618,18 +694,32 @@
           }
         }
         
-        // Add navigation buttons at the bottom for slide 3
+        // Add navigation buttons after postAccordionImage
         const navScale = host.getBoundingClientRect().width / vb.w;
-        const navY = dynamicHeight - 70; // Position near bottom
+        
+        // Calculate nav button Y position: after accordions + postAccordionImage
+        const headerHeight = 290;
+        let accordionTotalHeight = 0;
+        current.accordions.forEach((acc) => {
+          const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
+          accordionTotalHeight += expanded ? acc.hE : acc.hC;
+        });
+        const accordionSpacing = 150;
+        const postImageHeight = current.postAccordionImage ? current.postAccordionImage.height : 0;
+        const navButtonSpacing = 50;
+        
+        const accordionsEndY = headerHeight + accordionTotalHeight;
+        const postImageY = accordionsEndY + accordionSpacing;
+        const navY = postImageY + postImageHeight + navButtonSpacing;
         
         // Top navigation buttons
         const topBackBtn = document.createElement('div');
         topBackBtn.className = 'click-area' + (showDebug ? ' debug' : '');
         topBackBtn.style.position = 'absolute';
-        topBackBtn.style.left = (101 / vb.w) * 100 + '%';
-        topBackBtn.style.top = (80 / vb.h) * 100 + '%';
-        topBackBtn.style.width = (50 / vb.w) * 100 + '%';
-        topBackBtn.style.height = (50 / vb.h) * 100 + '%';
+        topBackBtn.style.left = (95.5 / vb.w) * 100 + '%';
+        topBackBtn.style.top = (281.023 / dynamicHeight) * 100 + '%';
+        topBackBtn.style.width = (52 / vb.w) * 100 + '%';
+        topBackBtn.style.height = (180.143 / dynamicHeight) * 100 + '%';
         topBackBtn.style.pointerEvents = 'auto';
         topBackBtn.style.cursor = 'pointer';
         topBackBtn.style.zIndex = '20';
@@ -640,10 +730,10 @@
         const topNextBtn = document.createElement('div');
         topNextBtn.className = 'click-area' + (showDebug ? ' debug' : '');
         topNextBtn.style.position = 'absolute';
-        topNextBtn.style.left = (1293 / vb.w) * 100 + '%';
-        topNextBtn.style.top = (80 / vb.h) * 100 + '%';
-        topNextBtn.style.width = (50 / vb.w) * 100 + '%';
-        topNextBtn.style.height = (50 / vb.h) * 100 + '%';
+        topNextBtn.style.left = (1283.5 / vb.w) * 100 + '%';
+        topNextBtn.style.top = (284.625 / dynamicHeight) * 100 + '%';
+        topNextBtn.style.width = (56 / vb.w) * 100 + '%';
+        topNextBtn.style.height = (198.157 / dynamicHeight) * 100 + '%';
         topNextBtn.style.pointerEvents = 'auto';
         topNextBtn.style.cursor = 'pointer';
         topNextBtn.style.zIndex = '20';
@@ -651,14 +741,26 @@
         topNextBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(state.index + 1); });
         root.appendChild(topNextBtn);
         
-        // Bottom navigation buttons
+        // Render Nav buttons.svg image
+        const navImgEl = document.createElement('img');
+        navImgEl.src = 'EDU Practical Guide (Implementation)/Show Me/Nav buttons.svg';
+        navImgEl.style.position = 'absolute';
+        navImgEl.style.left = (60 * navScale) + 'px';
+        navImgEl.style.top = (navY * navScale) + 'px';
+        navImgEl.style.width = (1320 * navScale) + 'px';
+        navImgEl.style.height = (107 * navScale) + 'px';
+        navImgEl.style.pointerEvents = 'none';
+        navImgEl.style.zIndex = '10';
+        root.appendChild(navImgEl);
+        
+        // Add clickable overlays for the nav buttons (offset down by 56px)
         const bottomBackBtn = document.createElement('div');
         bottomBackBtn.className = 'click-area' + (showDebug ? ' debug' : '');
         bottomBackBtn.style.position = 'absolute';
-        bottomBackBtn.style.left = (60 / vb.w) * 100 + '%';
-        bottomBackBtn.style.top = (navY / vb.h) * 100 + '%';
-        bottomBackBtn.style.width = (142 / vb.w) * 100 + '%';
-        bottomBackBtn.style.height = (56 / vb.h) * 100 + '%';
+        bottomBackBtn.style.left = (69 * navScale) + 'px';
+        bottomBackBtn.style.top = ((navY + 56) * navScale) + 'px';
+        bottomBackBtn.style.width = (142 * navScale) + 'px';
+        bottomBackBtn.style.height = (56 * navScale) + 'px';
         bottomBackBtn.style.pointerEvents = 'auto';
         bottomBackBtn.style.cursor = 'pointer';
         bottomBackBtn.style.zIndex = '20';
@@ -669,10 +771,10 @@
         const bottomNextBtn = document.createElement('div');
         bottomNextBtn.className = 'click-area' + (showDebug ? ' debug' : '');
         bottomNextBtn.style.position = 'absolute';
-        bottomNextBtn.style.left = (1198 / vb.w) * 100 + '%';
-        bottomNextBtn.style.top = (navY / vb.h) * 100 + '%';
-        bottomNextBtn.style.width = (182 / vb.w) * 100 + '%';
-        bottomNextBtn.style.height = (56 / vb.h) * 100 + '%';
+        bottomNextBtn.style.left = (1207 * navScale) + 'px';
+        bottomNextBtn.style.top = ((navY + 56) * navScale) + 'px';
+        bottomNextBtn.style.width = (182 * navScale) + 'px';
+        bottomNextBtn.style.height = (56 * navScale) + 'px';
         bottomNextBtn.style.pointerEvents = 'auto';
         bottomNextBtn.style.cursor = 'pointer';
         bottomNextBtn.style.zIndex = '20';
@@ -735,9 +837,39 @@
         window.open(o.url, '_blank', 'noopener');
       } else if (o.action === 'goto' && Number.isInteger(o.to)) {
         goTo(o.to, 'button');
+      } else if (o.action === 'video' && o.src) {
+        showVideoModal(o.src);
       } else {
         console.log('Unhandled action:', o);
       }
+    }
+
+    function showVideoModal(src) {
+      // If we're in an iframe, send message to parent window to show modal there
+      if (window.parent !== window) {
+        window.parent.postMessage({ 
+          action: 'showVideoModal', 
+          videoSrc: src 
+        }, '*');
+        return;
+      }
+      
+      // Otherwise show modal within this page
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('modalVideo');
+      const source = document.getElementById('modalVideoSource');
+      const extension = src.split('.').pop().toLowerCase();
+      source.type = extension === 'webm' ? 'video/webm' : 'video/mp4';
+      source.src = src;
+      video.load();
+      modal.classList.add('active');
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('modalVideo');
+      video.pause();
+      modal.classList.remove('active');
     }
 
     function goTo(newIndex, method = 'button') {
@@ -819,8 +951,11 @@
         if (state.viewBox[state.index]) renderOverlays(state.index);
       });
       
-      // Add click coordinate tracking
-      container.addEventListener('click', (e) => {
+      // Add drag-to-select area coordinate tracking
+      let dragState = null;
+      let selectionBox = null;
+      
+      container.addEventListener('mousedown', (e) => {
         if (!dbg.checked) return;
         
         const compEl = container.querySelector(`.component[data-idx="${state.index}"]`);
@@ -833,30 +968,95 @@
         const vb = state.viewBox[state.index];
         if (!vb) return;
         
-        // Get click position relative to the SVG host
+        // Start drag
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         
-        // Convert to SVG coordinates
-        const svgX = (x / rect.width) * vb.w;
-        const svgY = (y / rect.height) * vb.h;
+        dragState = {
+          startX: x,
+          startY: y,
+          rect: rect,
+          vb: vb,
+          host: host
+        };
         
-        // Update display and copy to clipboard
-        const coordText = `x: ${svgX.toFixed(3)}, y: ${svgY.toFixed(3)}`;
-        coordDisplay.textContent = coordText;
+        // Create selection box
+        selectionBox = document.createElement('div');
+        selectionBox.style.position = 'absolute';
+        selectionBox.style.border = '2px dashed #BFE002';
+        selectionBox.style.background = 'rgba(191, 224, 2, 0.1)';
+        selectionBox.style.pointerEvents = 'none';
+        selectionBox.style.zIndex = '9998';
+        selectionBox.style.left = (rect.left + x) + 'px';
+        selectionBox.style.top = (rect.top + y) + 'px';
+        selectionBox.style.width = '0px';
+        selectionBox.style.height = '0px';
+        document.body.appendChild(selectionBox);
+        
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (!dragState || !selectionBox) return;
+        
+        const x = e.clientX - dragState.rect.left;
+        const y = e.clientY - dragState.rect.top;
+        
+        const width = Math.abs(x - dragState.startX);
+        const height = Math.abs(y - dragState.startY);
+        const left = Math.min(x, dragState.startX);
+        const top = Math.min(y, dragState.startY);
+        
+        selectionBox.style.left = (dragState.rect.left + left) + 'px';
+        selectionBox.style.top = (dragState.rect.top + top) + 'px';
+        selectionBox.style.width = width + 'px';
+        selectionBox.style.height = height + 'px';
+        
+        // Convert to SVG coordinates and show in display
+        const svgX = (left / dragState.rect.width) * dragState.vb.w;
+        const svgY = (top / dragState.rect.height) * dragState.vb.h;
+        const svgW = (width / dragState.rect.width) * dragState.vb.w;
+        const svgH = (height / dragState.rect.height) * dragState.vb.h;
+        
+        coordDisplay.textContent = `x: ${svgX.toFixed(3)}, y: ${svgY.toFixed(3)}, w: ${svgW.toFixed(3)}, h: ${svgH.toFixed(3)}`;
+      });
+      
+      document.addEventListener('mouseup', (e) => {
+        if (!dragState || !selectionBox) return;
+        
+        const x = e.clientX - dragState.rect.left;
+        const y = e.clientY - dragState.rect.top;
+        
+        const width = Math.abs(x - dragState.startX);
+        const height = Math.abs(y - dragState.startY);
+        const left = Math.min(x, dragState.startX);
+        const top = Math.min(y, dragState.startY);
+        
+        // Convert to SVG coordinates
+        const svgX = (left / dragState.rect.width) * dragState.vb.w;
+        const svgY = (top / dragState.rect.height) * dragState.vb.h;
+        const svgW = (width / dragState.rect.width) * dragState.vb.w;
+        const svgH = (height / dragState.rect.height) * dragState.vb.h;
+        
+        const coordText = `x: ${svgX.toFixed(3)}, y: ${svgY.toFixed(3)}, w: ${svgW.toFixed(3)}, h: ${svgH.toFixed(3)}`;
         
         // Copy to clipboard
         navigator.clipboard.writeText(coordText).then(() => {
-          coordDisplay.textContent = coordText + ' (copied!)';
+          coordDisplay.textContent = coordText + ' ✓ copied!';
           setTimeout(() => {
-            coordDisplay.textContent = 'Click on slide to see coordinates';
+            coordDisplay.textContent = 'Click and drag to select area';
           }, 2000);
         }).catch(() => {
-          // Fallback if clipboard fails
+          coordDisplay.textContent = coordText;
           console.log('Coordinates:', coordText);
         });
         
-        e.stopPropagation();
+        // Clean up
+        if (selectionBox) {
+          selectionBox.remove();
+          selectionBox = null;
+        }
+        dragState = null;
       });
     }
 
@@ -868,6 +1068,20 @@
         } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
           e.preventDefault();
           goTo(state.index - 1, 'keyboard');
+        } else if (e.key === 'Escape') {
+          closeVideoModal();
+        }
+      });
+    }
+
+    function hookVideoModal() {
+      const videoModal = document.getElementById('videoModal');
+      const closeVideoBtn = document.getElementById('closeVideoModal');
+      
+      closeVideoBtn.addEventListener('click', closeVideoModal);
+      videoModal.addEventListener('click', (e) => {
+        if (e.target === videoModal) {
+          closeVideoModal();
         }
       });
     }
@@ -876,6 +1090,7 @@
     buildDOM();
     hookDebug();
     hookKeyboard();
+    hookVideoModal();
     
     // Notify parent of initial height after DOM is ready
     window.addEventListener('load', () => {
