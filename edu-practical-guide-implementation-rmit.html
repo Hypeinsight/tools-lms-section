@@ -23,52 +23,6 @@
     .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
     .click-area.debug { outline: 2px dashed rgba(191,224,2,0.8); background: rgba(191,224,2,0.15); }
     
-    /* Debug toggle button */
-    .debug-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 9999;
-      padding: 12px 20px;
-      background: #7E0EB3;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      transition: all 0.2s;
-    }
-    .debug-toggle:hover {
-      background: #6A0B99;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-    }
-    .debug-toggle.active {
-      background: #BFE002;
-      color: #252D36;
-    }
-    
-    /* Coordinate display */
-    .coord-display {
-      position: fixed;
-      bottom: 70px;
-      right: 20px;
-      z-index: 9999;
-      padding: 8px 12px;
-      background: rgba(37, 45, 54, 0.95);
-      color: #BFE002;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 12px;
-      pointer-events: none;
-      display: none;
-    }
-    .coord-display.active {
-      display: block;
-    }
-    
     /* Video Modal */
     .video-modal {
       display: none;
@@ -107,10 +61,6 @@
   </style>
 </head>
 <body>
-  <input id="debugToggle" type="checkbox" style="display:none;" />
-  <button class="debug-toggle" id="debugButton">Show Click Areas</button>
-  <div class="coord-display" id="coordDisplay">Click on slide to see coordinates</div>
-
   <div class="page">
     <div class="container">
       <!-- components injected here by JS -->
