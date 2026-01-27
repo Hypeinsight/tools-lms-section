@@ -192,8 +192,7 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
-          { action: "back", x: 60, y: 5900, w: 142, h: 56 },
-          { action: "next", x: 1198, y: 5900, w: 182, h: 56 }
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/2.%20Foundational%20Tools.webm", x: 1208.5, y: 839.653, w: 169, h: 177.991 }
         ],
         accordions: [
           { id: 'acc1', collapsed: "EDU Practical Guide (Implementation)/Accordion/1 - Construction Basics Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/1 - Construction Basics Open.svg", y: 290, hC: 62, hE: 417,
@@ -558,14 +557,14 @@
         bottomBackBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(state.index - 1); });
         root.appendChild(bottomBackBtn);
         
-        // Next button
+        // Next button - use coordinates from user
         const bottomNextBtn = document.createElement('div');
         bottomNextBtn.className = 'click-area' + (showDebug ? ' debug' : '');
         bottomNextBtn.style.position = 'absolute';
-        bottomNextBtn.style.left = (1159 * scale) + 'px'; // Adjust based on actual button position in Frame 271
-        bottomNextBtn.style.top = ((bottomNavY + 72) * scale) + 'px';
-        bottomNextBtn.style.width = (182 * scale) + 'px';
-        bottomNextBtn.style.height = (56 * scale) + 'px';
+        bottomNextBtn.style.left = (1184.5 * scale) + 'px';
+        bottomNextBtn.style.top = ((bottomNavY + (2758 - bottomNavY)) * scale) + 'px';
+        bottomNextBtn.style.width = (180 * scale) + 'px';
+        bottomNextBtn.style.height = (46 * scale) + 'px';
         bottomNextBtn.style.pointerEvents = 'auto';
         bottomNextBtn.style.cursor = 'pointer';
         bottomNextBtn.style.zIndex = '20';
