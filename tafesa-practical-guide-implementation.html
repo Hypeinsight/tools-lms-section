@@ -22,7 +22,6 @@
     /* overlay root sits above the image in the svg-host */
     .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
     .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
-    .click-area.debug { outline: 2px dashed rgba(191,224,2,0.8); background: rgba(191,224,2,0.15); }
     
     /* Video Modal */
     .video-modal {
@@ -59,64 +58,6 @@
     .video-modal .close-button:hover {
       background: white;
     }
-    
-    /* Debug Tool */
-    .debug-tool {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 100000;
-      display: flex;
-      gap: 10px;
-      align-items: flex-end;
-    }
-    .debug-tool button {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: none;
-      background: rgba(20, 130, 255, 0.9);
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      transition: all 0.2s;
-    }
-    .debug-tool button:hover {
-      background: rgba(20, 130, 255, 1);
-      transform: scale(1.1);
-    }
-    .debug-tool button.active {
-      background: rgba(191, 224, 2, 0.9);
-    }
-    .debug-info {
-      display: none;
-      background: rgba(37, 45, 54, 0.95);
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      min-width: 200px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-    .debug-info.active {
-      display: block;
-    }
-    .coord-line {
-      margin: 3px 0;
-    }
-    .coord-label {
-      color: #BFE002;
-      font-weight: bold;
-    }
-    .debug-selection {
-      position: fixed;
-      border: 2px solid #BFE002;
-      background: rgba(191, 224, 2, 0.1);
-      pointer-events: none;
-      z-index: 99998;
-    }
   </style>
   
   <!-- Start of HubSpot Embed Code -->
@@ -136,14 +77,6 @@
     <video id="modalVideo" controls style="max-width: 90%; max-height: 90vh; border-radius: 8px;">
       <source id="modalVideoSource" src="" type="video/mp4" />
     </video>
-  </div>
-
-  <!-- Debug Tool -->
-  <div class="debug-tool">
-    <button id="debugToolButton" title="Toggle Debug Mode">🎯</button>
-    <div class="debug-info" id="debugInfo">
-      <div id="debugInfoContent">Drag to select an area...</div>
-    </div>
   </div>
 
   <script>
@@ -503,7 +436,6 @@
       const root = compEl.querySelector('.overlay-root');
       root.innerHTML = '';
       
-      const showDebug = debugToolActive;
       const host = compEl.querySelector('.svg-host');
       const current = components[idx];
       
@@ -588,7 +520,7 @@
         // Add clickable overlays for navigation buttons on Frame 271
         // Back button - use coordinates from user
         const bottomBackBtn = document.createElement('div');
-        bottomBackBtn.className = 'click-area' + (showDebug ? ' debug' : '');
+        bottomBackBtn.className = 'click-area';
         bottomBackBtn.style.position = 'absolute';
         bottomBackBtn.style.left = (75.5 * scale) + 'px';
         bottomBackBtn.style.top = ((bottomNavY + (2762 - bottomNavY)) * scale) + 'px';
@@ -603,7 +535,7 @@
         
         // Next button - use coordinates from user
         const bottomNextBtn = document.createElement('div');
-        bottomNextBtn.className = 'click-area' + (showDebug ? ' debug' : '');
+        bottomNextBtn.className = 'click-area';
         bottomNextBtn.style.position = 'absolute';
         bottomNextBtn.style.left = (1184.5 * scale) + 'px';
         bottomNextBtn.style.top = ((bottomNavY + (2758 - bottomNavY)) * scale) + 'px';
@@ -656,10 +588,6 @@
           toggleEl.style.background = 'transparent';
           toggleEl.style.zIndex = '11';
           toggleEl.dataset.accordionId = acc.id;
-          if (showDebug) {
-            toggleEl.style.background = 'rgba(255, 0, 0, 0.2)';
-            toggleEl.style.border = '2px solid red';
-          }
           toggleEl.addEventListener('click', ((accordionId, currentExpanded, accY) => {
             return (e) => {
               e.stopPropagation();
@@ -690,10 +618,6 @@
               linkEl.style.cursor = 'pointer';
               linkEl.style.zIndex = '12';
               linkEl.style.display = 'block';
-              if (showDebug) {
-                linkEl.style.background = 'rgba(0, 255, 0, 0.2)';
-                linkEl.style.border = '1px solid green';
-              }
               // Track tool clicks
               linkEl.addEventListener('click', () => {
                 trackToolClick();
@@ -728,7 +652,7 @@
         }
         
         const el = document.createElement('div');
-        el.className = 'click-area' + (showDebug ? ' debug' : '');
+        el.className = 'click-area';
         
         // Convert SVG coordinates to percentage based on viewBox
         let leftPct = (o.x / vb.w) * 100;
@@ -863,141 +787,6 @@
       }
     }
 
-    // Debug tool
-    let debugToolActive = false;
-    let dragState = null;
-    let selectionBox = null;
-
-    function setupDebugTool() {
-      const debugBtn = document.getElementById('debugToolButton');
-      const debugInfo = document.getElementById('debugInfo');
-      
-      debugBtn.addEventListener('click', () => {
-        debugToolActive = !debugToolActive;
-        debugBtn.classList.toggle('active', debugToolActive);
-        debugBtn.textContent = debugToolActive ? '✅' : '🎯';
-        debugInfo.classList.toggle('active', debugToolActive);
-        if (!debugToolActive) {
-          document.getElementById('debugInfoContent').innerHTML = 'Drag to select an area...';
-        }
-        // Re-render overlays for current component
-        if (state.viewBox[state.index]) renderOverlays(state.index);
-      });
-      
-      // Drag-to-select area coordinate tracking
-      container.addEventListener('mousedown', (e) => {
-        if (!debugToolActive) return;
-        
-        const compEl = container.querySelector(`.component[data-idx="${state.index}"]`);
-        if (!compEl) return;
-        
-        const host = compEl.querySelector('.svg-host');
-        if (!host) return;
-        
-        const rect = host.getBoundingClientRect();
-        const vb = state.viewBox[state.index];
-        if (!vb) return;
-        
-        // Start drag - use clientX/Y directly for fixed positioning
-        dragState = {
-          startX: e.clientX,
-          startY: e.clientY,
-          rect: rect,
-          vb: vb,
-          host: host
-        };
-        
-        // Create selection box with fixed positioning
-        selectionBox = document.createElement('div');
-        selectionBox.className = 'debug-selection';
-        selectionBox.style.left = e.clientX + 'px';
-        selectionBox.style.top = e.clientY + 'px';
-        selectionBox.style.width = '0px';
-        selectionBox.style.height = '0px';
-        document.body.appendChild(selectionBox);
-        
-        e.preventDefault();
-      });
-      
-      document.addEventListener('mousemove', (e) => {
-        if (!dragState || !selectionBox) return;
-        
-        const width = Math.abs(e.clientX - dragState.startX);
-        const height = Math.abs(e.clientY - dragState.startY);
-        const left = Math.min(e.clientX, dragState.startX);
-        const top = Math.min(e.clientY, dragState.startY);
-        
-        selectionBox.style.left = left + 'px';
-        selectionBox.style.top = top + 'px';
-        selectionBox.style.width = width + 'px';
-        selectionBox.style.height = height + 'px';
-        
-        // Update debug info in real-time
-        const svgX = ((left - dragState.rect.left) / dragState.rect.width) * dragState.vb.w;
-        const svgY = ((top - dragState.rect.top) / dragState.rect.height) * dragState.vb.h;
-        const svgW = (width / dragState.rect.width) * dragState.vb.w;
-        const svgH = (height / dragState.rect.height) * dragState.vb.h;
-        
-        document.getElementById('debugInfoContent').innerHTML = `
-          <div class="coord-line"><span class="coord-label">x:</span> ${svgX.toFixed(3)}</div>
-          <div class="coord-line"><span class="coord-label">y:</span> ${svgY.toFixed(3)}</div>
-          <div class="coord-line"><span class="coord-label">w:</span> ${svgW.toFixed(3)}</div>
-          <div class="coord-line"><span class="coord-label">h:</span> ${svgH.toFixed(3)}</div>
-        `;
-      });
-      
-      document.addEventListener('mouseup', (e) => {
-        if (!dragState || !selectionBox) return;
-        
-        const width = Math.abs(e.clientX - dragState.startX);
-        const height = Math.abs(e.clientY - dragState.startY);
-        const left = Math.min(e.clientX, dragState.startX);
-        const top = Math.min(e.clientY, dragState.startY);
-        
-        // Convert to SVG coordinates
-        const svgX = ((left - dragState.rect.left) / dragState.rect.width) * dragState.vb.w;
-        const svgY = ((top - dragState.rect.top) / dragState.rect.height) * dragState.vb.h;
-        const svgW = (width / dragState.rect.width) * dragState.vb.w;
-        const svgH = (height / dragState.rect.height) * dragState.vb.h;
-        
-        // Format for easy copying
-        const overlayConfig = `{ action: "url", url: "https://example.com", x: ${svgX.toFixed(3)}, y: ${svgY.toFixed(3)}, w: ${svgW.toFixed(3)}, h: ${svgH.toFixed(3)} }`;
-        
-        // Update debug info display
-        document.getElementById('debugInfoContent').innerHTML = `
-          <div style="margin-bottom: 8px; color: #BFE002;">Slide ${state.index + 1}</div>
-          <div class="coord-line"><span class="coord-label">x:</span> ${svgX.toFixed(3)}</div>
-          <div class="coord-line"><span class="coord-label">y:</span> ${svgY.toFixed(3)}</div>
-          <div class="coord-line"><span class="coord-label">w:</span> ${svgW.toFixed(3)}</div>
-          <div class="coord-line"><span class="coord-label">h:</span> ${svgH.toFixed(3)}</div>
-          <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #444; font-size: 11px;">
-            <div style="color: #BFE002; margin-bottom: 5px;">✓ Copied to clipboard!</div>
-            <div style="color: #999; word-break: break-all;">${overlayConfig}</div>
-          </div>
-        `;
-        
-        // Copy overlay config to clipboard
-        navigator.clipboard.writeText(overlayConfig).then(() => {
-          // Visual feedback - flash the debug button green
-          const debugBtn = document.getElementById('debugToolButton');
-          const originalBg = debugBtn.style.background;
-          debugBtn.style.background = 'rgba(0, 255, 0, 0.9)';
-          setTimeout(() => {
-            debugBtn.style.background = originalBg;
-          }, 300);
-        }).catch(() => {
-          document.getElementById('debugInfoContent').innerHTML += '<div style="color: #ff6b6b; margin-top: 5px;">⚠ Clipboard copy failed</div>';
-        });
-        
-        // Clean up
-        if (selectionBox) {
-          selectionBox.remove();
-          selectionBox = null;
-        }
-        dragState = null;
-      });
-    }
-
     function hookKeyboard() {
       document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
@@ -1026,7 +815,6 @@
 
     // Initialize
     buildDOM();
-    setupDebugTool();
     hookKeyboard();
     hookVideoModal();
     
@@ -1036,15 +824,6 @@
       // Track initial slide view
       trackSlideView(1);
     });
-    
-    // Display help message on load
-    console.log('%c🎯 TAFE Implementation Navigation', 'font-size: 16px; font-weight: bold; color: #1482FF;');
-    console.log('%cKeyboard shortcuts:', 'font-weight: bold;');
-    console.log('  ← → Arrow keys - Navigate slides');
-    console.log('  ESC - Close video modal');
-    console.log('\n%cDebug Tool:', 'font-weight: bold;');
-    console.log('  Click the 🎯 button in the bottom-left corner to toggle debug mode');
-    console.log('  When active, drag and select areas to get coordinates');
   </script>
 </body>
 </html>
