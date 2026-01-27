@@ -183,7 +183,7 @@
         id: 3,
         file: "EDU Practical Guide (Implementation)/TAFE Implementation/3 - Foundational Tools for Education.svg",
         viewBoxWidth: 1440,
-        viewBoxHeight: 6092,
+        viewBoxHeight: 2524,
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
@@ -434,7 +434,7 @@
       // Calculate dynamic height for accordion slides (TAFE specific)
       if (current.accordions) {
         // For TAFE: base height includes header + bottom section, we adjust for accordion expansion
-        const baseSlideHeight = 6092; // Original TAFE slide height
+        const baseSlideHeight = 2524; // TAFE slide height (collapsed state)
         const headerHeight = 290; // Top section before accordions
         const bottomSectionHeight = 1800; // Approximate height of "Overview" section + nav buttons at bottom
         
@@ -452,7 +452,7 @@
         components[idx].viewBoxHeight = dynamicHeight;
       }
 
-      // Cover middle content on slide 3 with background color (TAFE specific)
+      // Dynamically position bottom section on slide 3 (TAFE specific)
       if (idx === 2 && current.accordions) {
         const hostRect = host.getBoundingClientRect();
         const scale = hostRect.width / vb.w;
@@ -466,21 +466,56 @@
         
         const headerHeight = 290;
         const accordionsEndY = headerHeight + accordionTotalHeight;
-        const bottomSectionStartY = state.viewBox[idx].h - 1800; // Bottom section starts 1800px from bottom
+        const bottomSectionHeight = 1800; // Height of Overview section + nav buttons
+        const spacing = 150; // Space between accordions and bottom section
         
-        // Only add cover if there's a gap (when accordions are collapsed)
-        if (accordionsEndY < bottomSectionStartY) {
-          const coverEl = document.createElement('div');
-          coverEl.style.position = 'absolute';
-          coverEl.style.left = '0';
-          coverEl.style.top = (accordionsEndY * scale) + 'px';
-          coverEl.style.width = '100%';
-          coverEl.style.height = ((bottomSectionStartY - accordionsEndY) * scale) + 'px';
-          coverEl.style.background = '#dbe5f1';
-          coverEl.style.pointerEvents = 'none';
-          coverEl.style.zIndex = '1';
-          root.appendChild(coverEl);
-        }
+        // Position the bottom section right after accordions
+        const bottomSectionY = accordionsEndY + spacing;
+        
+        // Render the bottom section as an overlay image
+        const bottomImgEl = document.createElement('img');
+        bottomImgEl.src = 'EDU Practical Guide (Implementation)/Frame 90.svg';
+        bottomImgEl.style.position = 'absolute';
+        bottomImgEl.style.left = (80 * scale) + 'px';
+        bottomImgEl.style.top = (bottomSectionY * scale) + 'px';
+        bottomImgEl.style.width = (1281 * scale) + 'px';
+        bottomImgEl.style.height = (1784 * scale) + 'px';
+        bottomImgEl.style.pointerEvents = 'none';
+        bottomImgEl.style.zIndex = '10';
+        root.appendChild(bottomImgEl);
+        
+        // Add navigation buttons on top of the bottom section
+        const navButtonY = bottomSectionY + 1784 - 107 - 50; // Position near bottom of Frame 90
+        
+        // Bottom Back button
+        const bottomBackBtn = document.createElement('div');
+        bottomBackBtn.className = 'click-area' + (showDebug ? ' debug' : '');
+        bottomBackBtn.style.position = 'absolute';
+        bottomBackBtn.style.left = (69 * scale) + 'px';
+        bottomBackBtn.style.top = ((navButtonY + 56) * scale) + 'px';
+        bottomBackBtn.style.width = (142 * scale) + 'px';
+        bottomBackBtn.style.height = (56 * scale) + 'px';
+        bottomBackBtn.style.pointerEvents = 'auto';
+        bottomBackBtn.style.cursor = 'pointer';
+        bottomBackBtn.style.zIndex = '20';
+        bottomBackBtn.title = 'BACK';
+        bottomBackBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(state.index - 1); });
+        root.appendChild(bottomBackBtn);
+        
+        // Bottom Next button
+        const bottomNextBtn = document.createElement('div');
+        bottomNextBtn.className = 'click-area' + (showDebug ? ' debug' : '');
+        bottomNextBtn.style.position = 'absolute';
+        bottomNextBtn.style.left = (1207 * scale) + 'px';
+        bottomNextBtn.style.top = ((navButtonY + 56) * scale) + 'px';
+        bottomNextBtn.style.width = (182 * scale) + 'px';
+        bottomNextBtn.style.height = (56 * scale) + 'px';
+        bottomNextBtn.style.pointerEvents = 'auto';
+        bottomNextBtn.style.cursor = 'pointer';
+        bottomNextBtn.style.zIndex = '20';
+        bottomNextBtn.title = 'NEXT';
+        bottomNextBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(state.index + 1); });
+        root.appendChild(bottomNextBtn);
       }
 
       // Render accordions (if any)
