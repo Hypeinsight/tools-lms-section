@@ -10,13 +10,14 @@
     }
     html, body { margin: 0; padding: 0; background:transparent; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
     .page { display:flex; justify-content:center; padding:0; }
-    .container { position:relative; width:100%; max-width: var(--max-w); background:#F0F0F0; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
+    .container { position:relative; width:100%; max-width: var(--max-w); background:#DBE5F1; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
 
-    .component { display:none; position:relative; background:#F0F0F0; }
+    .component { display:none; position:relative; background:#DBE5F1; }
     .component.active { display:block; }
 
-    .svg-host { position:relative; width:100%; height:auto; display:block; background:#F0F0F0; }
+    .svg-host { position:relative; width:100%; height:auto; display:block; background:#DBE5F1; }
     .svg-host img { width:100%; height:auto; display:block; }
+    .svg-host.accordion-slide { min-height: 2524px; } /* Ensure minimum height for accordion slides */
 
     /* overlay root sits above the image in the svg-host */
     .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
@@ -385,7 +386,7 @@
         comp.dataset.idx = i;
 
         const host = document.createElement('div');
-        host.className = 'svg-host';
+        host.className = 'svg-host' + (c.accordions ? ' accordion-slide' : '');
 
         const img = document.createElement('img');
         img.src = c.file;
@@ -429,12 +430,12 @@
       
       // Calculate dynamic height for accordion slides (TAFE specific) BEFORE reading vb
       if (current.accordions) {
-        // For TAFE: Your SVG is just the background (2524px)
-        // We need to calculate total height = header + accordions + spacing + overview + bottom padding
+        // For TAFE: Calculate total height dynamically
         const headerHeight = 290; // Top section before accordions start
         const overviewSectionHeight = 1784; // Height of Frame 90.svg (overview section)
         const spacingAfterAccordions = 150; // Gap between accordions and overview
-        const bottomPadding = 100; // Extra padding at bottom
+        const bottomNavHeight = 200; // Height of Frame 271.svg (bottom navigation)
+        const bottomPadding = 50; // Extra padding at bottom
         
         let accordionTotalHeight = 0;
         current.accordions.forEach((acc) => {
@@ -442,12 +443,18 @@
           accordionTotalHeight += expanded ? acc.hE : acc.hC;
         });
         
-        // Dynamic height = header + all accordions + spacing + overview + padding
-        const dynamicHeight = headerHeight + accordionTotalHeight + spacingAfterAccordions + overviewSectionHeight + bottomPadding;
+        // Dynamic height = header + all accordions + spacing + overview + bottom nav + padding
+        const dynamicHeight = headerHeight + accordionTotalHeight + spacingAfterAccordions + overviewSectionHeight + bottomNavHeight + bottomPadding;
         
         // Update the component's viewBox height
         state.viewBox[idx].h = dynamicHeight;
         components[idx].viewBoxHeight = dynamicHeight;
+        
+        // Set the svg-host height dynamically to expand the background
+        const hostRect = host.getBoundingClientRect();
+        const scale = hostRect.width / (current.viewBoxWidth || 1440);
+        const dynamicHeightPx = dynamicHeight * scale;
+        host.style.height = dynamicHeightPx + 'px';
       }
       
       // NOW read the viewBox after it's been updated
@@ -474,27 +481,38 @@
         // Position the bottom section right after accordions
         const bottomSectionY = accordionsEndY + spacing;
         
-        // Render the bottom section as an overlay image
-        const bottomImgEl = document.createElement('img');
-        bottomImgEl.src = 'EDU Practical Guide (Implementation)/Frame 90.svg';
-        bottomImgEl.style.position = 'absolute';
-        bottomImgEl.style.left = (80 * scale) + 'px';
-        bottomImgEl.style.top = (bottomSectionY * scale) + 'px';
-        bottomImgEl.style.width = (1281 * scale) + 'px';
-        bottomImgEl.style.height = (1784 * scale) + 'px';
-        bottomImgEl.style.pointerEvents = 'none';
-        bottomImgEl.style.zIndex = '10';
-        root.appendChild(bottomImgEl);
+        // Render the Overview section (Frame 90)
+        const overviewImgEl = document.createElement('img');
+        overviewImgEl.src = 'EDU Practical Guide (Implementation)/Frame 90.svg';
+        overviewImgEl.style.position = 'absolute';
+        overviewImgEl.style.left = (80 * scale) + 'px';
+        overviewImgEl.style.top = (bottomSectionY * scale) + 'px';
+        overviewImgEl.style.width = (1281 * scale) + 'px';
+        overviewImgEl.style.height = (1784 * scale) + 'px';
+        overviewImgEl.style.pointerEvents = 'none';
+        overviewImgEl.style.zIndex = '10';
+        root.appendChild(overviewImgEl);
         
-        // Add navigation buttons on top of the bottom section
-        const navButtonY = bottomSectionY + 1784 - 107 - 50; // Position near bottom of Frame 90
+        // Render the bottom navigation (Frame 271) after Overview
+        const bottomNavY = bottomSectionY + 1784; // Position right after Overview
+        const bottomNavImgEl = document.createElement('img');
+        bottomNavImgEl.src = 'EDU Practical Guide (Implementation)/TAFE Implementation/Bottom buttons/Frame 271.svg';
+        bottomNavImgEl.style.position = 'absolute';
+        bottomNavImgEl.style.left = (80 * scale) + 'px';
+        bottomNavImgEl.style.top = (bottomNavY * scale) + 'px';
+        bottomNavImgEl.style.width = (1281 * scale) + 'px';
+        bottomNavImgEl.style.height = (200 * scale) + 'px'; // Estimate height, adjust if needed
+        bottomNavImgEl.style.pointerEvents = 'none';
+        bottomNavImgEl.style.zIndex = '10';
+        root.appendChild(bottomNavImgEl);
         
-        // Bottom Back button
+        // Add clickable overlays for navigation buttons on Frame 271
+        // Back button
         const bottomBackBtn = document.createElement('div');
         bottomBackBtn.className = 'click-area' + (showDebug ? ' debug' : '');
         bottomBackBtn.style.position = 'absolute';
-        bottomBackBtn.style.left = (69 * scale) + 'px';
-        bottomBackBtn.style.top = ((navButtonY + 56) * scale) + 'px';
+        bottomBackBtn.style.left = (80 * scale) + 'px';
+        bottomBackBtn.style.top = ((bottomNavY + 72) * scale) + 'px'; // Adjust based on actual button position in Frame 271
         bottomBackBtn.style.width = (142 * scale) + 'px';
         bottomBackBtn.style.height = (56 * scale) + 'px';
         bottomBackBtn.style.pointerEvents = 'auto';
@@ -504,12 +522,12 @@
         bottomBackBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(state.index - 1); });
         root.appendChild(bottomBackBtn);
         
-        // Bottom Next button
+        // Next button
         const bottomNextBtn = document.createElement('div');
         bottomNextBtn.className = 'click-area' + (showDebug ? ' debug' : '');
         bottomNextBtn.style.position = 'absolute';
-        bottomNextBtn.style.left = (1207 * scale) + 'px';
-        bottomNextBtn.style.top = ((navButtonY + 56) * scale) + 'px';
+        bottomNextBtn.style.left = (1159 * scale) + 'px'; // Adjust based on actual button position in Frame 271
+        bottomNextBtn.style.top = ((bottomNavY + 72) * scale) + 'px';
         bottomNextBtn.style.width = (182 * scale) + 'px';
         bottomNextBtn.style.height = (56 * scale) + 'px';
         bottomNextBtn.style.pointerEvents = 'auto';
