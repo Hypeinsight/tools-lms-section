@@ -390,12 +390,13 @@
         const img = document.createElement('img');
         img.src = c.file;
         img.setAttribute('aria-label', `Slide ${c.id}`);
+        img.dataset.slideIdx = i; // Store index for later reference
 
         const overlays = document.createElement('div');
         overlays.className = 'overlay-root';
 
         host.appendChild(img);
-        host.appendChild(overlays);  // Put overlays inside the svg-host
+        host.appendChild(overlays);
         comp.appendChild(host);
         container.appendChild(comp);
 
@@ -453,6 +454,19 @@
       // NOW read the viewBox after it's been updated
       const vb = state.viewBox[idx];
       if (!vb) return; // wait until we know viewbox
+
+      // Dynamically stretch the background image for accordion slides
+      if (current.accordions) {
+        const bgImg = host.querySelector('img');
+        if (bgImg) {
+          const hostRect = host.getBoundingClientRect();
+          const scale = hostRect.width / vb.w;
+          // Calculate pixel height based on dynamic viewBox height
+          const dynamicHeightPx = vb.h * scale;
+          bgImg.style.height = dynamicHeightPx + 'px';
+          bgImg.style.objectFit = 'fill'; // Stretch to fill the new height
+        }
+      }
 
       // Dynamically position bottom section on slide 3 (TAFE specific)
       if (idx === 2 && current.accordions) {
