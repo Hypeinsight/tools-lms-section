@@ -422,21 +422,19 @@
       if (!compEl) return;
       const root = compEl.querySelector('.overlay-root');
       root.innerHTML = '';
-      const vb = state.viewBox[idx];
-      if (!vb) return; // wait until we know viewbox
-
+      
       const showDebug = debugToolActive;
-
       const host = compEl.querySelector('.svg-host');
-
       const current = components[idx];
       
-      // Calculate dynamic height for accordion slides (TAFE specific)
+      // Calculate dynamic height for accordion slides (TAFE specific) BEFORE reading vb
       if (current.accordions) {
-        // For TAFE: base height includes header + bottom section, we adjust for accordion expansion
-        const baseSlideHeight = 2524; // TAFE slide height (collapsed state)
-        const headerHeight = 290; // Top section before accordions
-        const bottomSectionHeight = 1800; // Approximate height of "Overview" section + nav buttons at bottom
+        // For TAFE: Your SVG is just the background (2524px)
+        // We need to calculate total height = header + accordions + spacing + overview + bottom padding
+        const headerHeight = 290; // Top section before accordions start
+        const overviewSectionHeight = 1784; // Height of Frame 90.svg (overview section)
+        const spacingAfterAccordions = 150; // Gap between accordions and overview
+        const bottomPadding = 100; // Extra padding at bottom
         
         let accordionTotalHeight = 0;
         current.accordions.forEach((acc) => {
@@ -444,13 +442,17 @@
           accordionTotalHeight += expanded ? acc.hE : acc.hC;
         });
         
-        // Dynamic height = header + accordions + bottom section
-        const dynamicHeight = headerHeight + accordionTotalHeight + bottomSectionHeight;
+        // Dynamic height = header + all accordions + spacing + overview + padding
+        const dynamicHeight = headerHeight + accordionTotalHeight + spacingAfterAccordions + overviewSectionHeight + bottomPadding;
         
         // Update the component's viewBox height
         state.viewBox[idx].h = dynamicHeight;
         components[idx].viewBoxHeight = dynamicHeight;
       }
+      
+      // NOW read the viewBox after it's been updated
+      const vb = state.viewBox[idx];
+      if (!vb) return; // wait until we know viewbox
 
       // Dynamically position bottom section on slide 3 (TAFE specific)
       if (idx === 2 && current.accordions) {
