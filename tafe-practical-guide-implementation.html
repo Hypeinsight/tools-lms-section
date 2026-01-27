@@ -696,10 +696,17 @@
     
     function notifyParentHeight() {
       if (window.parent !== window) {
-        const currentHeight = components[state.index].viewBoxHeight;
+        // Get actual rendered height of the container to account for all content
+        const actualHeight = Math.max(
+          components[state.index].viewBoxHeight,
+          container.offsetHeight,
+          container.scrollHeight
+        );
+        // Add 100px padding to ensure bottom content isn't cut off
+        const paddedHeight = actualHeight + 100;
         window.parent.postMessage({ 
           action: 'resizeIframe', 
-          height: currentHeight 
+          height: paddedHeight 
         }, '*');
       }
     }
