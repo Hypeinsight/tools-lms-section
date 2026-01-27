@@ -60,6 +60,10 @@
       background: white;
     }
   </style>
+  
+  <!-- Start of HubSpot Embed Code -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/20832146.js"></script>
+  <!-- End of HubSpot Embed Code -->
 </head>
 <body>
   <div class="page">
@@ -81,6 +85,50 @@
      * TAFE Practical Guide Implementation
      * Using RMIT accordion rendering approach
      */
+
+    // HubSpot tracking state
+    const trackingState = {
+      toolsClicked: 0,
+      accordionsOpened: 0,
+      showMeClicked: 0,
+      highestSlideViewed: 1
+    };
+
+    // HubSpot tracking functions
+    function updateHubSpotProperty(propertyName, value) {
+      if (typeof window._hsq !== 'undefined') {
+        const properties = {};
+        properties[propertyName] = value;
+        window._hsq.push(['identify', properties]);
+      }
+    }
+
+    function trackSlideView(slideNumber) {
+      if (slideNumber > trackingState.highestSlideViewed) {
+        trackingState.highestSlideViewed = slideNumber;
+        updateHubSpotProperty('tafensw_implementation_last_slide_viewed', slideNumber);
+      }
+    }
+
+    function trackToolClick() {
+      trackingState.toolsClicked++;
+      updateHubSpotProperty('tafensw_implementation_tools_clicked', trackingState.toolsClicked);
+    }
+
+    function trackAccordionOpen() {
+      trackingState.accordionsOpened++;
+      updateHubSpotProperty('tafensw_implementation_accordions_opened', trackingState.accordionsOpened);
+    }
+
+    function trackShowMeClick() {
+      trackingState.showMeClicked++;
+      updateHubSpotProperty('tafensw_implementation_show_me_clicked', trackingState.showMeClicked);
+    }
+
+    function trackImplementationComplete() {
+      updateHubSpotProperty('tafensw_implementation_completed', 'true');
+      updateHubSpotProperty('tafensw_implementation_completion_date', new Date().toISOString());
+    }
 
     const container = document.querySelector('.container');
 
@@ -549,6 +597,10 @@
               e.stopPropagation();
               if (!state.accordion[idx]) state.accordion[idx] = {};
               state.accordion[idx][accordionId] = !currentExpanded;
+              // Track accordion open (not close)
+              if (!currentExpanded) {
+                trackAccordionOpen();
+              }
               renderOverlays(idx);
               notifyParentHeight();
             };
@@ -574,6 +626,10 @@
                 linkEl.style.background = 'rgba(0, 255, 0, 0.2)';
                 linkEl.style.border = '1px solid green';
               }
+              // Track tool clicks
+              linkEl.addEventListener('click', () => {
+                trackToolClick();
+              });
               root.appendChild(linkEl);
             });
           }
@@ -635,8 +691,13 @@
       } else if (o.action === 'back') {
         goTo(state.index - 1);
       } else if (o.action === 'url' && o.url) {
+        // Track tool link clicks (if it's a tafensw.buildingtools.co link)
+        if (o.url.includes('tafensw.buildingtools.co')) {
+          trackToolClick();
+        }
         window.open(o.url, '_blank', 'noopener');
       } else if (o.action === 'video' && o.src) {
+        trackShowMeClick();
         showVideoModal(o.src);
       } else {
         console.log('Unhandled action:', o);
@@ -683,6 +744,14 @@
       
       // ensure overlays re-render
       if (state.viewBox[clamped]) renderOverlays(clamped);
+      
+      // Track slide view
+      trackSlideView(clamped + 1);
+      
+      // Check if user reached the last slide
+      if (clamped === max) {
+        trackImplementationComplete();
+      }
       
       // Notify parent window of new height
       notifyParentHeight();
@@ -881,6 +950,8 @@
     // Notify parent of initial height after DOM is ready
     window.addEventListener('load', () => {
       notifyParentHeight();
+      // Track initial slide view
+      trackSlideView(1);
     });
     
     // Display help message on load

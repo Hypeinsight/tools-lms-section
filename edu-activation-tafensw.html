@@ -76,6 +76,10 @@
     .faq-answer-content { padding: 0 30px 24px 30px; font-size: 16px; line-height: 1.7; color: #4B5563; }
     .faq-item:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); }
   </style>
+  
+  <!-- Start of HubSpot Embed Code -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/20832146.js"></script>
+  <!-- End of HubSpot Embed Code -->
 </head>
 <body>
   <div class="page">
@@ -99,6 +103,52 @@
   </div>
 
   <script>
+    // HubSpot tracking state
+    const trackingState = {
+      videosWatched: 0,
+      showMeClicked: 0,
+      signupClicked: false,
+      highestSlideViewed: 1
+    };
+
+    // HubSpot tracking functions
+    function updateHubSpotProperty(propertyName, value) {
+      if (typeof window._hsq !== 'undefined') {
+        const properties = {};
+        properties[propertyName] = value;
+        window._hsq.push(['identify', properties]);
+      }
+    }
+
+    function trackSlideView(slideNumber) {
+      if (slideNumber > trackingState.highestSlideViewed) {
+        trackingState.highestSlideViewed = slideNumber;
+        updateHubSpotProperty('tafensw_activation_last_slide_viewed', slideNumber);
+      }
+    }
+
+    function trackVideoWatch() {
+      trackingState.videosWatched++;
+      updateHubSpotProperty('tafensw_activation_videos_watched', trackingState.videosWatched);
+    }
+
+    function trackShowMeClick() {
+      trackingState.showMeClicked++;
+      updateHubSpotProperty('tafensw_activation_show_me_clicked', trackingState.showMeClicked);
+    }
+
+    function trackSignupClick() {
+      if (!trackingState.signupClicked) {
+        trackingState.signupClicked = true;
+        updateHubSpotProperty('tafensw_activation_signup_clicked', 'true');
+      }
+    }
+
+    function trackActivationComplete() {
+      updateHubSpotProperty('tafensw_activation_completed', 'true');
+      updateHubSpotProperty('tafensw_activation_completion_date', new Date().toISOString());
+    }
+
     const components = [
       // Slide 1 - Transform Student Learning
       {
@@ -491,10 +541,15 @@
       } else if (o.action === 'back') {
         goTo(state.index - 1, 'button');
       } else if (o.action === 'url' && o.url) {
+        // Track signup clicks (slide 3)
+        if (o.url.includes('signup')) {
+          trackSignupClick();
+        }
         window.open(o.url, '_blank', 'noopener');
       } else if (o.action === 'image' && o.src) {
         showImageModal(o.src);
       } else if (o.action === 'video' && o.src) {
+        trackShowMeClick();
         showVideoModal(o.src);
       } else {
         console.log('Unhandled action:', o);
@@ -532,6 +587,12 @@
       source.src = src;
       video.load();
       modal.classList.add('active');
+      
+      // Track when video actually starts playing
+      video.addEventListener('play', function trackPlay() {
+        trackVideoWatch();
+        video.removeEventListener('play', trackPlay);
+      }, { once: true });
     }
 
     function closeVideoModal() {
@@ -553,6 +614,14 @@
       state.index = clamped;
       
       if (state.viewBox[clamped]) renderOverlays(clamped);
+      
+      // Track slide view
+      trackSlideView(clamped + 1);
+      
+      // Check if user reached the last slide
+      if (clamped === max) {
+        trackActivationComplete();
+      }
       
       // Notify parent window of new height
       notifyParentHeight();
@@ -619,6 +688,8 @@
     // Notify parent of initial height after DOM is ready
     window.addEventListener('load', () => {
       notifyParentHeight();
+      // Track initial slide view
+      trackSlideView(1);
     });
   </script>
 </body>
