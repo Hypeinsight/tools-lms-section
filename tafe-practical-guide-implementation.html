@@ -59,67 +59,6 @@
     .video-modal .close-button:hover {
       background: white;
     }
-    
-    /* Debug Tool */
-    #debugToolButton {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-      background: rgba(20, 130, 255, 0.9);
-      border: 2px solid white;
-      border-radius: 8px;
-      color: white;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 100000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      transition: all 0.2s;
-    }
-    #debugToolButton:hover {
-      background: rgba(20, 130, 255, 1);
-      transform: scale(1.05);
-    }
-    #debugToolButton.active {
-      background: rgba(191, 224, 2, 0.9);
-    }
-    .debug-selection {
-      position: fixed;
-      border: 2px dashed rgba(20, 130, 255, 0.8);
-      background: rgba(20, 130, 255, 0.15);
-      pointer-events: none;
-      z-index: 99998;
-    }
-    #debugInfo {
-      position: fixed;
-      bottom: 80px;
-      left: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      max-width: 400px;
-      z-index: 100001;
-      display: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    }
-    #debugInfo.active {
-      display: block;
-    }
-    #debugInfo .coord-line {
-      margin: 3px 0;
-    }
-    #debugInfo .coord-label {
-      color: #BFE002;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
@@ -135,15 +74,6 @@
     <video id="modalVideo" controls style="max-width: 90%; max-height: 90vh; border-radius: 8px;">
       <source id="modalVideoSource" src="" type="video/mp4" />
     </video>
-  </div>
-
-  <!-- Debug Tool Button -->
-  <button id="debugToolButton" title="Toggle Debug Tool">🎯</button>
-  
-  <!-- Debug Info Display -->
-  <div id="debugInfo">
-    <div style="font-weight: bold; margin-bottom: 10px; color: #BFE002;">🎯 DEBUG TOOL</div>
-    <div id="debugInfoContent">Drag to select an area...</div>
   </div>
 
   <script>
@@ -177,7 +107,7 @@
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
           { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/Module%201%20-%20Compres%20Tools%20to%20NCC%20AS.mp4", x: 1214, y: 220, w: 166, h: 48 },
-          { action: "url", url: "https://buildingtools.co/r/QanA9p?click=t&type=1", x: 176.734, y: 585, w: 148.61, h: 24 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/stairs-handrails-balustrades-accessibility-ncc2022.2-1.1?point=54b291fa-05a3-432b-a52a-5ff6405b38ae&shareId=ch6ODI-1761100259668&standard=&zoom=3.616527535033817&x=601.6708508255155&y=408.41595882642747&action=click&type=1", x: 176.734, y: 585, w: 148.61, h: 24 },
           { action: "url", url: "https://ncc.abcb.gov.au/editions/ncc-2022/adopted/housing-provisions/11-safe-movement-and-access/part-112-stairway-and-ramp-construction", x: 366.359, y: 661, w: 196.633, h: 24 },
           { action: "back", x: 60, y: 823, w: 142, h: 56 },
           { action: "next", x: 1199, y: 823, w: 181, h: 56 }
@@ -269,7 +199,7 @@
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
           { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/Playlists.webm", x: 1214, y: 220, w: 166, h: 48 },
-          { action: "gif", url: "EDU Practical Guide (Implementation)/GIF/image (9).gif", x: 748, y: 338, w: 632, h: 487 },
+          { action: "gif", url: "EDU Practical Guide (Implementation)/GIF/image (9).gif", x: 755, y: 345, w: 618, h: 473 },
           { action: "back", x: 60, y: 926, w: 142, h: 56 },
           { action: "next", x: 1199, y: 926, w: 181, h: 56 }
         ]
@@ -321,8 +251,8 @@
           { action: "url", url: "https://tafensw.buildingtools.co/tools/waterproofing-external-waterproofing-overview-ncc2022.2-1.3?menu_id=9-1-0&shareId=ch6ODI-1761099674449&zoom=2.4098450001880827&x=542.9517578029951&y=261.4928632361109&standard=&standard=&action=click&action=click&type=0&type=0", x: 397.5, y: 176.026, w: 200, h: 6.693 },
           { action: "url", url: "https://tafensw.buildingtools.co/tools/waterproofing-cavity-slide-door-waterstop-angle-ncc2022.2-1.15?v=1767834450170&shareId=ch6ODI-1767832874197&zoom=1.636000432269329&menu_id=9-2-5-0&x=370.727375430393&y=378.06025650011753&point=d498491b-70c4-4512-92c2-a39f157e1bbf&standard=&action=click&type=0", x: 733.5, y: 442.407, w: 273, h: 3.346 },
           { action: "url", url: "https://tafensw.buildingtools.co/tools/waterproofing-film-thickness-test-location-points-ncc2022.2-1.5?x=485.91793669790576&y=286.77264394057755&zoom=1.9348422312430922&shareId=ch6ODI-1760938191433&menu_id=9-3-2&standard=&action=click&type=0", x: 199.5, y: 707.449, w: 149, h: 6.693 },
-          { action: "back", x: 60, y: 901, w: 142, h: 56 },
-          { action: "next", x: 1198, y: 901, w: 182, h: 56 }
+          { action: "back", x: 32.5, y: 975.169, w: 149, h: 21.752 },
+          { action: "next", x: 1176.5, y: 975.503, w: 179, h: 19.410 }
         ]
       },
       // Slide 9 - Student Presentation
@@ -335,10 +265,9 @@
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
           { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/8%20Student%20Presentation.webm", x: 1214, y: 220, w: 166, h: 48 },
-          { action: "url", url: "https://tafensw.buildingtools.co/tools/site-works-pool-safety-fence-gate?v=1&menu_id=5-6&shareId=ch6ODI-1761100718604&zoom=2.1048519522998363&x=495.0831070206157&y=310.2727794476419", x: 118, y: 570, w: 45.094, h: 48 },
-          { action: "url", url: "https://buildingtools.co/r/sJq2L6?click=t&type=0", x: 167.547, y: 598, w: 85.422, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/sJq2L6?click=t&type=0", x: 934, y: 258, w: 42, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/HVkThH?click=t&type=0", x: 261.875, y: 598, w: 89.867, h: 20 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/site-works-pool-safety-fence-gate?v=1&menu_id=5-6&shareId=ch6ODI-1761100718604&zoom=2.1048519522998363&x=495.0831070206157&y=310.2727794476419", x: 116, y: 566.228, w: 87, h: 11.401 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/site-works-pool-safety-gate-ncc2022.2-1.3?v=1767064939224&shareId=ch6ODI-1761100718604&zoom=1.1449&menu_id=5-6&x=557.9232605022563&y=202.06341738249495&standard=&action=click&type=0", x: 207, y: 564.327, w: 87, h: 12.351 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/site-works-pool-safety-fence-ncc2022.2-1.5?v=1767064970623&shareId=ch6ODI-1761100718604&zoom=1.3107960100000002&menu_id=5-6&x=579.4681031284093&y=247.4832047635549&standard=&action=click&type=0", x: 299, y: 565.278, w: 90, h: 12.351 },
           { action: "back", x: 60, y: 911, w: 142, h: 56 },
           { action: "next", x: 1198, y: 911, w: 182, h: 56 }
         ]
@@ -366,15 +295,16 @@
         viewBoxWidth: 1440,
         viewBoxHeight: 1017,
         overlays: [
-          { action: "back", x: 101, y: 80, w: 50, h: 50 },
-          { action: "next", x: 1293, y: 80, w: 50, h: 50 },
-          { action: "url", url: "https://buildingtools.co/r/9cirGa?click=t&type=0", x: 205.203, y: 504, w: 142.594, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/Q9hPDG?click=t&type=0", x: 210.164, y: 542, w: 116.969, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/KwdAG2?click=t&type=0", x: 265.484, y: 580, w: 163.735, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/6tgg0a?click=t&type=0", x: 400.75, y: 608, w: 36.469, h: 20 },
-          { action: "url", url: "https://buildingtools.co/r/1h41LS?click=t&type=1", x: 382.391, y: 674, w: 72.078, h: 20 },
-          { action: "back", x: 60, y: 901, w: 142, h: 56 },
-          { action: "next", x: 1198, y: 901, w: 182, h: 56 }
+          { action: "back", x: 97, y: 58.504, w: 52, h: 40.872 },
+          { action: "next", x: 1288, y: 60.106, w: 61, h: 43.277 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/Module%2010%20-%20Safety.mp4", x: 1215, y: 175.511, w: 167, h: 39.270 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/safety-overview-eliminate-falls-risk-ncc2022.2-1.2?menu_id=5-0&shareId=ch6ODI-1760939760336&zoom=1.8384592124201555&x=256.50634033786724&y=160.63131362309363&standard=&action=click&type=0&standard=&action=click&type=0", x: 204, y: 395.901, w: 146, h: 16.830 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/safety-overview-eliminate-falls-risk-ncc2022.2-1.2?menu_id=5-0&shareId=ch6ODI-1760939760336&zoom=1.718186179831921&x=690.7910227361785&y=342.34938846540183&standard=&standard=&action=click&action=click&type=0&type=0", x: 201, y: 427.957, w: 127, h: 14.426 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/safety-overview-eliminate-falls-risk-ncc2022.2-1.2?menu_id=5-0&shareId=ch6ODI-1760939760336&zoom=2.252191588960825&x=516.0388093943355&y=479.79640486986284&standard=&action=click&type=0&standard=&action=click&type=0", x: 267, y: 464.021, w: 159, h: 8.014 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/safety-overview-ppe-falls-risk-ncc2022.2-1.11?r=1&x=553.5191071015145&y=240.21599730372742&zoom=1&shareId=ch6ODI-1760939760336&standard=,&menu_id=5-0&standard=&action=click&type=0", x: 396, y: 483.255, w: 36, h: 15.227 },
+          { action: "url", url: "https://tafensw.buildingtools.co/tools/safety-overview-eliminate-exposure-risk-ncc2022.2-1.3?point=ed3d0eb3-429d-4a5a-8132-288c9d04203d&shareId=ch6ODI-1760939760336&standard=&zoom=2.1048519522998363&x=817.2833008898259&y=253.90880842957762&action=click&type=1", x: 382, y: 536.950, w: 70, h: 20.035 },
+          { action: "back", x: 52, y: 924.035, w: 153, h: 43.277 },
+          { action: "next", x: 1184, y: 920.830, w: 198, h: 48.085 }
         ]
       },
       // Slide 12 - Critical Thinking
@@ -384,11 +314,11 @@
         viewBoxWidth: 1440,
         viewBoxHeight: 1017,
         overlays: [
-          { action: "back", x: 101, y: 80, w: 50, h: 50 },
-          { action: "next", x: 1293, y: 80, w: 50, h: 50 },
-          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/11%20Critical%20thinking.webm", x: 1214, y: 220, w: 166, h: 48 },
-          { action: "back", x: 60, y: 901, w: 142, h: 56 },
-          { action: "next", x: 1198, y: 901, w: 182, h: 56 }
+          { action: "back", x: 92.5, y: 54.835, w: 58, h: 38.019 },
+          { action: "next", x: 1285.5, y: 57.028, w: 61, h: 37.288 },
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/11%20Critical%20thinking.webm", x: 1215.5, y: 157.924, w: 168, h: 41.674 },
+          { action: "back", x: 52.5, y: 945.349, w: 152, h: 40.212 },
+          { action: "next", x: 1149.5, y: 939.500, w: 235, h: 44.599 }
         ]
       },
       // Slide 13 - All set
@@ -398,7 +328,8 @@
         viewBoxWidth: 1440,
         viewBoxHeight: 1033,
         overlays: [
-          { action: "back", x: 101, y: 80, w: 50, h: 50 },
+          { action: "back", x: 91, y: 105.117, w: 57, h: 60.994 },
+          { action: "url", url: "https://tafensw.buildingtools.co", x: 615, y: 669.633, w: 205, h: 76.567 },
           { action: "back", x: 60, y: 917, w: 142, h: 56 }
         ]
       }
