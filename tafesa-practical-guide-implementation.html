@@ -59,6 +59,64 @@
     .video-modal .close-button:hover {
       background: white;
     }
+    
+    /* Debug Tool */
+    .debug-tool {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 100000;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .debug-tool button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(20, 130, 255, 0.9);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s;
+    }
+    .debug-tool button:hover {
+      background: rgba(20, 130, 255, 1);
+      transform: scale(1.1);
+    }
+    .debug-tool button.active {
+      background: rgba(191, 224, 2, 0.9);
+    }
+    .debug-info {
+      display: none;
+      background: rgba(37, 45, 54, 0.95);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      min-width: 200px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .debug-info.active {
+      display: block;
+    }
+    .coord-line {
+      margin: 3px 0;
+    }
+    .coord-label {
+      color: #BFE002;
+      font-weight: bold;
+    }
+    .debug-selection {
+      position: fixed;
+      border: 2px solid #BFE002;
+      background: rgba(191, 224, 2, 0.1);
+      pointer-events: none;
+      z-index: 99998;
+    }
   </style>
   
   <!-- Start of HubSpot Embed Code -->
@@ -78,6 +136,14 @@
     <video id="modalVideo" controls style="max-width: 90%; max-height: 90vh; border-radius: 8px;">
       <source id="modalVideoSource" src="" type="video/mp4" />
     </video>
+  </div>
+
+  <!-- Debug Tool -->
+  <div class="debug-tool">
+    <button id="debugToolButton" title="Toggle Debug Mode">🎯</button>
+    <div class="debug-info" id="debugInfo">
+      <div id="debugInfoContent">Drag to select an area...</div>
+    </div>
   </div>
 
   <script>
