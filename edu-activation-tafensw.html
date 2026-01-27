@@ -128,8 +128,14 @@
           { action: "back", x: 60, y: 3583, w: 142, h: 56 },
           { action: "next", x: 980, y: 3583, w: 400, h: 56 }
         ],
+        covers: [
+          { x: 199, y: 1570, w: 1042, h: 625 }
+        ],
         videos: [
           { src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/EDU%20Intro%20V3%20(2)%20(1).mp4", x: 561, y: 328, w: 769, h: 409 }
+        ],
+        iframes: [
+          { src: "https://tafensw.buildingtools.co/tools/stairs-handrails-balustrades-accessibility-ncc2022.2-1.2?menu_id=0-8-2&zoom=1.5007303518490005&shareId=FmGcYD-1768875608365&x=575.3410777927407&y=293.80087811614015&standard=&action=click&type=0&chromeless=true", x: 199, y: 1570, w: 1042, h: 625 }
         ]
       },
       // Slide 3 - TafeNSW Specific
@@ -394,6 +400,24 @@
           videoEl.appendChild(source);
           
           root.appendChild(videoEl);
+        });
+      }
+
+      // Render iframes
+      if (components[idx].iframes) {
+        components[idx].iframes.forEach((iframe) => {
+          const iframeEl = document.createElement('iframe');
+          iframeEl.className = 'video-embed';
+          iframeEl.src = iframe.src;
+          iframeEl.style.left = (iframe.x / vb.w) * 100 + '%';
+          iframeEl.style.top = (iframe.y / vb.h) * 100 + '%';
+          iframeEl.style.width = (iframe.w / vb.w) * 100 + '%';
+          iframeEl.style.height = (iframe.h / vb.h) * 100 + '%';
+          iframeEl.style.border = 'none';
+          iframeEl.setAttribute('frameborder', '0');
+          iframeEl.setAttribute('scrolling', 'no');
+          
+          root.appendChild(iframeEl);
         });
       }
 
