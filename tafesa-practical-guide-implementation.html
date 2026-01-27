@@ -170,7 +170,9 @@
         overlays: [
           { action: "back", x: 101, y: 80, w: 50, h: 50 },
           { action: "next", x: 1293, y: 80, w: 50, h: 50 },
-          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/2.%20Foundational%20Tools.webm", x: 1214.5, y: 216, w: 164, h: 46 }
+          { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/11%20Ways/2.%20Foundational%20Tools.webm", x: 1214.5, y: 216, w: 164, h: 46 },
+          { action: "back", x: 60, y: 2374, w: 142, h: 56, dynamicY: true },
+          { action: "next", x: 1169, y: 2374, w: 211, h: 56, dynamicY: true }
         ],
         accordions: [
           { id: 'acc1', collapsed: "EDU Practical Guide (Implementation)/Accordion/1 - Construction Basics Collapsed.svg", expanded: "EDU Practical Guide (Implementation)/Accordion/1 - Construction Basics Open.svg", y: 290, hC: 62, hE: 417,
@@ -664,7 +666,22 @@
         
         // Convert SVG coordinates to percentage based on viewBox
         let leftPct = (o.x / vb.w) * 100;
-        const topPct = (o.y / vb.h) * 100;
+        let yPos = o.y;
+        
+        // For dynamic Y buttons on accordion slides, calculate position based on current accordion state
+        if (o.dynamicY && current.accordions) {
+          // Calculate total offset from expanded accordions
+          let totalOffset = 0;
+          current.accordions.forEach((acc) => {
+            const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
+            if (expanded) {
+              totalOffset += (acc.hE - acc.hC);
+            }
+          });
+          yPos = o.y + totalOffset;
+        }
+        
+        const topPct = (yPos / vb.h) * 100;
         let widthPct = (o.w / vb.w) * 100;
         const heightPct = (o.h / vb.h) * 100;
         
