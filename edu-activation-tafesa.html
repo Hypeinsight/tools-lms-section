@@ -525,6 +525,14 @@
           itemEl.appendChild(answerEl);
           
           itemEl.addEventListener('click', () => {
+            // Close all other FAQ items
+            const allFaqItems = faqContainer.querySelectorAll('.faq-item');
+            allFaqItems.forEach(otherItem => {
+              if (otherItem !== itemEl) {
+                otherItem.classList.remove('active');
+              }
+            });
+            // Toggle the clicked item
             itemEl.classList.toggle('active');
           });
           
