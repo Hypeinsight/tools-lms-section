@@ -1,0 +1,685 @@
+<div class="tafe-implementation-module">
+  <div class="page">
+    <div class="container" id="container-{{ name }}">
+      <!-- Components injected by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div class="video-modal" id="videoModal-{{ name }}">
+    <button class="close-button" id="closeVideoModal-{{ name }}">&times;</button>
+    <video id="modalVideo-{{ name }}" controls style="max-width: 90%; max-height: 90vh; border-radius: 8px;">
+      <source id="modalVideoSource-{{ name }}" src="" type="video/mp4" />
+    </video>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  const moduleId = '{{ name }}';
+  const container = document.getElementById('container-' + moduleId);
+  
+  // Module configuration from HubSpot fields
+  const moduleConfig = {
+    trackingPrefix: '{{ module.institution_settings.tracking_prefix }}',
+    baseUrl: '{{ module.institution_settings.base_url }}',
+    slides: [
+      {
+        id: 1,
+        file: '{{ module.slide_1.svg_path }}',
+        viewBoxWidth: {{ module.slide_1.viewbox_width }},
+        viewBoxHeight: {{ module.slide_1.viewbox_height }},
+        overlays: [
+          { action: 'next', x: 1293, y: 80, w: 50, h: 50 },
+          { action: 'next', x: 156, y: 659, w: 174, h: 52 },
+          { action: 'next', x: 1173, y: 1133, w: 207, h: 56 }
+        ]
+      },
+      {
+        id: 2,
+        file: '{{ module.slide_2.svg_path }}',
+        viewBoxWidth: {{ module.slide_2.viewbox_width }},
+        viewBoxHeight: {{ module.slide_2.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 101, y: 80, w: 50, h: 50 },
+          { action: 'next', x: 1293, y: 80, w: 50, h: 50 },
+          { action: 'video', src: '{{ module.slide_2.video_url }}', x: 1214, y: 220, w: 166, h: 48 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/stairs-handrails-balustrades-accessibility-ncc2022.2-1.1?point=54b291fa-05a3-432b-a52a-5ff6405b38ae&shareId=ch6ODI-1761100259668&standard=&zoom=3.616527535033817&x=601.6708508255155&y=408.41595882642747&action=click&type=1', x: 176.734, y: 585, w: 148.61, h: 24 },
+          { action: 'url', url: 'https://ncc.abcb.gov.au/editions/ncc-2022/adopted/housing-provisions/11-safe-movement-and-access/part-112-stairway-and-ramp-construction', x: 366.359, y: 661, w: 196.633, h: 24 },
+          { action: 'back', x: 60, y: 823, w: 142, h: 56 },
+          { action: 'next', x: 1199, y: 823, w: 181, h: 56 }
+        ]
+      },
+      {
+        id: 3,
+        file: '{{ module.slide_3.svg_path }}',
+        viewBoxWidth: {{ module.slide_3.viewbox_width }},
+        viewBoxHeight: {{ module.slide_3.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 101, y: 80, w: 50, h: 50 },
+          { action: 'next', x: 1293, y: 80, w: 50, h: 50 },
+          { action: 'video', src: '{{ module.slide_3.video_url }}', x: 1214.5, y: 216, w: 164, h: 46 },
+          { action: 'back', x: 80.5, y: 2755, w: 138, h: 56, dynamicY: true },
+          { action: 'next', x: 1181.5, y: 2750, w: 179, h: 62, dynamicY: true }
+        ],
+        accordions: [
+          { id: 'acc1', collapsed: '{{ module.slide_3.accordion_1_collapsed }}', expanded: '{{ module.slide_3.accordion_1_expanded }}', y: 290, hC: 62, hE: 417,
+            links: [
+              { url: moduleConfig.baseUrl + '/tools/skills-abc-of-building-construction-ncc2022.2-1.3?menu_id=10-1-0&shareId=ch6ODI-1766983736919&zoom=0.9345794392523364&x=487.68909367943223&y=277.27691864293587&standard=&action=click&type=0', x: 8, y: 339.531, w: 112.992, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/skills-whos-who-building-zoo-developer-owner-ncc2022.2-1.21?r=1&x=509.857985606684&y=234.04643013822002&zoom=1.1449&shareId=ch6ODI-1766983736919&menu_id=10-1-11&standard=&action=click&type=0', x: 443, y: 339.531, w: 179.078, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/skills-ncc-compliance-overview-build-right-ncc2022.2-1.1?menu_id=10-1-2&shareId=ch6ODI-1766983736919&zoom=1.6057814764784306&x=526.9181106276394&y=431.8785599789935&point=a024f212-ce4f-465b-be3a-7ee8ad71b327&standard=&action=click&type=0', x: 878, y: 339.531, w: 135.23, h: 18 }
+            ]
+          },
+          { id: 'acc2', collapsed: '{{ module.slide_3.accordion_2_collapsed }}', expanded: '{{ module.slide_3.accordion_2_expanded }}', y: 362, hC: 62, hE: 417,
+            links: [
+              { url: moduleConfig.baseUrl + '/tools/ncc-bca-building-classification-ncc2022-1.4?menu_id=10-0-0&shareId=ch6ODI-1766983736919&zoom=1.07&x=470.1127355439253&y=272.3830200186916&standard=&action=click&type=0', x: 8, y: 317.531, w: 138.844, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/skills-fire-resistance-science-ncc2022.2-1.2?x=290.99456790839486&y=307.24849066011535&zoom=0.7503651759245002&shareId=ch6ODI-1766983736919&menu_id=10-3-2&standard=&action=click&type=0', x: 443, y: 317.531, w: 109, h: 18 }
+            ]
+          },
+          { id: 'acc3', collapsed: '{{ module.slide_3.accordion_3_collapsed }}', expanded: '{{ module.slide_3.accordion_3_expanded }}', y: 434, hC: 62, hE: 417,
+            links: [
+              { url: moduleConfig.baseUrl + '/tools/ncc-bca-building-classification-ncc2022-1.4?menu_id=10-0-0&shareId=ch6ODI-1766983736919&zoom=1.07&x=470.1127355439253&y=272.3830200186916&standard=&action=click&type=0', x: 8, y: 337.531, w: 177.953, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/skills-designer-construction-set-out-ncc2022.2-1.10?menu_id=10-0-1&shareId=ch6ODI-1766983736919&zoom=1.5007303518490005&x=158.42309947685015&y=328.18551986939093&standard=&action=click&type=0', x: 443, y: 337.531, w: 100, h: 18 }
+            ]
+          },
+          { id: 'acc4', collapsed: '{{ module.slide_3.accordion_4_collapsed }}', expanded: '{{ module.slide_3.accordion_4_expanded }}', y: 506, hC: 62, hE: 417,
+            links: [
+              { url: moduleConfig.baseUrl + '/tools/services-plumbing-overview-ncc2022.2-1.7?menu_id=6-4-0&shareId=ch6ODI-1767061462569&zoom=1.4025517307000004&x=533.7488731200478&y=312.0087601678406&standard=&action=click&type=0', x: 8, y: 337.531, w: 153.938, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/hot-water-service-ncc2022.2-1.7?v=1767061873557&shareId=ch6ODI-1767061462569&zoom=0.9345794392523364&menu_id=6-4-0&x=445.37797015287833&y=311.4518705626312&standard=&action=click&type=0', x: 443, y: 337.531, w: 135.266, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/services-plumbing-sanitary-floor-waste-gully-fwg-ncc2022.2-1.0?menu_id=6-4-2&shareId=ch6ODI-1767061462569&zoom=1.07&x=489.3701400440726&y=310.82728075525284&standard=&action=click&type=0', x: 878, y: 337.531, w: 140.88, h: 18 }
+            ]
+          },
+          { id: 'acc5', collapsed: '{{ module.slide_3.accordion_5_collapsed }}', expanded: '{{ module.slide_3.accordion_5_expanded }}', y: 578, hC: 62, hE: 717,
+            links: [
+              { url: moduleConfig.baseUrl + '/tools/structure-framing-overview-timber-ncc2022.2-1.16?zoom=1.1449&shareId=ch6ODI-1767061462569&menu_id=8-3-0&x=521.2178444254037&y=283.3007067635197&standard=&action=click&type=0', x: 8, y: 337.531, w: 194.594, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/structure-timber-balconies-decks-ncc2022.2-1.10?menu_id=8-3-1&shareId=ch6ODI-1767061462569&zoom=1.3107960100000002&x=426.82889203691633&y=287.85782435940337&standard=&action=click&type=0', x: 443, y: 337.531, w: 143.312, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/structure-timber-wall-framing-ncc2022.2-1.9?v=1767063437398&shareId=ch6ODI-1767061462569&zoom=1.1449&menu_id=8-3-8&x=328.2583383360814&y=286.27975152405344&standard=&action=click&type=0', x: 878, y: 337.531, w: 156.31, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/structure-timber-girder-saddle-truss-ncc2022.2-1.0?menu_id=8-3-3&shareId=ch6ODI-1767061462569&zoom=1.225043&x=517.2776215098921&y=267.94657116752524&standard=&action=click&type=0', x: 8, y: 664.531, w: 168.203, h: 18 }
+            ]
+          },
+          { id: 'acc6', collapsed: '{{ module.slide_3.accordion_6_collapsed }}', expanded: '{{ module.slide_3.accordion_6_expanded }}', y: 650, hC: 62, hE: 417,
+            links: [
+              { url: moduleConfig.baseUrl + '/tools/wet-area-bathroom-electrical-safety-ncc2022.2-1.26?point=dd51959e-d7a6-4e25-a4e7-1fb86fcbc04a&shareId=ch6ODI-1767061462569&standard=&zoom=2.5785341502012487&x=412.43253055204093&y=279.2656544948571&action=click&type=1', x: 8, y: 345.531, w: 144.188, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/services-aerial-wiring-clearance-insulated-ncc2022.2-1.1?menu_id=6-0-0&shareId=ch6ODI-1767061462569&zoom=1.576439032602215&x=500.90786776856737&y=413.78667889763096&standard=&action=click&type=0', x: 443, y: 345.531, w: 183.391, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/services-electrical-meter-box-residential-ncc2022.2-1.9?x=513.2609407909374&y=238.33392018786876&zoom=1.7180816100355623&shareId=ch6ODI-1767061462569&menu_id=6-0-3&standard=&action=click&type=0', x: 878, y: 345.531, w: 75.625, h: 18 }
+            ]
+          },
+          { id: 'acc7', collapsed: '{{ module.slide_3.accordion_7_collapsed }}', expanded: '{{ module.slide_3.accordion_7_expanded }}', y: 722, hC: 62, hE: 417,
+            links: [
+              { url: moduleConfig.baseUrl + '/tools/waterproofing-sub-sill-sliding-door-window-ncc2022.2-1.29?v=1767063868155&shareId=ch6ODI-1767061462569&zoom=1.3107960100000002&menu_id=9-1-0&x=519.5816757512367&y=269.62559700389886&standard=&action=click&type=0', x: 8, y: 345.531, w: 322.094, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/waterproofing-cavity-slide-door-waterstop-ncc2022.2-1.26?menu_id=9-2-5-0&shareId=ch6ODI-1767061462569&zoom=1.225043&x=394.1901338301639&y=371.5158489408847&standard=&action=click&type=0', x: 443, y: 345.531, w: 143.25, h: 18 },
+              { url: moduleConfig.baseUrl + '/tools/waterproofing-waterstop-shower-screen-enclosed-setdown-ncc2022.2-1.13?menu_id=9-2-4-4&shareId=ch6ODI-1767061462569&zoom=1&x=470.2773459056153&y=272.28375747277363&standard=&action=click&type=0', x: 878, y: 345.531, w: 131.67, h: 18 }
+            ]
+          }
+        ]
+      },
+      {
+        id: 4,
+        file: '{{ module.slide_4.svg_path }}',
+        viewBoxWidth: {{ module.slide_4.viewbox_width }},
+        viewBoxHeight: {{ module.slide_4.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 101, y: 80, w: 50, h: 50 },
+          { action: 'next', x: 1293, y: 80, w: 50, h: 50 },
+          { action: 'video', src: '{{ module.slide_4.video_url }}', x: 1214, y: 220, w: 166, h: 48 },
+          { action: 'back', x: 60, y: 904, w: 142, h: 56 },
+          { action: 'next', x: 1198, y: 904, w: 182, h: 56 }
+        ]
+      },
+      {
+        id: 5,
+        file: '{{ module.slide_5.svg_path }}',
+        viewBoxWidth: {{ module.slide_5.viewbox_width }},
+        viewBoxHeight: {{ module.slide_5.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 101, y: 80, w: 50, h: 50 },
+          { action: 'next', x: 1293, y: 80, w: 50, h: 50 },
+          { action: 'video', src: '{{ module.slide_5.video_url }}', x: 1214, y: 220, w: 166, h: 48 },
+          { action: 'gif', url: '{{ module.slide_5.gif_url }}', x: 755, y: 345, w: 618, h: 473 },
+          { action: 'back', x: 60, y: 926, w: 142, h: 56 },
+          { action: 'next', x: 1199, y: 926, w: 181, h: 56 }
+        ]
+      },
+      {
+        id: 6,
+        file: '{{ module.slide_6.svg_path }}',
+        viewBoxWidth: {{ module.slide_6.viewbox_width }},
+        viewBoxHeight: {{ module.slide_6.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 93.5, y: 35.583, w: 57, h: 25.282 },
+          { action: 'next', x: 1288.5, y: 35.583, w: 51, h: 23.410 },
+          { action: 'video', src: '{{ module.slide_6.video_url }}', x: 1214.5, y: 103.470, w: 168, h: 20.132 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/ncc-bca-building-classification-ncc2022-1.4?menu_id=10-0-0&shareId=ch6ODI-1767066152909&zoom=1.5007303518490005&x=464.96543491799656&y=258.1862346865616&standard=&action=click&type=0', x: 117.5, y: 196.173, w: 173, h: 6.555 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/waterproofing-waterstop-steel-door-jamb-ncc2022.2-1.5?v=1&point=f2ce110e-a471-45a7-8ab8-19ca91007793&standard=NCC%202022.2&standard=&menu_id=9-2-5-2&shareId=FmGcYD-1767318177129&zoom=1.8384592124201555&x=560.6176618954484&y=288.8464234620424&action=click&type=0', x: 119.5, y: 441.505, w: 162, h: 10.300 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/structure-timber-girder-saddle-truss-ncc2022.2-1.0?menu_id=8-3-3&shareId=ch6ODI-1767061462569&zoom=1.225043&x=517.2776215098921&y=267.94657116752524&standard=&action=click&type=0', x: 493.5, y: 687.774, w: 141, h: 9.364 },
+          { action: 'back', x: 53.5, y: 965.881, w: 147, h: 27.623 },
+          { action: 'next', x: 1196.5, y: 969.158, w: 187, h: 24.346 }
+        ]
+      },
+      {
+        id: 7,
+        file: '{{ module.slide_7.svg_path }}',
+        viewBoxWidth: {{ module.slide_7.viewbox_width }},
+        viewBoxHeight: {{ module.slide_7.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 92.5, y: 20.702, w: 56, h: 17.494 },
+          { action: 'next', x: 1286.5, y: 21.576, w: 50, h: 15.453 },
+          { action: 'video', src: '{{ module.slide_7.video_url }}', x: 1211.5, y: 63.563, w: 168, h: 13.412 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/services-plumbing-sanitary-floor-waste-gully-fwg-ncc2022.2-1.0?point=a13aebff-2beb-4655-a2a3-70826d8f8868&shareId=FmGcYD-1768448620244&standard=&zoom=1.4259723589673365&x=355.2729161003957&y=340.1958997741094&action=click&type=1', x: 59.5, y: 369.712, w: 199, h: 13.412 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/services-electrical-meter-box-residential-ncc2022.2-1.9?point=377eed32-5df1-42a8-8679-f546dd31a6ab&shareId=ch6ODI-1767066101738&standard=&zoom=3.676918424840311&x=438.9728366541588&y=520.999939025093&action=click&type=1', x: 55.5, y: 635.333, w: 203, h: 14.870 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/structure-timber-balconies-decks-ncc2022.2-1.10?menu_id=8-3-1&shareId=ch6ODI-1767832587653&zoom=4.6022210813908995&x=546.1171683271762&y=229.380556270058&standard=&action=click&type=0', x: 57.5, y: 902.413, w: 220, h: 12.829 },
+          { action: 'back', x: 55.5, y: 982.595, w: 146, h: 15.453 },
+          { action: 'next', x: 1196.5, y: 982.303, w: 188, h: 17.494 }
+        ]
+      },
+      {
+        id: 8,
+        file: '{{ module.slide_8.svg_path }}',
+        viewBoxWidth: {{ module.slide_8.viewbox_width }},
+        viewBoxHeight: {{ module.slide_8.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 66.5, y: 26.437, w: 62, h: 16.732 },
+          { action: 'next', x: 1259.5, y: 23.425, w: 60, h: 20.079 },
+          { action: 'video', src: '{{ module.slide_8.video_url }}', x: 1189.5, y: 72.284, w: 165, h: 16.732 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/waterproofing-external-waterproofing-overview-ncc2022.2-1.3?menu_id=9-1-0&shareId=ch6ODI-1761099674449&zoom=2.4098450001880827&x=542.9517578029951&y=261.4928632361109&standard=&standard=&action=click&action=click&type=0&type=0', x: 397.5, y: 176.026, w: 200, h: 6.693 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/waterproofing-cavity-slide-door-waterstop-angle-ncc2022.2-1.15?v=1767834450170&shareId=ch6ODI-1767832874197&zoom=1.636000432269329&menu_id=9-2-5-0&x=370.727375430393&y=378.06025650011753&point=d498491b-70c4-4512-92c2-a39f157e1bbf&standard=&action=click&type=0', x: 733.5, y: 442.407, w: 273, h: 3.346 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/waterproofing-film-thickness-test-location-points-ncc2022.2-1.5?x=485.91793669790576&y=286.77264394057755&zoom=1.9348422312430922&shareId=ch6ODI-1760938191433&menu_id=9-3-2&standard=&action=click&type=0', x: 199.5, y: 707.449, w: 149, h: 6.693 },
+          { action: 'back', x: 32.5, y: 975.169, w: 149, h: 21.752 },
+          { action: 'next', x: 1176.5, y: 975.503, w: 179, h: 19.410 }
+        ]
+      },
+      {
+        id: 9,
+        file: '{{ module.slide_9.svg_path }}',
+        viewBoxWidth: {{ module.slide_9.viewbox_width }},
+        viewBoxHeight: {{ module.slide_9.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 101, y: 80, w: 50, h: 50 },
+          { action: 'next', x: 1293, y: 80, w: 50, h: 50 },
+          { action: 'video', src: '{{ module.slide_9.video_url }}', x: 1214, y: 220, w: 166, h: 48 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/site-works-pool-safety-fence-gate?v=1&menu_id=5-6&shareId=ch6ODI-1761100718604&zoom=2.1048519522998363&x=495.0831070206157&y=310.2727794476419', x: 116, y: 566.228, w: 87, h: 11.401 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/site-works-pool-safety-gate-ncc2022.2-1.3?v=1767064939224&shareId=ch6ODI-1761100718604&zoom=1.1449&menu_id=5-6&x=557.9232605022563&y=202.06341738249495&standard=&action=click&type=0', x: 207, y: 564.327, w: 87, h: 12.351 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/site-works-pool-safety-fence-ncc2022.2-1.5?v=1767064970623&shareId=ch6ODI-1761100718604&zoom=1.3107960100000002&menu_id=5-6&x=579.4681031284093&y=247.4832047635549&standard=&action=click&type=0', x: 299, y: 565.278, w: 90, h: 12.351 },
+          { action: 'back', x: 60, y: 911, w: 142, h: 56 },
+          { action: 'next', x: 1198, y: 911, w: 182, h: 56 }
+        ]
+      },
+      {
+        id: 10,
+        file: '{{ module.slide_10.svg_path }}',
+        viewBoxWidth: {{ module.slide_10.viewbox_width }},
+        viewBoxHeight: {{ module.slide_10.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 101, y: 80, w: 50, h: 50 },
+          { action: 'next', x: 1293, y: 80, w: 50, h: 50 },
+          { action: 'video', src: '{{ module.slide_10.video_url }}', x: 1214, y: 220, w: 166, h: 48 },
+          { action: 'url', url: 'https://buildingtools.co/install-tools-revit-add-on/', x: 120, y: 405, w: 278, h: 20 },
+          { action: 'url', url: 'https://buildingtools.co/install-tools-revit-add-on/', x: 80, y: 442, w: 432, h: 20 },
+          { action: 'back', x: 60, y: 901, w: 142, h: 56 },
+          { action: 'next', x: 1198, y: 901, w: 182, h: 56 }
+        ]
+      },
+      {
+        id: 11,
+        file: '{{ module.slide_11.svg_path }}',
+        viewBoxWidth: {{ module.slide_11.viewbox_width }},
+        viewBoxHeight: {{ module.slide_11.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 97, y: 58.504, w: 52, h: 40.872 },
+          { action: 'next', x: 1288, y: 60.106, w: 61, h: 43.277 },
+          { action: 'video', src: '{{ module.slide_11.video_url }}', x: 1215, y: 175.511, w: 167, h: 39.270 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/safety-overview-eliminate-falls-risk-ncc2022.2-1.2?menu_id=5-0&shareId=ch6ODI-1760939760336&zoom=1.8384592124201555&x=256.50634033786724&y=160.63131362309363&standard=&action=click&type=0&standard=&action=click&type=0', x: 204, y: 395.901, w: 146, h: 16.830 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/safety-overview-eliminate-falls-risk-ncc2022.2-1.2?menu_id=5-0&shareId=ch6ODI-1760939760336&zoom=1.718186179831921&x=690.7910227361785&y=342.34938846540183&standard=&standard=&action=click&action=click&type=0&type=0', x: 201, y: 427.957, w: 127, h: 14.426 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/safety-overview-eliminate-falls-risk-ncc2022.2-1.2?menu_id=5-0&shareId=ch6ODI-1760939760336&zoom=2.252191588960825&x=516.0388093943355&y=479.79640486986284&standard=&action=click&type=0&standard=&action=click&type=0', x: 267, y: 464.021, w: 159, h: 8.014 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/safety-overview-ppe-falls-risk-ncc2022.2-1.11?r=1&x=553.5191071015145&y=240.21599730372742&zoom=1&shareId=ch6ODI-1760939760336&standard=,&menu_id=5-0&standard=&action=click&type=0', x: 396, y: 483.255, w: 36, h: 15.227 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/safety-overview-eliminate-exposure-risk-ncc2022.2-1.3?point=ed3d0eb3-429d-4a5a-8132-288c9d04203d&shareId=ch6ODI-1760939760336&standard=&zoom=2.1048519522998363&x=817.2833008898259&y=253.90880842957762&action=click&type=1', x: 382, y: 536.950, w: 70, h: 20.035 },
+          { action: 'back', x: 52, y: 924.035, w: 153, h: 43.277 },
+          { action: 'next', x: 1184, y: 920.830, w: 198, h: 48.085 }
+        ]
+      },
+      {
+        id: 12,
+        file: '{{ module.slide_12.svg_path }}',
+        viewBoxWidth: {{ module.slide_12.viewbox_width }},
+        viewBoxHeight: {{ module.slide_12.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 92.5, y: 54.835, w: 58, h: 38.019 },
+          { action: 'next', x: 1285.5, y: 57.028, w: 61, h: 37.288 },
+          { action: 'video', src: '{{ module.slide_12.video_url }}', x: 1215.5, y: 157.924, w: 168, h: 41.674 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/masonry-veneer-brickwork-blockwork-ncc2022.2-1.41?menu_id=2-4-4&shareId=ch6ODI-1768980167021&zoom=1.4025517307000004&x=581.4008686135728&y=250.09848958885175&standard=&action=click&type=0', x: 58.500, y: 577.592, w: 124.000, h: 11.698 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/cladding-weatherboard-panelling-ncc2022.2-1.25?menu_id=2-1-0&shareId=ch6ODI-1768980167021&zoom=1.3107960100000002&x=565.9475835831998&y=232.49417346029307&standard=&action=click&type=0', x: 495.500, y: 577.592, w: 70.000, h: 15.354 },
+          { action: 'url', url: moduleConfig.baseUrl + '/tools/fabric-metal-cladding-ncc2022.2-1.5?menu_id=2-1-1&shareId=ch6ODI-1768980203586&zoom=1&x=512&y=288&standard=&action=click&type=0', x: 920.500, y: 575.398, w: 120.000, h: 20.472 },
+          { action: 'back', x: 52.5, y: 945.349, w: 152, h: 40.212 },
+          { action: 'next', x: 1149.5, y: 939.500, w: 235, h: 44.599 }
+        ]
+      },
+      {
+        id: 13,
+        file: '{{ module.slide_13.svg_path }}',
+        viewBoxWidth: {{ module.slide_13.viewbox_width }},
+        viewBoxHeight: {{ module.slide_13.viewbox_height }},
+        overlays: [
+          { action: 'back', x: 91, y: 105.117, w: 57, h: 60.994 },
+          { action: 'url', url: '{{ module.slide_13.final_url }}', x: 615, y: 669.633, w: 205, h: 76.567 },
+          { action: 'back', x: 60, y: 917, w: 142, h: 56 }
+        ]
+      }
+    ]
+  };
+
+  // Build components array from configuration
+  const components = moduleConfig.slides.map(slide => ({
+    ...slide,
+    overlays: slide.overlays || []
+  }));
+
+  // HubSpot tracking state
+  const trackingState = {
+    toolsClicked: 0,
+    accordionsOpened: 0,
+    showMeClicked: 0,
+    highestSlideViewed: 1
+  };
+
+  // HubSpot tracking functions
+  function updateHubSpotProperty(propertyName, value) {
+    if (typeof window._hsq !== 'undefined') {
+      const properties = {};
+      properties[propertyName] = value;
+      window._hsq.push(['identify', properties]);
+    }
+  }
+
+  function trackSlideView(slideNumber) {
+    if (slideNumber > trackingState.highestSlideViewed) {
+      trackingState.highestSlideViewed = slideNumber;
+      updateHubSpotProperty(moduleConfig.trackingPrefix + '_implementation_last_slide_viewed', slideNumber);
+    }
+  }
+
+  function trackToolClick() {
+    trackingState.toolsClicked++;
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_implementation_tools_clicked', trackingState.toolsClicked);
+  }
+
+  function trackAccordionOpen() {
+    trackingState.accordionsOpened++;
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_implementation_accordions_opened', trackingState.accordionsOpened);
+  }
+
+  function trackShowMeClick() {
+    trackingState.showMeClicked++;
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_implementation_show_me_clicked', trackingState.showMeClicked);
+  }
+
+  function trackImplementationComplete() {
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_implementation_completed', 'true');
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_implementation_completion_date', new Date().toISOString());
+  }
+
+  // State management
+  const state = {
+    index: 0,
+    loaded: new Array(components.length).fill(false),
+    viewBox: new Array(components.length).fill(null),
+    accordion: {}
+  };
+
+  // Build DOM
+  function buildDOM() {
+    components.forEach((c, i) => {
+      const comp = document.createElement('div');
+      comp.className = 'component' + (i === 0 ? ' active' : '');
+      comp.dataset.idx = i;
+
+      const host = document.createElement('div');
+      host.className = 'svg-host' + (c.accordions ? ' accordion-slide' : '');
+
+      const img = document.createElement('img');
+      img.src = c.file;
+      img.setAttribute('aria-label', `Slide ${c.id}`);
+
+      const overlays = document.createElement('div');
+      overlays.className = 'overlay-root';
+
+      host.appendChild(img);
+      host.appendChild(overlays);
+      comp.appendChild(host);
+      container.appendChild(comp);
+
+      state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 2500 };
+      
+      img.addEventListener('load', () => {
+        state.loaded[i] = true;
+        if (c.accordions && !state.accordion[i]) {
+          state.accordion[i] = {};
+          c.accordions.forEach(acc => { state.accordion[i][acc.id] = false; });
+        }
+        renderOverlays(i);
+      });
+    });
+  }
+
+  function renderOverlays(idx) {
+    const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+    if (!compEl) return;
+    const root = compEl.querySelector('.overlay-root');
+    root.innerHTML = '';
+    const host = compEl.querySelector('.svg-host');
+    const current = components[idx];
+    
+    // Calculate dynamic height for accordion slides
+    if (current.accordions) {
+      const headerHeight = 290;
+      const overviewSectionHeight = 1784;
+      const spacingAfterAccordions = 150;
+      const bottomNavHeight = 200;
+      const bottomPadding = 50;
+      
+      let accordionTotalHeight = 0;
+      current.accordions.forEach((acc) => {
+        const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
+        accordionTotalHeight += expanded ? acc.hE : acc.hC;
+      });
+      
+      const dynamicHeight = headerHeight + accordionTotalHeight + spacingAfterAccordions + overviewSectionHeight + bottomNavHeight + bottomPadding;
+      
+      state.viewBox[idx].h = dynamicHeight;
+      components[idx].viewBoxHeight = dynamicHeight;
+      
+      const hostRect = host.getBoundingClientRect();
+      const scale = hostRect.width / (current.viewBoxWidth || 1440);
+      const dynamicHeightPx = dynamicHeight * scale;
+      host.style.height = dynamicHeightPx + 'px';
+    }
+    
+    const vb = state.viewBox[idx];
+    if (!vb) return;
+
+    // Dynamically position bottom section on slide 3
+    if (idx === 2 && current.accordions) {
+      const hostRect = host.getBoundingClientRect();
+      const scale = hostRect.width / vb.w;
+      
+      let accordionTotalHeight = 0;
+      current.accordions.forEach((acc) => {
+        const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
+        accordionTotalHeight += expanded ? acc.hE : acc.hC;
+      });
+      
+      const headerHeight = 290;
+      const accordionsEndY = headerHeight + accordionTotalHeight;
+      const spacing = 150;
+      const bottomSectionY = accordionsEndY + spacing;
+      
+      // Render Overview section
+      const overviewImgEl = document.createElement('img');
+      overviewImgEl.src = 'EDU Practical Guide (Implementation)/Frame 90.svg';
+      overviewImgEl.style.position = 'absolute';
+      overviewImgEl.style.left = (80 * scale) + 'px';
+      overviewImgEl.style.top = (bottomSectionY * scale) + 'px';
+      overviewImgEl.style.width = (1281 * scale) + 'px';
+      overviewImgEl.style.height = (1784 * scale) + 'px';
+      overviewImgEl.style.pointerEvents = 'none';
+      overviewImgEl.style.zIndex = '10';
+      root.appendChild(overviewImgEl);
+      
+      // Render bottom navigation
+      const bottomNavY = bottomSectionY + 1784;
+      const bottomNavImgEl = document.createElement('img');
+      bottomNavImgEl.src = 'EDU Practical Guide (Implementation)/TAFE Implementation/Bottom buttons/Frame 271.svg';
+      bottomNavImgEl.style.position = 'absolute';
+      bottomNavImgEl.style.left = (80 * scale) + 'px';
+      bottomNavImgEl.style.top = (bottomNavY * scale) + 'px';
+      bottomNavImgEl.style.width = (1281 * scale) + 'px';
+      bottomNavImgEl.style.height = (200 * scale) + 'px';
+      bottomNavImgEl.style.pointerEvents = 'none';
+      bottomNavImgEl.style.zIndex = '10';
+      root.appendChild(bottomNavImgEl);
+      
+      // Add clickable overlays for navigation buttons
+      const bottomBackBtn = document.createElement('div');
+      bottomBackBtn.className = 'click-area';
+      bottomBackBtn.style.position = 'absolute';
+      bottomBackBtn.style.left = (75.5 * scale) + 'px';
+      bottomBackBtn.style.top = ((bottomNavY + (2762 - bottomNavY)) * scale) + 'px';
+      bottomBackBtn.style.width = (146 * scale) + 'px';
+      bottomBackBtn.style.height = (42 * scale) + 'px';
+      bottomBackBtn.style.pointerEvents = 'auto';
+      bottomBackBtn.style.cursor = 'pointer';
+      bottomBackBtn.style.zIndex = '20';
+      bottomBackBtn.title = 'BACK';
+      bottomBackBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(state.index - 1); });
+      root.appendChild(bottomBackBtn);
+      
+      const bottomNextBtn = document.createElement('div');
+      bottomNextBtn.className = 'click-area';
+      bottomNextBtn.style.position = 'absolute';
+      bottomNextBtn.style.left = (1184.5 * scale) + 'px';
+      bottomNextBtn.style.top = ((bottomNavY + (2758 - bottomNavY)) * scale) + 'px';
+      bottomNextBtn.style.width = (180 * scale) + 'px';
+      bottomNextBtn.style.height = (46 * scale) + 'px';
+      bottomNextBtn.style.pointerEvents = 'auto';
+      bottomNextBtn.style.cursor = 'pointer';
+      bottomNextBtn.style.zIndex = '20';
+      bottomNextBtn.title = 'NEXT';
+      bottomNextBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(state.index + 1); });
+      root.appendChild(bottomNextBtn);
+    }
+
+    // Render accordions
+    if (current.accordions) {
+      const hostRect = host.getBoundingClientRect();
+      const scale = hostRect.width / vb.w;
+      const accordionLeftPx = 80 * scale;
+      const accordionWidthPx = 1281 * scale;
+      
+      let offset = 0;
+      current.accordions.forEach((acc) => {
+        const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
+        const y = acc.y + offset;
+        const h = expanded ? acc.hE : acc.hC;
+
+        const imgEl = document.createElement('img');
+        imgEl.src = expanded ? acc.expanded : acc.collapsed;
+        imgEl.style.position = 'absolute';
+        imgEl.style.left = accordionLeftPx + 'px';
+        imgEl.style.top = (y * scale) + 'px';
+        imgEl.style.width = accordionWidthPx + 'px';
+        imgEl.style.height = (h * scale) + 'px';
+        imgEl.style.pointerEvents = 'none';
+        imgEl.style.zIndex = '10';
+        imgEl.setAttribute('aria-label', acc.id);
+        root.appendChild(imgEl);
+
+        const toggleEl = document.createElement('div');
+        toggleEl.style.position = 'absolute';
+        toggleEl.style.left = accordionLeftPx + 'px';
+        toggleEl.style.top = (y * scale) + 'px';
+        toggleEl.style.width = accordionWidthPx + 'px';
+        toggleEl.style.height = (62 * scale) + 'px';
+        toggleEl.style.cursor = 'pointer';
+        toggleEl.style.pointerEvents = 'auto';
+        toggleEl.style.background = 'transparent';
+        toggleEl.style.zIndex = '11';
+        toggleEl.dataset.accordionId = acc.id;
+        toggleEl.addEventListener('click', ((accordionId, currentExpanded) => {
+          return (e) => {
+            e.stopPropagation();
+            if (!state.accordion[idx]) state.accordion[idx] = {};
+            state.accordion[idx][accordionId] = !currentExpanded;
+            if (!currentExpanded) {
+              trackAccordionOpen();
+            }
+            renderOverlays(idx);
+          };
+        })(acc.id, expanded));
+        root.appendChild(toggleEl);
+
+        if (expanded && acc.links) {
+          acc.links.forEach((link) => {
+            const linkEl = document.createElement('a');
+            linkEl.href = link.url;
+            linkEl.target = '_blank';
+            linkEl.style.position = 'absolute';
+            linkEl.style.left = (accordionLeftPx + (link.x * scale)) + 'px';
+            linkEl.style.top = ((y + link.y) * scale) + 'px';
+            linkEl.style.width = (link.w * scale) + 'px';
+            linkEl.style.height = (link.h * scale) + 'px';
+            linkEl.style.pointerEvents = 'auto';
+            linkEl.style.cursor = 'pointer';
+            linkEl.style.zIndex = '12';
+            linkEl.style.display = 'block';
+            linkEl.addEventListener('click', () => {
+              trackToolClick();
+            });
+            root.appendChild(linkEl);
+          });
+        }
+
+        offset += (h - acc.hC);
+      });
+    }
+    
+    // Render regular overlays
+    if (current.overlays) {
+      current.overlays.forEach((o) => {
+        if (o.action === 'gif') {
+          const gifEl = document.createElement('img');
+          gifEl.src = o.url;
+          gifEl.style.position = 'absolute';
+          gifEl.style.left = (o.x / vb.w) * 100 + '%';
+          gifEl.style.top = (o.y / vb.h) * 100 + '%';
+          gifEl.style.width = (o.w / vb.w) * 100 + '%';
+          gifEl.style.height = (o.h / vb.h) * 100 + '%';
+          gifEl.style.borderRadius = '32px';
+          gifEl.style.objectFit = 'cover';
+          gifEl.style.pointerEvents = 'none';
+          gifEl.style.zIndex = '10';
+          root.appendChild(gifEl);
+          return;
+        }
+        
+        const el = document.createElement('div');
+        el.className = 'click-area';
+        
+        let yPos = o.y;
+        
+        if (o.dynamicY && current.accordions) {
+          let totalOffset = 0;
+          current.accordions.forEach((acc) => {
+            const expanded = state.accordion[idx] && state.accordion[idx][acc.id];
+            if (expanded) {
+              totalOffset += (acc.hE - acc.hC);
+            }
+          });
+          yPos = o.y + totalOffset;
+        }
+        
+        el.style.left = (o.x / vb.w) * 100 + '%';
+        el.style.top = (yPos / vb.h) * 100 + '%';
+        el.style.width = (o.w / vb.w) * 100 + '%';
+        el.style.height = (o.h / vb.h) * 100 + '%';
+        el.title = o.action.toUpperCase();
+
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleAction(o);
+        });
+
+        root.appendChild(el);
+      });
+    }
+  }
+
+  function handleAction(o) {
+    if (o.action === 'next') {
+      goTo(state.index + 1);
+    } else if (o.action === 'back') {
+      goTo(state.index - 1);
+    } else if (o.action === 'url' && o.url) {
+      if (o.url.includes('.buildingtools.co')) {
+        trackToolClick();
+      }
+      window.open(o.url, '_blank', 'noopener');
+    } else if (o.action === 'video' && o.src) {
+      trackShowMeClick();
+      showVideoModal(o.src);
+    }
+  }
+
+  function showVideoModal(src) {
+    const modal = document.getElementById('videoModal-' + moduleId);
+    const video = document.getElementById('modalVideo-' + moduleId);
+    const source = document.getElementById('modalVideoSource-' + moduleId);
+    const extension = src.split('.').pop().toLowerCase();
+    source.type = extension === 'webm' ? 'video/webm' : 'video/mp4';
+    source.src = src;
+    video.load();
+    modal.classList.add('active');
+  }
+
+  function closeVideoModal() {
+    const modal = document.getElementById('videoModal-' + moduleId);
+    const video = document.getElementById('modalVideo-' + moduleId);
+    video.pause();
+    modal.classList.remove('active');
+  }
+
+  function goTo(newIndex) {
+    const max = components.length - 1;
+    const clamped = Math.max(0, Math.min(max, newIndex));
+    if (clamped === state.index) return;
+    
+    const prev = container.querySelector(`.component[data-idx="${state.index}"]`);
+    const next = container.querySelector(`.component[data-idx="${clamped}"]`);
+    if (prev) prev.classList.remove('active');
+    if (next) next.classList.add('active');
+    state.index = clamped;
+    
+    if (state.viewBox[clamped]) renderOverlays(clamped);
+    trackSlideView(clamped + 1);
+    if (clamped === max) trackImplementationComplete();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function hookKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        goTo(state.index + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        goTo(state.index - 1);
+      } else if (e.key === 'Escape') {
+        closeVideoModal();
+      }
+    });
+  }
+
+  function hookVideoModal() {
+    const videoModal = document.getElementById('videoModal-' + moduleId);
+    const closeVideoBtn = document.getElementById('closeVideoModal-' + moduleId);
+    
+    closeVideoBtn.addEventListener('click', closeVideoModal);
+    videoModal.addEventListener('click', (e) => {
+      if (e.target === videoModal) {
+        closeVideoModal();
+      }
+    });
+  }
+
+  // Initialize
+  buildDOM();
+  hookKeyboard();
+  hookVideoModal();
+  
+  window.addEventListener('load', () => {
+    trackSlideView(1);
+  });
+
+})();
+</script>
