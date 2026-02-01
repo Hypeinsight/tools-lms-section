@@ -1,0 +1,189 @@
+:root {
+  --max-w: 1440px;
+}
+
+html, body { 
+  margin: 0; 
+  padding: 0; 
+  background: transparent; 
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+  color: #111; 
+}
+
+.tafe-implementation-module .page { 
+  display: flex; 
+  justify-content: center; 
+  padding: 0; 
+}
+
+.tafe-implementation-module .container { 
+  position: relative; 
+  width: 100%; 
+  max-width: var(--max-w); 
+  background: #DBE5F1; 
+  border-radius: 8px; 
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25); 
+}
+
+.tafe-implementation-module .component { 
+  display: none; 
+  position: relative; 
+  background: #DBE5F1; 
+}
+
+.tafe-implementation-module .component.active { 
+  display: block; 
+}
+
+.tafe-implementation-module .svg-host { 
+  position: relative; 
+  width: 100%; 
+  height: auto; 
+  display: block; 
+  background: #DBE5F1; 
+}
+
+.tafe-implementation-module .svg-host img { 
+  width: 100%; 
+  height: auto; 
+  display: block; 
+}
+
+.tafe-implementation-module .svg-host.accordion-slide { 
+  min-height: 2524px; 
+}
+
+/* overlay root sits above the image in the svg-host */
+.tafe-implementation-module .overlay-root { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  pointer-events: none; 
+  z-index: 10; 
+}
+
+.tafe-implementation-module .click-area { 
+  position: absolute; 
+  border-radius: 8px; 
+  pointer-events: auto; 
+  cursor: pointer; 
+}
+
+.tafe-implementation-module .video-embed { 
+  position: absolute; 
+  pointer-events: auto; 
+  border: none; 
+  border-radius: 24px; 
+}
+
+.tafe-implementation-module .image-embed { 
+  position: absolute; 
+  pointer-events: none; 
+  border-radius: 32px; 
+}
+
+/* Video Modal */
+.tafe-implementation-module .video-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 99999;
+  justify-content: center;
+  align-items: center;
+}
+
+.tafe-implementation-module .video-modal.active {
+  display: flex;
+}
+
+.tafe-implementation-module .video-modal .close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #252D36;
+  font-weight: 700;
+  z-index: 100000;
+}
+
+.tafe-implementation-module .video-modal .close-button:hover {
+  background: white;
+}
+
+/* Accordion Container on Slide 3 */
+.tafe-implementation-module .accordion-container {
+  position: absolute;
+  pointer-events: auto;
+  z-index: 15;
+}
+
+.tafe-implementation-module .accordion-item {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 0;
+  transition: all 0.3s ease;
+}
+
+.tafe-implementation-module .accordion-svg {
+  width: 100%;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.tafe-implementation-module .accordion-item .collapsed {
+  display: block;
+}
+
+.tafe-implementation-module .accordion-item .expanded {
+  display: none;
+}
+
+.tafe-implementation-module .accordion-item.active .collapsed {
+  display: none;
+}
+
+.tafe-implementation-module .accordion-item.active .expanded {
+  display: block;
+}
+
+/* Tool links within accordions */
+.tafe-implementation-module .accordion-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tafe-implementation-module .accordion-link {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Bottom section (Overview + Nav) positioning */
+.tafe-implementation-module .bottom-section {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  pointer-events: auto;
+}
+
+.tafe-implementation-module .overview-image {
+  width: 100%;
+  display: block;
+}
