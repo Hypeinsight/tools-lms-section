@@ -1,0 +1,310 @@
+<div class="tafe-activation-module">
+  <div class="page">
+    <div class="container">
+      <!-- components injected here by JS -->
+    </div>
+  </div>
+
+  <!-- Image Modal -->
+  <div class="image-modal" id="imageModal-{{ name }}">
+    <button class="close-button" id="closeModal-{{ name }}">&times;</button>
+    <img id="modalImage-{{ name }}" src="" alt="Answer" />
+  </div>
+
+  <!-- Video Modal -->
+  <div class="image-modal" id="videoModal-{{ name }}">
+    <button class="close-button" id="closeVideoModal-{{ name }}">&times;</button>
+    <video id="modalVideo-{{ name }}" controls style="max-width: 90%; max-height: 90vh; border-radius: 8px;">
+      <source id="modalVideoSource-{{ name }}" src="" type="video/mp4" />
+    </video>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Scope all code to avoid conflicts
+  const moduleId = '{{ name }}';
+  const container = document.querySelector('#{{ name }} .container');
+  
+  // Module configuration from HubSpot fields
+  const moduleConfig = {
+    institutionName: '{{ module.institution_name }}',
+    baseUrl: '{{ module.base_url }}',
+    trackingPrefix: '{{ module.tracking_prefix }}',
+    slides: {
+      slide1: {
+        file: '{{ module.slides.slide_1_file }}',
+        height: {{ module.slides.slide_1_height }},
+        video: '{{ module.slides.slide_2_video }}'
+      },
+      slide2: {
+        file: '{{ module.slides.slide_2_file }}',
+        height: {{ module.slides.slide_2_height }},
+        video: '{{ module.slides.slide_2_video }}'
+      },
+      slide3: {
+        file: '{{ module.slides.slide_3_file }}',
+        height: {{ module.slides.slide_3_height }},
+        video: '{{ module.slides.slide_3_video }}'
+      },
+      slide4: {
+        file: '{{ module.slides.slide_4_file }}',
+        height: {{ module.slides.slide_4_height }},
+        video: '{{ module.slides.slide_4_video }}'
+      },
+      slide5: {
+        file: '{{ module.slides.slide_5_file }}',
+        height: {{ module.slides.slide_5_height }},
+        video: '{{ module.slides.slide_5_video }}'
+      },
+      slide6: {
+        file: '{{ module.slides.slide_6_file }}',
+        height: {{ module.slides.slide_6_height }},
+        video: '{{ module.slides.slide_6_video }}'
+      },
+      slide7: {
+        file: '{{ module.slides.slide_7_file }}',
+        height: {{ module.slides.slide_7_height }},
+        video: '{{ module.slides.slide_7_video }}'
+      },
+      slide8: {
+        file: '{{ module.slides.slide_8_file }}',
+        height: {{ module.slides.slide_8_height }},
+        video: '{{ module.slides.slide_8_video }}'
+      },
+      slide9: {
+        file: '{{ module.slides.slide_9_file }}',
+        height: {{ module.slides.slide_9_height }}
+      }
+    },
+    faqs: [
+      { q: '{{ module.faq_items.faq_1_question }}', a: '{{ module.faq_items.faq_1_answer }}' },
+      { q: '{{ module.faq_items.faq_2_question }}', a: '{{ module.faq_items.faq_2_answer }}' }
+    ],
+    finalUrls: {
+      signup: '{{ module.final_slide_urls.signup_url }}',
+      implementationGuide: '{{ module.final_slide_urls.implementation_guide_url }}'
+    }
+  };
+
+  // HubSpot tracking state
+  const trackingState = {
+    videosWatched: 0,
+    showMeClicked: 0,
+    signupClicked: false,
+    highestSlideViewed: 1
+  };
+
+  // HubSpot tracking functions
+  function updateHubSpotProperty(propertyName, value) {
+    if (typeof window._hsq !== 'undefined') {
+      const properties = {};
+      properties[propertyName] = value;
+      window._hsq.push(['identify', properties]);
+    }
+  }
+
+  function trackSlideView(slideNumber) {
+    if (slideNumber > trackingState.highestSlideViewed) {
+      trackingState.highestSlideViewed = slideNumber;
+      updateHubSpotProperty(moduleConfig.trackingPrefix + '_activation_last_slide_viewed', slideNumber);
+    }
+  }
+
+  function trackVideoWatch() {
+    trackingState.videosWatched++;
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_activation_videos_watched', trackingState.videosWatched);
+  }
+
+  function trackShowMeClick() {
+    trackingState.showMeClicked++;
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_activation_show_me_clicked', trackingState.showMeClicked);
+  }
+
+  function trackSignupClick() {
+    if (!trackingState.signupClicked) {
+      trackingState.signupClicked = true;
+      updateHubSpotProperty(moduleConfig.trackingPrefix + '_activation_signup_clicked', 'true');
+    }
+  }
+
+  function trackActivationComplete() {
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_activation_completed', 'true');
+    updateHubSpotProperty(moduleConfig.trackingPrefix + '_activation_completion_date', new Date().toISOString());
+  }
+
+  // Build components array from configuration
+  const components = [
+    {
+      id: 1,
+      file: moduleConfig.slides.slide1.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide1.height,
+      overlays: [
+        { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+        { action: "next", x: 1169, y: 1057, w: 207, h: 56 }
+      ]
+    },
+    {
+      id: 2,
+      file: moduleConfig.slides.slide2.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide2.height,
+      overlays: [
+        { action: "back", x: 101, y: 55, w: 50, h: 50 },
+        { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+        { action: "video", src: moduleConfig.slides.slide2.video, x: 1214, y: 180, w: 166, h: 48 },
+        { action: "url", url: "https://www.youtube.com/watch?v=CPSO4nUpb8Y", x: 60, y: 1077, w: 420, h: 231 },
+        { action: "url", url: "https://www.youtube.com/watch?v=I3hgrQFCnKs", x: 510, y: 1077, w: 420, h: 231 },
+        { action: "url", url: "https://www.youtube.com/watch?v=7iX_p2pcVHA", x: 960, y: 1077, w: 420, h: 231 },
+        { action: "video", src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/How%20to%20Read%20a%20Tool.webm", x: 1214, y: 1467, w: 166, h: 48 },
+        { action: "back", x: 60, y: 3583, w: 142, h: 56 },
+        { action: "next", x: 980, y: 3583, w: 400, h: 56 }
+      ],
+      covers: [
+        { x: 199, y: 1570, w: 1042, h: 625 }
+      ],
+      videos: [
+        { src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/EDU%20website.mp4", x: 561, y: 328, w: 769, h: 409 }
+      ],
+      iframes: [
+        { src: "https://" + moduleConfig.baseUrl + "/tools/stairs-handrails-balustrades-accessibility-ncc2022.2-1.2?menu_id=0-8-2&zoom=1.5007303518490005&shareId=FmGcYD-1768875608365&x=575.3410777927407&y=293.80087811614015&standard=&action=click&type=0&chromeless=true", x: 199, y: 1570, w: 1042, h: 625 }
+      ]
+    },
+    {
+      id: 3,
+      file: moduleConfig.slides.slide3.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide3.height,
+      overlays: [
+        { action: "back", x: 101, y: 55, w: 50, h: 50 },
+        { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+        { action: "video", src: moduleConfig.slides.slide3.video, x: 1216, y: 170, w: 166, h: 48 },
+        { action: "url", url: "https://" + moduleConfig.baseUrl + "/signup", x: 185.398, y: 379.8, w: 184.198, h: 20 },
+        { action: "url", url: "https://" + moduleConfig.baseUrl + "/signup", x: 60, y: 404, w: 129, h: 44 },
+        { action: "back", x: 60, y: 1758, w: 142, h: 56 },
+        { action: "next", x: 947, y: 1758, w: 433, h: 56 }
+      ]
+    },
+    {
+      id: 4,
+      file: moduleConfig.slides.slide4.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide4.height,
+      overlays: [
+        { action: "back", x: 101, y: 55, w: 50, h: 50 },
+        { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+        { action: "video", src: moduleConfig.slides.slide4.video, x: 1214, y: 170, w: 166, h: 48 },
+        { action: "back", x: 60, y: 2096, w: 142, h: 56 },
+        { action: "next", x: 947, y: 2096, w: 433, h: 56 }
+      ]
+    },
+    {
+      id: 5,
+      file: moduleConfig.slides.slide5.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide5.height,
+      overlays: [
+        { action: "back", x: 101, y: 55, w: 50, h: 50 },
+        { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+        { action: "video", src: moduleConfig.slides.slide5.video, x: 1214, y: 170, w: 166, h: 48 },
+        { action: "back", x: 60, y: 1772, w: 142, h: 56 },
+        { action: "next", x: 1059, y: 1772, w: 321, h: 56 }
+      ],
+      covers: [
+        { x: 60, y: 650, w: 420, h: 230 },
+        { x: 510, y: 650, w: 420, h: 230 },
+        { x: 960, y: 650, w: 420, h: 230 },
+        { x: 60, y: 1220, w: 420, h: 230 },
+        { x: 510, y: 1220, w: 420, h: 230 },
+        { x: 960, y: 1220, w: 420, h: 230 }
+      ],
+      images: [
+        { src: "Hickory Activation/Activation GIFs/Module 3/Ncc codes.gif", x: 60, y: 650, w: 420, h: 230 },
+        { src: "Hickory Activation/Activation GIFs/Module 3/Ac codes.gif", x: 510, y: 650, w: 420, h: 230 },
+        { src: "Hickory Activation/Activation GIFs/Module 3/Other Quality Standards.gif", x: 960, y: 650, w: 420, h: 230 },
+        { src: "Hickory Activation/Activation GIFs/Module 3/NCC Codes  2.gif", x: 60, y: 1220, w: 420, h: 230 },
+        { src: "Hickory Activation/Activation GIFs/Module 3/Hotspot.gif", x: 510, y: 1220, w: 420, h: 230 },
+        { src: "Hickory Activation/Activation GIFs/Module 3/Side panel.gif", x: 960, y: 1220, w: 420, h: 230 }
+      ]
+    },
+    {
+      id: 6,
+      file: moduleConfig.slides.slide6.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide6.height,
+      overlays: [
+        { action: "back", x: 101, y: 55, w: 50, h: 50 },
+        { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+        { action: "video", src: moduleConfig.slides.slide6.video, x: 1213, y: 170, w: 167, h: 48 },
+        { action: "back", x: 60, y: 2011, w: 142, h: 56 },
+        { action: "next", x: 947, y: 2011, w: 433, h: 56 }
+      ],
+      covers: [
+        { x: 800, y: 273, w: 580, h: 691 }
+      ],
+      images: [
+        { src: "EDU Activation/GIFs/Share Link into a GIF - Survival Tools.gif", x: 800, y: 273, w: 580, h: 691 }
+      ]
+    },
+    {
+      id: 7,
+      file: moduleConfig.slides.slide7.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide7.height,
+      overlays: [
+        { action: "back", x: 101, y: 55, w: 50, h: 50 },
+        { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+        { action: "video", src: moduleConfig.slides.slide7.video, x: 1214, y: 170, w: 166, h: 48 },
+        { action: "back", x: 60, y: 1622, w: 142, h: 56 },
+        { action: "next", x: 947, y: 1622, w: 433, h: 56 }
+      ]
+    },
+    {
+      id: 8,
+      file: moduleConfig.slides.slide8.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide8.height,
+      overlays: [
+        { action: "back", x: 101, y: 55, w: 50, h: 50 },
+        { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+        { action: "video", src: moduleConfig.slides.slide8.video, x: 1214, y: 170, w: 166, h: 48 },
+        { action: "url", url: "https://info.buildingtools.co/knowledge-base/function", x: 61.9489, y: 1348.36, w: 93, h: 20 },
+        { action: "url", url: "https://info.buildingtools.co/knowledge-base/building-code", x: 511.949, y: 1356.36, w: 93, h: 20 },
+        { action: "url", url: "https://info.buildingtools.co/knowledge-base/citation", x: 961.949, y: 1356.36, w: 93, h: 20 },
+        { action: "url", url: "https://info.buildingtools.co/knowledge-base/share-links", x: 61.9489, y: 1798.36, w: 93, h: 20 },
+        { action: "url", url: "https://info.buildingtools.co/knowledge-base/-playlist", x: 511.949, y: 1798.36, w: 93, h: 20 },
+        { action: "url", url: "https://info.buildingtools.co/knowledge-base/your-tools", x: 961.949, y: 1798.36, w: 93, h: 20 },
+        { action: "url", url: "https://info.buildingtools.co/knowledge-base", x: 636.5, y: 1864, w: 167, h: 52 },
+        { action: "back", x: 60, y: 3168, w: 142, h: 56 },
+        { action: "next", x: 947, y: 3168, w: 433, h: 56 }
+      ],
+      images: [
+        { src: "creatives/Tools feedback V2.gif", x: 710, y: 325, w: 610, h: 377 }
+      ],
+      faq: {
+        x: 130,
+        y: 2140,
+        w: 1180,
+        items: moduleConfig.faqs
+      }
+    },
+    {
+      id: 9,
+      file: moduleConfig.slides.slide9.file,
+      viewBoxWidth: 1440,
+      viewBoxHeight: moduleConfig.slides.slide9.height,
+      overlays: [
+        { action: "back", x: 101, y: 55, w: 50, h: 50 },
+        { action: "url", url: moduleConfig.finalUrls.signup, x: 453.016, y: 548, w: 203, h: 56 },
+        { action: "url", url: moduleConfig.finalUrls.implementationGuide, x: 688.016, y: 548, w: 300, h: 56 }
+      ]
+    }
+  ];
+
+  // Continue with rest of JavaScript from edu-activation-tafesa.html...
+  // (DOM building, overlay rendering, modal handling, etc.)
+  // This will be in module.js file
+
+})();
+</script>

@@ -1,0 +1,9 @@
+{
+  "label": "TAFE Activation Guide",
+  "icon": "📚",
+  "is_available_for_new_content": true,
+  "host_template_types": ["PAGE", "BLOG_POST"],
+  "module_id": 123456789,
+  "categories": ["content"],
+  "global": false
+}

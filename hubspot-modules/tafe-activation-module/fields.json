@@ -1,0 +1,340 @@
+[
+  {
+    "id": "institution_name",
+    "name": "institution_name",
+    "label": "Institution Name",
+    "required": true,
+    "locked": false,
+    "type": "text",
+    "default": "TAFE SA"
+  },
+  {
+    "id": "base_url",
+    "name": "base_url",
+    "label": "Base URL",
+    "required": true,
+    "locked": false,
+    "type": "text",
+    "default": "tafesa.buildingtools.co",
+    "help_text": "e.g., tafesa.buildingtools.co or tafensw.buildingtools.co"
+  },
+  {
+    "id": "tracking_prefix",
+    "name": "tracking_prefix",
+    "label": "HubSpot Tracking Prefix",
+    "required": true,
+    "locked": false,
+    "type": "text",
+    "default": "tafesa",
+    "help_text": "Prefix for HubSpot property names (e.g., tafesa, tafensw)"
+  },
+  {
+    "id": "slides",
+    "name": "slides",
+    "label": "Slides",
+    "required": false,
+    "locked": false,
+    "type": "group",
+    "children": [
+      {
+        "id": "slide_1_file",
+        "name": "slide_1_file",
+        "label": "Slide 1 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/1 - Transform Student Learning.svg"
+      },
+      {
+        "id": "slide_1_height",
+        "name": "slide_1_height",
+        "label": "Slide 1 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 1175
+      },
+      {
+        "id": "slide_2_file",
+        "name": "slide_2_file",
+        "label": "Slide 2 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/2 - Understand what Tools™ Does.svg"
+      },
+      {
+        "id": "slide_2_height",
+        "name": "slide_2_height",
+        "label": "Slide 2 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 3781
+      },
+      {
+        "id": "slide_2_video",
+        "name": "slide_2_video",
+        "label": "Slide 2 - Show Me Video URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Module%201%20-%20Understand%20what%20tools%20does.mp4"
+      },
+      {
+        "id": "slide_3_file",
+        "name": "slide_3_file",
+        "label": "Slide 3 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/TAFE NSW/3 - TAFE NSW How to Access Tools™.svg"
+      },
+      {
+        "id": "slide_3_height",
+        "name": "slide_3_height",
+        "label": "Slide 3 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 1874
+      },
+      {
+        "id": "slide_3_video",
+        "name": "slide_3_video",
+        "label": "Slide 3 - Show Me Video URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/2%20Activate%20-%20How%20to%20access%20tools.mp4"
+      },
+      {
+        "id": "slide_4_file",
+        "name": "slide_4_file",
+        "label": "Slide 4 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/4 - Understand what Tools™ Does.svg"
+      },
+      {
+        "id": "slide_4_height",
+        "name": "slide_4_height",
+        "label": "Slide 4 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 2241
+      },
+      {
+        "id": "slide_4_video",
+        "name": "slide_4_video",
+        "label": "Slide 4 - Show Me Video URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Gen%20Ai%20vs.%20Tools.mp4"
+      },
+      {
+        "id": "slide_5_file",
+        "name": "slide_5_file",
+        "label": "Slide 5 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/5 - code coverage & citations.svg"
+      },
+      {
+        "id": "slide_5_height",
+        "name": "slide_5_height",
+        "label": "Slide 5 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 1907
+      },
+      {
+        "id": "slide_5_video",
+        "name": "slide_5_video",
+        "label": "Slide 5 - Show Me Video URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Code%20Coverage.webm"
+      },
+      {
+        "id": "slide_6_file",
+        "name": "slide_6_file",
+        "label": "Slide 6 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/6 - Basic Sharing - Link, QR, PDF.svg"
+      },
+      {
+        "id": "slide_6_height",
+        "name": "slide_6_height",
+        "label": "Slide 6 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 2127
+      },
+      {
+        "id": "slide_6_video",
+        "name": "slide_6_video",
+        "label": "Slide 6 - Show Me Video URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Basic%20Sharing.mp4"
+      },
+      {
+        "id": "slide_7_file",
+        "name": "slide_7_file",
+        "label": "Slide 7 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/7 - Understanding Student Access.svg"
+      },
+      {
+        "id": "slide_7_height",
+        "name": "slide_7_height",
+        "label": "Slide 7 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 1794
+      },
+      {
+        "id": "slide_7_video",
+        "name": "slide_7_video",
+        "label": "Slide 7 - Show Me Video URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Understanding%20Student%20Access.webm"
+      },
+      {
+        "id": "slide_8_file",
+        "name": "slide_8_file",
+        "label": "Slide 8 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/8 - Support.svg"
+      },
+      {
+        "id": "slide_8_height",
+        "name": "slide_8_height",
+        "label": "Slide 8 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 3284
+      },
+      {
+        "id": "slide_8_video",
+        "name": "slide_8_video",
+        "label": "Slide 8 - Show Me Video URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/(Ari)%20Videos%20for%20Activation%20Pages%20-%20Jan%202026/EDU/Activate/Support.mp4"
+      },
+      {
+        "id": "slide_9_file",
+        "name": "slide_9_file",
+        "label": "Slide 9 - SVG File URL",
+        "required": true,
+        "locked": false,
+        "type": "text",
+        "default": "EDU Activation/9 - All set.svg"
+      },
+      {
+        "id": "slide_9_height",
+        "name": "slide_9_height",
+        "label": "Slide 9 - Height",
+        "required": true,
+        "locked": false,
+        "type": "number",
+        "default": 756
+      }
+    ]
+  },
+  {
+    "id": "faq_items",
+    "name": "faq_items",
+    "label": "FAQ Items (Slide 8)",
+    "required": false,
+    "locked": false,
+    "type": "group",
+    "children": [
+      {
+        "id": "faq_1_question",
+        "name": "faq_1_question",
+        "label": "FAQ 1 - Question",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "What is Tools™ & how can it help me?"
+      },
+      {
+        "id": "faq_1_answer",
+        "name": "faq_1_answer",
+        "label": "FAQ 1 - Answer",
+        "required": false,
+        "locked": false,
+        "type": "textarea",
+        "default": "Tools™ is a platform that transforms complex Building Codes & Australian Standards (AS) into clear, interactive graphics. It helps users quickly understand & apply building regulations, saving time & improving accuracy."
+      },
+      {
+        "id": "faq_2_question",
+        "name": "faq_2_question",
+        "label": "FAQ 2 - Question",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "Can I access Tools™ on mobile devices?"
+      },
+      {
+        "id": "faq_2_answer",
+        "name": "faq_2_answer",
+        "label": "FAQ 2 - Answer",
+        "required": false,
+        "locked": false,
+        "type": "textarea",
+        "default": "Yes, Tools™ can be accessed via the web platform & mobile apps. While the web platform offers full functionality, the mobile app is designed for quick viewing & on-the-go access."
+      }
+    ]
+  },
+  {
+    "id": "final_slide_urls",
+    "name": "final_slide_urls",
+    "label": "Final Slide URLs",
+    "required": false,
+    "locked": false,
+    "type": "group",
+    "children": [
+      {
+        "id": "signup_url",
+        "name": "signup_url",
+        "label": "Sign Up URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://tafesa.buildingtools.co/"
+      },
+      {
+        "id": "implementation_guide_url",
+        "name": "implementation_guide_url",
+        "label": "Implementation Guide URL",
+        "required": false,
+        "locked": false,
+        "type": "text",
+        "default": "https://info.buildingtools.co/11ways-tafesa"
+      }
+    ]
+  }
+]

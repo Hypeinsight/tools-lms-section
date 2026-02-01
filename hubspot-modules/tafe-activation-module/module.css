@@ -1,0 +1,194 @@
+:root {
+  --max-w: 1440px;
+}
+
+html, body { 
+  margin: 0; 
+  padding: 0; 
+  background: transparent; 
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+  color: #111; 
+}
+
+.tafe-activation-module .page { 
+  display: flex; 
+  justify-content: center; 
+  padding: 0; 
+}
+
+.tafe-activation-module .container { 
+  position: relative; 
+  width: 100%; 
+  max-width: var(--max-w); 
+  background: #DAE5F1; 
+  border-radius: 8px; 
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25); 
+}
+
+.tafe-activation-module .component { 
+  display: none; 
+  position: relative; 
+  background: #DAE5F1; 
+}
+
+.tafe-activation-module .component.active { 
+  display: block; 
+}
+
+.tafe-activation-module .svg-host { 
+  position: relative; 
+  width: 100%; 
+  height: auto; 
+  display: block; 
+  background: #DAE5F1; 
+}
+
+.tafe-activation-module .svg-host img { 
+  width: 100%; 
+  height: auto; 
+  display: block; 
+}
+
+/* overlay root sits above the image in the svg-host */
+.tafe-activation-module .overlay-root { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  pointer-events: none; 
+  z-index: 10; 
+}
+
+.tafe-activation-module .click-area { 
+  position: absolute; 
+  border-radius: 8px; 
+  pointer-events: auto; 
+  cursor: pointer; 
+}
+
+.tafe-activation-module .video-embed { 
+  position: absolute; 
+  pointer-events: auto; 
+  border: none; 
+  border-radius: 24px; 
+}
+
+.tafe-activation-module .image-embed { 
+  position: absolute; 
+  pointer-events: none; 
+  border-radius: 32px; 
+}
+
+/* Image Modal */
+.tafe-activation-module .image-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.tafe-activation-module .image-modal.active {
+  display: flex;
+}
+
+.tafe-activation-module .image-modal img {
+  max-width: 90%;
+  max-height: 90vh;
+  border-radius: 8px;
+}
+
+.tafe-activation-module .image-modal .close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #252D36;
+  font-weight: 700;
+}
+
+.tafe-activation-module .image-modal .close-button:hover {
+  background: white;
+}
+
+/* FAQ Accordion Styles */
+.tafe-activation-module .faq-accordion { 
+  position: absolute; 
+  pointer-events: auto; 
+  z-index: 20; 
+}
+
+.tafe-activation-module .faq-item { 
+  background: white; 
+  margin-bottom: 12px; 
+  border-radius: 12px; 
+  overflow: hidden; 
+  cursor: pointer; 
+  transition: all 0.3s ease; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); 
+}
+
+.tafe-activation-module .faq-item:last-child { 
+  margin-bottom: 0; 
+}
+
+.tafe-activation-module .faq-question { 
+  padding: 24px 70px 24px 30px; 
+  font-weight: 600; 
+  font-size: 18px; 
+  color: #1F2937; 
+  position: relative; 
+  user-select: none; 
+  line-height: 1.4; 
+}
+
+.tafe-activation-module .faq-question::after { 
+  content: '+'; 
+  position: absolute; 
+  right: 30px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  font-size: 32px; 
+  font-weight: 300; 
+  color: #1482FF; 
+  transition: transform 0.3s ease; 
+}
+
+.tafe-activation-module .faq-item.active .faq-question::after { 
+  content: '−'; 
+  transform: translateY(-50%) rotate(180deg); 
+}
+
+.tafe-activation-module .faq-answer { 
+  max-height: 0; 
+  overflow: hidden; 
+  transition: max-height 0.3s ease, padding 0.3s ease; 
+}
+
+.tafe-activation-module .faq-item.active .faq-answer { 
+  max-height: 600px; 
+}
+
+.tafe-activation-module .faq-answer-content { 
+  padding: 0 30px 24px 30px; 
+  font-size: 16px; 
+  line-height: 1.7; 
+  color: #4B5563; 
+}
+
+.tafe-activation-module .faq-item:hover { 
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); 
+}
