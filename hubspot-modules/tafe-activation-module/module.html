@@ -302,9 +302,278 @@
     }
   ];
 
-  // Continue with rest of JavaScript from edu-activation-tafesa.html...
-  // (DOM building, overlay rendering, modal handling, etc.)
-  // This will be in module.js file
+  // State management
+  const state = {
+    index: 0,
+    loaded: new Array(components.length).fill(false),
+    viewBox: new Array(components.length).fill(null)
+  };
+
+  // Build DOM
+  function buildDOM() {
+    components.forEach((c, i) => {
+      const comp = document.createElement('div');
+      comp.className = 'component' + (i === 0 ? ' active' : '');
+      comp.dataset.idx = i;
+
+      const host = document.createElement('div');
+      host.className = 'svg-host';
+
+      const img = document.createElement('img');
+      img.src = c.file;
+      img.setAttribute('aria-label', `Slide ${c.id}`);
+
+      const overlays = document.createElement('div');
+      overlays.className = 'overlay-root';
+
+      host.appendChild(img);
+      host.appendChild(overlays);
+      comp.appendChild(host);
+      container.appendChild(comp);
+
+      state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 2500 };
+      
+      img.addEventListener('load', () => {
+        state.loaded[i] = true;
+        renderOverlays(i);
+      });
+    });
+  }
+
+  function renderOverlays(idx) {
+    const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+    if (!compEl) return;
+    const root = compEl.querySelector('.overlay-root');
+    root.innerHTML = '';
+    const vb = state.viewBox[idx];
+    if (!vb) return;
+
+    // Render covers
+    if (components[idx].covers) {
+      components[idx].covers.forEach((cover) => {
+        const coverEl = document.createElement('div');
+        coverEl.style.position = 'absolute';
+        coverEl.style.left = (cover.x / vb.w) * 100 + '%';
+        coverEl.style.top = (cover.y / vb.h) * 100 + '%';
+        coverEl.style.width = (cover.w / vb.w) * 100 + '%';
+        coverEl.style.height = (cover.h / vb.h) * 100 + '%';
+        coverEl.style.backgroundColor = '#DAE5F1';
+        coverEl.style.borderRadius = '8px';
+        coverEl.style.pointerEvents = 'none';
+        root.appendChild(coverEl);
+      });
+    }
+
+    // Render images
+    if (components[idx].images) {
+      components[idx].images.forEach((img) => {
+        const imgEl = document.createElement('img');
+        imgEl.className = 'image-embed';
+        imgEl.src = img.src;
+        imgEl.style.position = 'absolute';
+        imgEl.style.left = (img.x / vb.w) * 100 + '%';
+        imgEl.style.top = (img.y / vb.h) * 100 + '%';
+        imgEl.style.width = (img.w / vb.w) * 100 + '%';
+        imgEl.style.height = (img.h / vb.h) * 100 + '%';
+        imgEl.style.objectFit = 'contain';
+        root.appendChild(imgEl);
+      });
+    }
+
+    // Render videos
+    if (components[idx].videos) {
+      components[idx].videos.forEach((v) => {
+        const videoEl = document.createElement('video');
+        videoEl.className = 'video-embed';
+        videoEl.controls = true;
+        videoEl.style.left = (v.x / vb.w) * 100 + '%';
+        videoEl.style.top = (v.y / vb.h) * 100 + '%';
+        videoEl.style.width = (v.w / vb.w) * 100 + '%';
+        videoEl.style.height = (v.h / vb.h) * 100 + '%';
+        const source = document.createElement('source');
+        source.src = v.src;
+        source.type = 'video/mp4';
+        videoEl.appendChild(source);
+        root.appendChild(videoEl);
+      });
+    }
+
+    // Render iframes
+    if (components[idx].iframes) {
+      components[idx].iframes.forEach((iframe) => {
+        const iframeEl = document.createElement('iframe');
+        iframeEl.className = 'video-embed';
+        iframeEl.src = iframe.src;
+        iframeEl.style.left = (iframe.x / vb.w) * 100 + '%';
+        iframeEl.style.top = (iframe.y / vb.h) * 100 + '%';
+        iframeEl.style.width = (iframe.w / vb.w) * 100 + '%';
+        iframeEl.style.height = (iframe.h / vb.h) * 100 + '%';
+        iframeEl.style.border = 'none';
+        iframeEl.setAttribute('frameborder', '0');
+        iframeEl.setAttribute('scrolling', 'no');
+        root.appendChild(iframeEl);
+      });
+    }
+
+    // Render overlays
+    components[idx].overlays.forEach((o) => {
+      const el = document.createElement('div');
+      el.className = 'click-area';
+      el.style.left = (o.x / vb.w) * 100 + '%';
+      el.style.top = (o.y / vb.h) * 100 + '%';
+      el.style.width = (o.w / vb.w) * 100 + '%';
+      el.style.height = (o.h / vb.h) * 100 + '%';
+      el.title = o.action.toUpperCase();
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleAction(o);
+      });
+      root.appendChild(el);
+    });
+
+    // Render FAQ
+    if (components[idx].faq) {
+      const faq = components[idx].faq;
+      const faqContainer = document.createElement('div');
+      faqContainer.className = 'faq-accordion';
+      faqContainer.style.left = (faq.x / vb.w) * 100 + '%';
+      faqContainer.style.top = (faq.y / vb.h) * 100 + '%';
+      faqContainer.style.width = (faq.w / vb.w) * 100 + '%';
+
+      faq.items.forEach((item, i) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'faq-item';
+        const questionEl = document.createElement('div');
+        questionEl.className = 'faq-question';
+        questionEl.textContent = item.q;
+        const answerEl = document.createElement('div');
+        answerEl.className = 'faq-answer';
+        const answerContent = document.createElement('div');
+        answerContent.className = 'faq-answer-content';
+        answerContent.textContent = item.a;
+        answerEl.appendChild(answerContent);
+        itemEl.appendChild(questionEl);
+        itemEl.appendChild(answerEl);
+        itemEl.addEventListener('click', () => {
+          const allFaqItems = faqContainer.querySelectorAll('.faq-item');
+          allFaqItems.forEach(otherItem => {
+            if (otherItem !== itemEl) otherItem.classList.remove('active');
+          });
+          itemEl.classList.toggle('active');
+        });
+        faqContainer.appendChild(itemEl);
+      });
+      root.appendChild(faqContainer);
+    }
+  }
+
+  function handleAction(o) {
+    if (o.action === 'next') {
+      goTo(state.index + 1);
+    } else if (o.action === 'back') {
+      goTo(state.index - 1);
+    } else if (o.action === 'url' && o.url) {
+      if (o.url.includes('signup')) trackSignupClick();
+      window.open(o.url, '_blank', 'noopener');
+    } else if (o.action === 'image' && o.src) {
+      showImageModal(o.src);
+    } else if (o.action === 'video' && o.src) {
+      trackShowMeClick();
+      showVideoModal(o.src);
+    }
+  }
+
+  function showImageModal(src) {
+    const modal = document.getElementById('imageModal-' + moduleId);
+    const img = document.getElementById('modalImage-' + moduleId);
+    img.src = src;
+    modal.classList.add('active');
+  }
+
+  function closeImageModal() {
+    const modal = document.getElementById('imageModal-' + moduleId);
+    modal.classList.remove('active');
+  }
+
+  function showVideoModal(src) {
+    const modal = document.getElementById('videoModal-' + moduleId);
+    const video = document.getElementById('modalVideo-' + moduleId);
+    const source = document.getElementById('modalVideoSource-' + moduleId);
+    const extension = src.split('.').pop().toLowerCase();
+    source.type = extension === 'webm' ? 'video/webm' : 'video/mp4';
+    source.src = src;
+    video.load();
+    modal.classList.add('active');
+    video.addEventListener('play', function trackPlay() {
+      trackVideoWatch();
+      video.removeEventListener('play', trackPlay);
+    }, { once: true });
+  }
+
+  function closeVideoModal() {
+    const modal = document.getElementById('videoModal-' + moduleId);
+    const video = document.getElementById('modalVideo-' + moduleId);
+    video.pause();
+    modal.classList.remove('active');
+  }
+
+  function goTo(newIndex) {
+    const max = components.length - 1;
+    const clamped = Math.max(0, Math.min(max, newIndex));
+    if (clamped === state.index) return;
+    
+    const prev = container.querySelector(`.component[data-idx="${state.index}"]`);
+    const next = container.querySelector(`.component[data-idx="${clamped}"]`);
+    if (prev) prev.classList.remove('active');
+    if (next) next.classList.add('active');
+    state.index = clamped;
+    
+    if (state.viewBox[clamped]) renderOverlays(clamped);
+    trackSlideView(clamped + 1);
+    if (clamped === max) trackActivationComplete();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function hookKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        goTo(state.index + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        goTo(state.index - 1);
+      } else if (e.key === 'Escape') {
+        closeImageModal();
+        closeVideoModal();
+      }
+    });
+  }
+
+  function hookModals() {
+    const imageModal = document.getElementById('imageModal-' + moduleId);
+    const closeBtn = document.getElementById('closeModal-' + moduleId);
+    closeBtn.addEventListener('click', closeImageModal);
+    imageModal.addEventListener('click', (e) => {
+      if (e.target === imageModal) closeImageModal();
+    });
+
+    const videoModal = document.getElementById('videoModal-' + moduleId);
+    const closeVideoBtn = document.getElementById('closeVideoModal-' + moduleId);
+    closeVideoBtn.addEventListener('click', closeVideoModal);
+    videoModal.addEventListener('click', (e) => {
+      if (e.target === videoModal) closeVideoModal();
+    });
+  }
+
+  // Initialize
+  buildDOM();
+  hookKeyboard();
+  hookModals();
+  
+  window.addEventListener('load', () => {
+    trackSlideView(1);
+  });
 
 })();
 </script>
