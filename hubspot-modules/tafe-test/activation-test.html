@@ -1,0 +1,25 @@
+{#
+  templateType: page
+  isAvailableForNewContent: true
+  label: "Activation Test (Coded)"
+#}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Activation Test Page</title>
+  {{ standard_header_includes }}
+  <style>
+    body { margin:0; background:#F5F7FA; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .wrap { max-width: 1440px; margin: 24px auto; padding: 16px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 style="margin:0 0 16px 0; font-size: 24px;">Activation Test</h1>
+    {% module "activation" path="/tafe-activation-module", label="TAFE Activation Guide" %}
+  </div>
+  {{ standard_footer_includes }}
+</body>
+</html>

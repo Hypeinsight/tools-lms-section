@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MBA Activation</title>
+  <style>
+    :root {
+      --max-w: 1440px;
+    }
+    html, body { margin: 0; padding: 0; background:transparent; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
+    .page { display:flex; justify-content:center; padding:0; }
+    .container { position:relative; width:100%; max-width: var(--max-w); background:#DAE5F1; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
+
+    .component { display:none; position:relative; background:#DAE5F1; }
+    .component.active { display:block; }
+
+    .svg-host { position:relative; width:100%; display:block; background:#DAE5F1; }
+    .svg-host img { width:100%; height:auto; display:block; }
+    .svg-host.dynamic-height { height: auto; min-height: 100%; }
+
+    /* overlay root sits above the image in the svg-host */
+    .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
+    .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
+    .video-embed { position:absolute; pointer-events:auto; border:none; border-radius:24px; }
+    .image-embed { position:absolute; pointer-events:none; border-radius:32px; }
+    
+    /* Accordion */
+    .accordion-item {
+      position: absolute;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: top 0.3s ease;
+    }
+    
+    .accordion-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="container">
+      <!-- components injected here by JS -->
+    </div>
+  </div>
+
+  <script>
+    const components = [
+      {
+        id: 1,
+        file: "MBA/1 Get Started.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1242,
+        overlays: [
+          { action: "next", x: 1216, y: 75, w: 131, h: 63 },
+          { action: "next", x: 1170, y: 1129, w: 216, h: 53 }
+        ]
+      },
+      {
+        id: 2,
+        file: "MBA/2 NCC and AS Code  in Graphics.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1105,
+        overlays: [
+          { action: "back", x: 98, y: 75, w: 48, h: 56 },
+          { action: "next", x: 1287, y: 71, w: 52, h: 60 },
+          { action: "back", x: 50, y: 986, w: 152, h: 61 },
+          { action: "next", x: 1197, y: 990, w: 183, h: 52 }
+        ],
+        videos: [
+          { src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/EDU%20website.mp4", x: 561, y: 405, w: 769, h: 436 }
+        ]
+      },
+      {
+        id: 3,
+        file: "MBA/3 How to Read ToolsTM.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1267,
+        overlays: [
+          { action: "back", x: 98, y: 75, w: 48, h: 56 },
+          { action: "next", x: 1287, y: 71, w: 52, h: 60 },
+          { action: "back", x: 56, y: 1138, w: 148, h: 63 },
+          { action: "next", x: 1199, y: 1139, w: 182, h: 58 }
+        ]
+      },
+      {
+        id: 4,
+        file: "MBA/4 How to achieve Quality_.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1310,
+        overlays: [
+          { action: "back", x: 98, y: 75, w: 48, h: 56 },
+          { action: "next", x: 1287, y: 71, w: 52, h: 60 },
+          { action: "url", url: "https://www.youtube.com/watch?v=NJyDyLEigbQ&t=6s", x: 58, y: 812, w: 422, h: 223 },
+          { action: "url", url: "https://www.youtube.com/watch?v=F7guvx59ZwI", x: 505, y: 811, w: 426, h: 228 },
+          { action: "url", url: "https://vimeo.com/762128620?fl=pl&fe=vl", x: 958, y: 804, w: 423, h: 233 },
+          { action: "back", x: 60, y: 1190, w: 145, h: 56 },
+          { action: "next", x: 1192, y: 1190, w: 190, h: 57 }
+        ]
+      },
+      {
+        id: 5,
+        file: "MBA/5 Foundational Tools™ for Education.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1400,
+        overlays: [
+          { action: "back", x: 98, y: 75, w: 48, h: 56 },
+          { action: "next", x: 1287, y: 71, w: 52, h: 60 }
+        ],
+        accordion: {
+          startY: 354,
+          itemWidth: 1320,
+          itemX: 64,
+          spacing: 16,
+          navSrc: "MBA/Accordion/nav/slide 5 bottom nav.svg",
+          navWidth: 1320,
+          navHeight: 107,
+          navX: 64,
+          items: [
+            {
+              id: 1,
+              closedSrc: "MBA/Accordion/1 Property 1=Science of Construction Quality Closed.svg",
+              openSrc: "MBA/Accordion/1 Property 1=Science of Construction Quality Open.svg",
+              closedHeight: 62,
+              openHeight: 445,
+              open: false,
+              links: [
+                { url: "https://app.buildingtools.co/tools/skills-drainage-science-ncc2022.2-1.5?menu_id=10-3-1&shareId=ch6ODI-1766983736919&zoom=0.8162978768908519&x=580.7935699572613&y=304.4245074494621&standard=&action=click&type=0", x: 8, y: 335.531, w: 138.844, h: 25 },
+                { url: "https://app.buildingtools.co/tools/skills-fire-resistance-science-ncc2022.2-1.2?x=-50.705724464712674&y=306.98195377058875&zoom=0.7503651759245002&shareId=ch6ODI-1766983736919&menu_id=10-3-2&standard=&action=click&type=0", x: 443, y: 335.531, w: 188.703, h: 25 }
+              ]
+            },
+            {
+              id: 2,
+              closedSrc: "MBA/Accordion/2 Property 1=Plumbing Closed.svg",
+              openSrc: "MBA/Accordion/2 Property 1=Plumbing Open.svg",
+              closedHeight: 62,
+              openHeight: 445,
+              open: false,
+              links: [
+                { url: "https://app.buildingtools.co/tools/services-plumbing-overview-ncc2022.2-1.7?menu_id=6-4-0&shareId=ch6ODI-1767061462569&zoom=1&x=533.7488731200478&y=312.00876016784053&standard=&action=click&type=0", x: 8, y: 335.531, w: 153.938, h: 25 },
+                { url: "https://app.buildingtools.co/tools/hot-water-service-ncc2022.2-1.7?v=1767061873557&shareId=ch6ODI-1767061462569&zoom=0.9345794392523364&menu_id=6-4-0&x=171.02997015287832&y=311.2378705626312&standard=&action=click&type=0", x: 443, y: 335.531, w: 135.266, h: 25 },
+                { url: "https://app.buildingtools.co/tools/services-plumbing-sanitary-floor-waste-gully-fwg-ncc2022.2-1.0?menu_id=6-4-2&shareId=ch6ODI-1767061462569&zoom=1.07&x=249.74397181977366&y=310.64036486740235&standard=&action=click&type=0", x: 878, y: 335.531, w: 140.88, h: 25 }
+              ]
+            },
+            {
+              id: 3,
+              closedSrc: "MBA/Accordion/3 Property 1=Carpentry Closed.svg",
+              openSrc: "MBA/Accordion/3 Property 1=Carpentry Open.svg",
+              closedHeight: 62,
+              openHeight: 716,
+              open: false,
+              links: [
+                { url: "https://app.buildingtools.co/tools/structure-framing-overview-timber-ncc2022.2-1.16?zoom=1.1449&shareId=ch6ODI-1767061462569&menu_id=8-3-0&x=297.26815449615225&y=283.1260190178651&standard=&action=click&type=0", x: 8, y: 335.531, w: 194.594, h: 25 },
+                { url: "https://app.buildingtools.co/tools/structure-timber-balconies-decks-ncc2022.2-1.10?menu_id=8-3-1&shareId=ch6ODI-1767061462569&zoom=1.3107960100000002&x=231.22255966793085&y=287.7052453169939&standard=&action=click&type=0", x: 443, y: 335.531, w: 143.312, h: 25 },
+                { url: "https://app.buildingtools.co/tools/structure-timber-wall-framing-ncc2022.2-1.9?v=1767063437398&shareId=ch6ODI-1767061462569&zoom=1.1449&menu_id=8-3-8&x=104.30864840682996&y=286.10506377839874&standard=&action=click&type=0", x: 878, y: 335.531, w: 156.31, h: 25 },
+                { url: "https://app.buildingtools.co/tools/structure-timber-girder-saddle-truss-ncc2022.2-1.0?menu_id=8-3-3&shareId=ch6ODI-1767061462569&zoom=1.225043&x=307.97884587507764&y=267.7833115921471&standard=&action=click&type=0", x: 8, y: 662.531, w: 168.203, h: 25 }
+              ]
+            },
+            {
+              id: 4,
+              closedSrc: "MBA/Accordion/4 Property 1=Electrical Closed.svg",
+              openSrc: "MBA/Accordion/4 Property 1=Electrical Open.svg",
+              closedHeight: 62,
+              openHeight: 445,
+              open: false,
+              links: [
+                { url: "https://app.buildingtools.co/tools/wet-area-bathroom-electrical-safety-ncc2022.2-1.26?point=dd51959e-d7a6-4e25-a4e7-1fb86fcbc04a&shareId=ch6ODI-1767061462569&standard=&zoom=2.5785341502012487&x=312.99618995519893&y=279.1880910466536&action=click&type=1", x: 8, y: 335.531, w: 144.188, h: 25 },
+                { url: "https://app.buildingtools.co/tools/services-aerial-wiring-clearance-insulated-ncc2022.2-1.1?menu_id=6-0-0&shareId=ch6ODI-1767061462569&zoom=1.576439032602215&x=338.2628211175957&y=413.65981068651473&standard=&action=click&type=0", x: 443, y: 335.531, w: 183.391, h: 25 },
+                { url: "https://app.buildingtools.co/tools/services-electrical-meter-box-residential-ncc2022.2-1.9?x=513.2609407909374&y=238.33392018786876&zoom=1&shareId=ch6ODI-1767061462569&menu_id=6-0-3&standard=&action=click&type=0", x: 878, y: 335.531, w: 75.625, h: 25 }
+              ]
+            },
+            {
+              id: 5,
+              closedSrc: "MBA/Accordion/5 Property 1=Waterproofing Closed.svg",
+              openSrc: "MBA/Accordion/5 Property 1=Waterproofing Open.svg",
+              closedHeight: 62,
+              openHeight: 445,
+              open: false,
+              links: [
+                { url: "https://app.buildingtools.co/tools/waterproofing-sub-sill-sliding-door-window-ncc2022.2-1.29?v=1767063868155&shareId=ch6ODI-1767061462569&zoom=1.3107960100000002&menu_id=9-1-0&x=519.5816757512367&y=269.62559700389886&standard=&action=click&type=0", x: 8, y: 335.531, w: 322.094, h: 25 },
+                { url: "https://app.buildingtools.co/tools/waterproofing-cavity-slide-door-waterstop-ncc2022.2-1.26?menu_id=9-2-5-0&shareId=ch6ODI-1767061462569&zoom=1.225043&x=184.89135819534948&y=371.35258936550656&standard=&action=click&type=0", x: 443, y: 335.531, w: 143.25, h: 25 },
+                { url: "https://app.buildingtools.co/tools/waterproofing-cavity-slide-door-waterstop-ncc2022.2-1.26?menu_id=9-2-5-0&shareId=ch6ODI-1767061462569&zoom=1.225043&x=394.1901338301639&y=371.51584894088467&standard=&action=click&type=0", x: 878, y: 335.531, w: 131.67, h: 25 }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 6,
+        file: "MBA/6 Code Coverage & Citations.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1169,
+        overlays: [
+          { action: "back", x: 98, y: 75, w: 48, h: 56 },
+          { action: "next", x: 1287, y: 71, w: 52, h: 60 },
+          { action: "back", x: 51, y: 1049, w: 148, h: 57 },
+          { action: "next", x: 1194, y: 1051, w: 185, h: 60 }
+        ]
+      },
+      {
+        id: 7,
+        file: "MBA/7 Gen AI Is Getting NCC Codes Wrong.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2299,
+        overlays: [
+          { action: "back", x: 98, y: 75, w: 48, h: 56 },
+          { action: "next", x: 1287, y: 71, w: 52, h: 60 },
+          { action: "url", url: "https://app.buildingtools.co/tools/waterproofing-floor-waste-bathroom-internal-ncc2022.2-1.21?point=599cdc25-d40f-496c-8c12-1ea904608359&shareId=XLya3n-1768191781067&standard=&zoom=2.1828745883819374&x=358.44767904921184&y=215.99947042195916&action=click&type=1", x: 575, y: 1384, w: 100, h: 25 },
+          { action: "url", url: "https://app.buildingtools.co/tools/structure-concrete-overview-ncc2022.2-1.15?point=cee973e4-2248-4b3b-941f-58e2bdee0bae&shareId=XLya3n-1768191781067&standard=&standard=&zoom=3.2382221334321435&x=473.0010970095049&y=395.5932716299341&action=click&action=click&type=1&type=0", x: 576, y: 1504, w: 104, h: 20 },
+          { action: "url", url: "https://app.buildingtools.co/tools/fire-swing-door-ncc2022.2-1.31?v=1768338457926&shareId=XLya3n-1768338441403&zoom=1.225043&menu_id=6-4-0&x=387.031170769994&y=431.5231071357872&standard=&action=click&type=0", x: 579, y: 1607, w: 98, h: 23 },
+          { action: "url", url: "https://app.buildingtools.co/tools/hot-water-service-ncc2022.2-1.6?point=94c4ec43-6c9c-48fa-8af2-5697b47d4cd0&shareId=ch6ODI-1768542269781&zoom=2.14&x=298.7642464911452&y=215.5823576162231&standard=&action=click&type=0", x: 570, y: 1716, w: 109, h: 23 },
+          { action: "url", url: "https://app.buildingtools.co/tools/services-separation-covering-electrical-cat-b-ncc2022.2-1.8?r=1&x=500.84437430230577&y=197.73771570111884&zoom=0.9345794392523364&shareId=XLya3n-1768338441403&menu_id=6-4-8&standard=&action=click&type=0", x: 574, y: 1852, w: 108, h: 24 },
+          { action: "url", url: "https://app.buildingtools.co/tools/services-service-penetration-wall-floor-framing-ncc2022.2-1.10?v=1768362200764&shareId=XLya3n-1768338441403&zoom=1.6057814764784306&menu_id=6-0-3&x=475.08397573358434&y=325.24575416878093&standard=&action=click&type=0", x: 579, y: 2008, w: 97, h: 21 },
+          { action: "image", image: "MBA/Chat GPT/1.png", x: 724, y: 1387, w: 106, h: 24 },
+          { action: "image", image: "MBA/Chat GPT/2.png", x: 724, y: 1504, w: 104, h: 21 },
+          { action: "image", image: "MBA/Chat GPT/3.png", x: 726, y: 1605, w: 102, h: 20 },
+          { action: "image", image: "MBA/Chat GPT/4.png", x: 727, y: 1716, w: 104, h: 24 },
+          { action: "image", image: "MBA/Chat GPT/5.png", x: 726, y: 1852, w: 103, h: 24 },
+          { action: "image", image: "MBA/Chat GPT/6.png", x: 726, y: 2009, w: 105, h: 22 },
+          { action: "back", x: 60, y: 2181, w: 143, h: 58 },
+          { action: "next", x: 1196, y: 2181, w: 186, h: 59 }
+        ]
+      },
+      {
+        id: 8,
+        file: "MBA/8 Sharing Tools.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1273,
+        overlays: [
+          { action: "back", x: 98, y: 75, w: 48, h: 56 },
+          { action: "next", x: 1287, y: 71, w: 52, h: 60 },
+          { action: "back", x: 53, y: 1155, w: 149, h: 54 },
+          { action: "next", x: 1195, y: 1153, w: 185, h: 59 }
+        ]
+      },
+      {
+        id: 9,
+        file: "MBA/9 MBA Member Deal.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1346,
+        overlays: [
+          { action: "back", x: 98, y: 75, w: 48, h: 56 },
+          { action: "next", x: 1287, y: 71, w: 52, h: 60 },
+          { action: "back", x: 52, y: 1228, w: 151, h: 58 },
+          { action: "next", x: 1155, y: 1222, w: 223, h: 62 },
+          { action: "url", url: "https://info.buildingtools.co/mbansw-tools-member-offer", x: 815, y: 816, w: 504, h: 89 }
+        ]
+      },
+      {
+        id: 10,
+        file: "MBA/10 Exclusive for MBA Members.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 847,
+        overlays: [
+          { action: "url", url: "https://info.buildingtools.co/mbansw-tools-member-offer", x: 414, y: 594, w: 610, h: 61 }
+        ]
+      }
+    ];
+
+    const state = { index: 0, viewBox: {}, loaded: {} };
+    const container = document.querySelector('.container');
+
+    function buildDOM() {
+      components.forEach((c, i) => {
+        const comp = document.createElement('div');
+        comp.className = i === 0 ? 'component active' : 'component';
+        comp.setAttribute('data-idx', i);
+
+        const host = document.createElement('div');
+        host.className = 'svg-host';
+
+        const img = document.createElement('img');
+        img.src = c.file;
+        img.alt = `Slide ${c.id}`;
+
+        const overlays = document.createElement('div');
+        overlays.className = 'overlay-root';
+
+        host.appendChild(img);
+        host.appendChild(overlays);
+        comp.appendChild(host);
+        container.appendChild(comp);
+
+        state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 1000 };
+        
+        img.addEventListener('load', () => {
+          state.loaded[i] = true;
+          renderOverlays(i);
+        });
+      });
+    }
+
+    function renderOverlays(idx) {
+      const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+      if (!compEl) return;
+      const root = compEl.querySelector('.overlay-root');
+      root.innerHTML = '';
+      const vb = state.viewBox[idx];
+      if (!vb) return;
+
+      // Render videos
+      if (components[idx].videos) {
+        components[idx].videos.forEach((v) => {
+          const videoEl = document.createElement('video');
+          videoEl.className = 'video-embed';
+          videoEl.controls = true;
+          videoEl.style.left = (v.x / vb.w) * 100 + '%';
+          videoEl.style.top = (v.y / vb.h) * 100 + '%';
+          videoEl.style.width = (v.w / vb.w) * 100 + '%';
+          videoEl.style.height = (v.h / vb.h) * 100 + '%';
+          
+          const source = document.createElement('source');
+          source.src = v.src;
+          source.type = 'video/mp4';
+          videoEl.appendChild(source);
+          
+          root.appendChild(videoEl);
+        });
+      }
+      
+      // Render overlays first
+      components[idx].overlays.forEach((o) => {
+        const el = document.createElement('div');
+        el.className = 'click-area';
+        if (o.dynamic) el.classList.add('dynamic-overlay');
+        
+        el.style.left = (o.x / vb.w) * 100 + '%';
+        if (o.dynamic && components[idx].accordion) {
+          // For dynamic overlays on accordion slides, use pixel positioning
+          el.style.top = o.y + 'px';
+        } else {
+          el.style.top = (o.y / vb.h) * 100 + '%';
+        }
+        el.style.width = (o.w / vb.w) * 100 + '%';
+        el.style.height = (o.h / vb.h) * 100 + '%';
+        el.title = o.action.toUpperCase();
+
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleAction(o);
+        });
+
+        root.appendChild(el);
+      });
+      
+      // Render accordion after overlays
+      if (components[idx].accordion) {
+        renderAccordion(idx, root, vb);
+      }
+    }
+
+    function renderAccordion(idx, root, vb) {
+      const accordion = components[idx].accordion;
+      let currentY = accordion.startY;
+      
+      accordion.items.forEach((item, itemIdx) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'accordion-item';
+        itemEl.setAttribute('data-accordion-idx', itemIdx);
+        itemEl.style.left = (accordion.itemX / vb.w) * 100 + '%';
+        itemEl.style.top = currentY + 'px';
+        itemEl.style.width = (accordion.itemWidth / vb.w) * 100 + '%';
+        
+        const img = document.createElement('img');
+        img.src = item.open ? item.openSrc : item.closedSrc;
+        itemEl.appendChild(img);
+        
+        itemEl.addEventListener('click', () => toggleAccordion(idx, itemIdx));
+        
+        root.appendChild(itemEl);
+        
+        // Render links if accordion is open
+        if (item.open && item.links) {
+          item.links.forEach(link => {
+            const linkEl = document.createElement('a');
+            linkEl.href = link.url;
+            linkEl.target = '_blank';
+            linkEl.className = 'click-area accordion-link';
+            linkEl.style.position = 'absolute';
+            linkEl.style.left = ((accordion.itemX + link.x) / vb.w) * 100 + '%';
+            linkEl.style.top = (currentY + link.y) + 'px';
+            linkEl.style.width = (link.w / vb.w) * 100 + '%';
+            linkEl.style.height = link.h + 'px';
+            linkEl.style.zIndex = '35';
+            linkEl.style.pointerEvents = 'auto';
+            linkEl.style.cursor = 'pointer';
+            linkEl.title = 'Open Tool';
+            linkEl.addEventListener('click', (e) => {
+              e.stopPropagation();
+            });
+            root.appendChild(linkEl);
+          });
+        }
+        
+        const height = item.open ? item.openHeight : item.closedHeight;
+        currentY += height + accordion.spacing;
+      });
+      
+      // Render nav section image
+      const navEl = document.createElement('img');
+      navEl.className = 'accordion-nav';
+      navEl.src = accordion.navSrc;
+      navEl.style.position = 'absolute';
+      navEl.style.left = (accordion.navX / vb.w) * 100 + '%';
+      navEl.style.width = (accordion.navWidth / vb.w) * 100 + '%';
+      navEl.style.zIndex = '25';
+      navEl.style.transition = 'top 0.3s ease';
+      root.appendChild(navEl);
+      
+      // Add clickable areas on nav
+      const backBtn = document.createElement('div');
+      backBtn.className = 'click-area nav-btn';
+      backBtn.style.position = 'absolute';
+      backBtn.style.left = (58 / vb.w) * 100 + '%';
+      backBtn.style.width = (180 / vb.w) * 100 + '%';
+      backBtn.style.height = '56px';
+      backBtn.style.zIndex = '30';
+      backBtn.style.transition = 'top 0.3s ease';
+      backBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleAction({ action: 'back' });
+      });
+      root.appendChild(backBtn);
+      
+      const nextBtn = document.createElement('div');
+      nextBtn.className = 'click-area nav-btn';
+      nextBtn.style.position = 'absolute';
+      nextBtn.style.left = (1202 / vb.w) * 100 + '%';
+      nextBtn.style.width = (180 / vb.w) * 100 + '%';
+      nextBtn.style.height = '56px';
+      nextBtn.style.zIndex = '30';
+      nextBtn.style.transition = 'top 0.3s ease';
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleAction({ action: 'next' });
+      });
+      root.appendChild(nextBtn);
+      
+      // Initial height calculation and nav button positioning
+      updateSlideHeight(idx);
+    }
+    
+    function toggleAccordion(slideIdx, itemIdx) {
+      const accordion = components[slideIdx].accordion;
+      accordion.items[itemIdx].open = !accordion.items[itemIdx].open;
+      
+      renderOverlays(slideIdx);
+    }
+    
+    function updateSlideHeight(idx) {
+      const accordion = components[idx].accordion;
+      if (!accordion) return;
+      
+      let totalHeight = accordion.startY;
+      
+      accordion.items.forEach((item, i) => {
+        const height = item.open ? item.openHeight : item.closedHeight;
+        totalHeight += height;
+        if (i < accordion.items.length - 1) {
+          totalHeight += accordion.spacing;
+        }
+      });
+      
+      // Add spacing before nav buttons
+      totalHeight += accordion.spacing * 2;
+      
+      // Add nav button height
+      totalHeight += accordion.navHeight;
+      
+      // Add bottom padding
+      totalHeight += 60;
+      
+      // Update viewBox height
+      state.viewBox[idx].h = totalHeight;
+      components[idx].viewBoxHeight = totalHeight;
+      
+      // Update the actual container height
+      const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+      const svgHost = compEl ? compEl.querySelector('.svg-host') : null;
+      const overlayRoot = compEl ? compEl.querySelector('.overlay-root') : null;
+      
+      if (svgHost) {
+        svgHost.style.height = totalHeight + 'px';
+      }
+      
+      if (overlayRoot) {
+        overlayRoot.style.height = totalHeight + 'px';
+      }
+      
+      // Update nav section and button positions
+      if (compEl) {
+        const navImg = compEl.querySelector('.accordion-nav');
+        const navButtons = compEl.querySelectorAll('.nav-btn');
+        const navY = totalHeight - accordion.navHeight - 40;
+        
+        if (navImg) {
+          navImg.style.top = navY + 'px';
+        }
+        
+        navButtons.forEach(btn => {
+          btn.style.top = (navY + 53) + 'px';
+        });
+      }
+      
+      // Reposition accordion items with animation
+      const root = container.querySelector(`.component[data-idx="${idx}"] .overlay-root`);
+      if (!root) return;
+      
+      let currentY = accordion.startY;
+      accordion.items.forEach((item, itemIdx) => {
+        const itemEl = root.querySelector(`.accordion-item[data-accordion-idx="${itemIdx}"]`);
+        if (itemEl) {
+          itemEl.style.top = currentY + 'px';
+          const img = itemEl.querySelector('img');
+          img.src = item.open ? item.openSrc : item.closedSrc;
+        }
+        const height = item.open ? item.openHeight : item.closedHeight;
+        currentY += height + accordion.spacing;
+      });
+    }
+
+    function handleAction(o) {
+      if (o.action === 'next') {
+        goTo(state.index + 1);
+      } else if (o.action === 'back') {
+        goTo(state.index - 1);
+      } else if (o.action === 'url' && o.url) {
+        window.open(o.url, '_blank', 'noopener');
+      } else if (o.action === 'image' && o.image) {
+        showImageModal(o.image);
+      }
+    }
+    
+    function showImageModal(imagePath) {
+      // Create modal overlay
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.width = '100%';
+      modal.style.height = '100%';
+      modal.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+      modal.style.zIndex = '10000';
+      modal.style.display = 'flex';
+      modal.style.alignItems = 'flex-start';
+      modal.style.justifyContent = 'center';
+      modal.style.padding = '20px';
+      modal.style.overflow = 'auto';
+      modal.style.cursor = 'pointer';
+      
+      // Create image
+      const img = document.createElement('img');
+      img.src = imagePath;
+      img.style.maxWidth = '100%';
+      img.style.height = 'auto';
+      img.style.display = 'block';
+      img.style.margin = '0 auto';
+      
+      modal.appendChild(img);
+      document.body.appendChild(modal);
+      
+      // Scroll modal to top
+      modal.scrollTop = 0;
+      
+      // Close on click
+      modal.addEventListener('click', () => {
+        modal.remove();
+      });
+      
+      // Close on Escape key
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+          modal.remove();
+          document.removeEventListener('keydown', handleEscape);
+        }
+      };
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    function goTo(newIndex) {
+      const max = components.length - 1;
+      const clamped = Math.max(0, Math.min(max, newIndex));
+      if (clamped === state.index) return;
+      
+      const prev = container.querySelector(`.component[data-idx="${state.index}"]`);
+      const next = container.querySelector(`.component[data-idx="${clamped}"]`);
+      if (prev) prev.classList.remove('active');
+      if (next) next.classList.add('active');
+      state.index = clamped;
+      
+      if (state.viewBox[clamped]) renderOverlays(clamped);
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') goTo(state.index + 1);
+      if (e.key === 'ArrowLeft') goTo(state.index - 1);
+    });
+
+    buildDOM();
+  </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TAFE Page Generator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>TAFE Page Generator</h1>
+      <p>Generate a single-file HTML for Activation or Implementation. No build tools required.</p>
+    </header>
+
+    <form id="gen-form">
+      <div class="grid">
+        <label>
+          Preset
+          <select name="preset" id="preset">
+            <option value="none">None (upload your own SVGs)</option>
+            <option value="activation_mba">Activation (MBA) - 10 slides</option>
+            <option value="implementation_tafesa">Implementation (TAFE SA) - 13 slides</option>
+          </select>
+        </label>
+        <label>
+          Page type
+          <select name="type" required>
+            <option value="activation">Activation</option>
+            <option value="implementation">Implementation</option>
+          </select>
+        </label>
+        <label>
+          Page title
+          <input type="text" name="title" placeholder="Activation Guide" value="Activation Guide" />
+        </label>
+        <label>
+          Tracking prefix
+          <input type="text" name="trackingPrefix" placeholder="tafesa" value="tafesa" required />
+        </label>
+        <label>
+          Tenant Subdomain (tools links)
+          <input type="text" name="tenantSubdomain" placeholder="tafesa" value="tafesa" required />
+          <small>External tools links will use: https://<strong id="tenantPreview">tafesa</strong>.buildingtools.co</small>
+        </label>
+        <label>
+          Upload SVGs (ordered by slide)
+          <input type="file" id="svgFiles" accept="image/svg+xml" multiple />
+          <small id="uploadStatus">No files selected</small>
+        </label>
+      </div>
+      <div class="grid">
+        <label>
+          Include debug tool
+          <input type="checkbox" name="includeDebug" checked />
+        </label>
+        <label>
+          HubSpot Portal ID (optional)
+          <input type="text" name="portalId" placeholder="20832146" />
+        </label>
+      </div>
+
+      <details>
+        <summary>Advanced: overrides (JSON)</summary>
+        <p>Provide optional JSON to override videos, links, and assets. Leave empty to use defaults.</p>
+        <textarea name="overrides" rows="10" placeholder='{
+  "videos": {"slide2":"https://.../m2.mp4"},
+  "links": [{"x":176.7,"y":585,"w":148.6,"h":24,"url":"https://..."}]
+}'></textarea>
+      </details>
+
+      <div class="actions">
+        <button type="submit">Generate HTML</button>
+        <button type="button" id="preview-btn" class="secondary">Preview</button>
+        <button type="button" id="load-activation" class="secondary">Load demo: Activation</button>
+        <button type="button" id="load-implementation" class="secondary">Load demo: Implementation</button>
+      </div>
+    </form>
+
+    <footer>
+      <small>Tip: upload the generated .html to HubSpot File Manager or any static host. Tracking works if your HubSpot tracking code is present on the domain.</small>
+    </footer>
+  </div>
+
+  <script src="presets.js"></script>
+  <script src="templates.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Click Area Debug Tool</title>
+  <style>
+    /* Copy the relevant styles from mba_activation.html */
+    .debug-tool {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      z-index: 10000;
+      font-size: 12px;
+      min-width: 250px;
+    }
+    
+    .debug-tool h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .debug-tool button {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      background: #BFE002;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .debug-tool button:hover {
+      background: #a8c802;
+    }
+    
+    .debug-tool button.active {
+      background: #1482FF;
+      color: white;
+    }
+    
+    .debug-tool .info {
+      background: #f5f5f5;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      word-break: break-all;
+    }
+    
+    .debug-tool .coords {
+      background: #e8f4ff;
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+    
+    .selection-overlay {
+      position: absolute;
+      border: 2px dashed #1482FF;
+      background: rgba(20, 130, 255, 0.1);
+      pointer-events: none;
+      z-index: 9999;
+    }
+    
+    /* Heatmap */
+    .click-area.heatmap-visible {
+      background: rgba(255, 0, 0, 0.3);
+      border: 2px solid #ff0000;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+    
+    .click-area.heatmap-visible::after {
+      content: attr(title);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="debug-tool">
+    <h3>🔧 Click Area Debug Tool</h3>
+    <button id="debugToggle" onclick="toggleDebugMode()">Enable Selection Mode</button>
+    <button id="heatmapToggle" onclick="toggleHeatmap()" style="margin-top: 5px;">Show Click Areas</button>
+    <div class="info">Current Slide: <span id="debugSlide">1</span></div>
+    <div class="info" style="margin-top: 5px;">
+      <label style="display: block; margin-bottom: 3px; font-size: 10px;">Area Type:</label>
+      <select id="areaType" style="width: 100%; padding: 4px; font-size: 11px;">
+        <option value="back-top">Back Button (Top)</option>
+        <option value="next-top">Next Button (Top)</option>
+        <option value="back-bottom">Back Button (Bottom)</option>
+        <option value="next-bottom">Next Button (Bottom)</option>
+        <option value="link">External Link</option>
+        <option value="video">Video Area</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    <div class="coords" id="coordsDisplay">Click and drag to select area</div>
+    <button onclick="copyAllCoords()" style="background: #1482FF; color: white; margin-top: 10px;">Copy All Coordinates</button>
+    <button onclick="clearSlideCoords()" style="background: #ff4444; color: white; margin-top: 5px;">Clear Slide</button>
+    <div id="allCoords" style="max-height: 200px; overflow-y: auto; margin-top: 10px; font-size: 10px; background: #f9f9f9; padding: 5px; border-radius: 4px; display: none;"></div>
+  </div>
+
+  <script>
+    /**
+     * CLICK AREA DEBUG TOOL
+     * 
+     * USAGE:
+     * 1. Copy the debug tool HTML and script into your page
+     * 2. Ensure your clickable areas have the class 'click-area'
+     * 3. Toggle "Selection Mode" to click and drag areas to measure
+     * 4. Toggle "Show Click Areas" to see existing click areas highlighted
+     * 5. Use "Copy All Coordinates" to export all measured areas
+     * 
+     * INTEGRATION:
+     * - Add the CSS styles to your page
+     * - Add the debug tool HTML to your page
+     * - Add the JavaScript functions below
+     * - Update document.getElementById('debugSlide') when navigating slides
+     * 
+     * FEATURES:
+     * - Click and drag to measure areas
+     * - Automatically calculates normalized coordinates
+     * - Stores coordinates per slide
+     * - Exports coordinates in ready-to-use format
+     * - Heatmap view of existing click areas
+     * - Support for accordion debugging (optional)
+     */
+
+    let debugMode = false;
+    let heatmapMode = false;
+    let selectionStart = null;
+    let selectionBox = null;
+    let slideCoordinates = {};
+
+    function toggleDebugMode() {
+      debugMode = !debugMode;
+      const btn = document.getElementById('debugToggle');
+      if (debugMode) {
+        btn.textContent = 'Disable Selection Mode';
+        btn.classList.add('active');
+      } else {
+        btn.textContent = 'Enable Selection Mode';
+        btn.classList.remove('active');
+        if (selectionBox) {
+          selectionBox.remove();
+          selectionBox = null;
+        }
+      }
+    }
+    
+    function toggleHeatmap() {
+      heatmapMode = !heatmapMode;
+      const btn = document.getElementById('heatmapToggle');
+      
+      if (heatmapMode) {
+        btn.textContent = 'Hide Click Areas';
+        btn.classList.add('active');
+      } else {
+        btn.textContent = 'Show Click Areas';
+        btn.classList.remove('active');
+      }
+      
+      document.querySelectorAll('.click-area').forEach(area => {
+        if (heatmapMode) {
+          area.classList.add('heatmap-visible');
+        } else {
+          area.classList.remove('heatmap-visible');
+        }
+      });
+    }
+
+    document.addEventListener('mousedown', (e) => {
+      if (!debugMode) return;
+      if (e.target.closest('.debug-tool')) return;
+      
+      // CUSTOMIZE: Update this selector to match your content container
+      const activeComponent = document.querySelector('.component.active .svg-host');
+      if (!activeComponent) return;
+      
+      const rect = activeComponent.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      selectionStart = { x, y, rect };
+      
+      if (selectionBox) selectionBox.remove();
+      selectionBox = document.createElement('div');
+      selectionBox.className = 'selection-overlay';
+      selectionBox.style.left = x + 'px';
+      selectionBox.style.top = y + 'px';
+      activeComponent.appendChild(selectionBox);
+      
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!debugMode || !selectionStart || !selectionBox) return;
+      
+      const rect = selectionStart.rect;
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+      
+      const x = Math.min(selectionStart.x, currentX);
+      const y = Math.min(selectionStart.y, currentY);
+      const w = Math.abs(currentX - selectionStart.x);
+      const h = Math.abs(currentY - selectionStart.y);
+      
+      selectionBox.style.left = x + 'px';
+      selectionBox.style.top = y + 'px';
+      selectionBox.style.width = w + 'px';
+      selectionBox.style.height = h + 'px';
+    });
+
+    document.addEventListener('mouseup', (e) => {
+      if (!debugMode || !selectionStart || !selectionBox) return;
+      
+      const rect = selectionStart.rect;
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+      
+      const x = Math.round(Math.min(selectionStart.x, currentX));
+      const y = Math.round(Math.min(selectionStart.y, currentY));
+      const w = Math.round(Math.abs(currentX - selectionStart.x));
+      const h = Math.round(Math.abs(currentY - selectionStart.y));
+      
+      // CUSTOMIZE: Update this selector to match your image
+      const img = document.querySelector('.component.active .svg-host img');
+      const imgWidth = img.naturalWidth || 1440; // Default width
+      const scale = rect.width / imgWidth;
+      
+      const normX = Math.round(x / scale);
+      const normY = Math.round(y / scale);
+      const normW = Math.round(w / scale);
+      const normH = Math.round(h / scale);
+      
+      const areaType = document.getElementById('areaType').value;
+      
+      // CUSTOMIZE: Update this to match your slide tracking
+      const slideNum = parseInt(document.getElementById('debugSlide').textContent);
+      
+      if (!slideCoordinates[slideNum]) {
+        slideCoordinates[slideNum] = [];
+      }
+      
+      const coordObj = {
+        type: areaType,
+        x: normX,
+        y: normY,
+        w: normW,
+        h: normH
+      };
+      slideCoordinates[slideNum].push(coordObj);
+      
+      const coordText = `{ action: "${areaType}", x: ${normX}, y: ${normY}, w: ${normW}, h: ${normH} }`;
+      document.getElementById('coordsDisplay').innerHTML = 
+        `<strong>${areaType}:</strong><br>${coordText}<br><small>Added to slide ${slideNum}</small>`;
+      
+      updateCoordsDisplay();
+      
+      navigator.clipboard.writeText(coordText).catch(err => {
+        console.error('Failed to copy:', err);
+      });
+      
+      selectionStart = null;
+    });
+    
+    function updateCoordsDisplay() {
+      const display = document.getElementById('allCoords');
+      let html = '<strong>All Coordinates:</strong><br>';
+      
+      for (let slide in slideCoordinates) {
+        html += `<br><strong>Slide ${slide}:</strong><br>`;
+        slideCoordinates[slide].forEach((coord, idx) => {
+          html += `  ${idx + 1}. ${coord.type}: { x: ${coord.x}, y: ${coord.y}, w: ${coord.w}, h: ${coord.h} }<br>`;
+        });
+      }
+      
+      display.innerHTML = html;
+      display.style.display = 'block';
+    }
+    
+    function copyAllCoords() {
+      let output = '// Coordinates Export\n\n';
+      
+      for (let slide in slideCoordinates) {
+        output += `// Slide ${slide}\n`;
+        output += `overlays: [\n`;
+        
+        slideCoordinates[slide].forEach(coord => {
+          let action = coord.type;
+          if (action.includes('back')) action = 'back';
+          else if (action.includes('next')) action = 'next';
+          else if (action === 'link') action = 'url';
+          
+          output += `  { action: "${action}", x: ${coord.x}, y: ${coord.y}, w: ${coord.w}, h: ${coord.h} },\n`;
+        });
+        
+        output += `]\n\n`;
+      }
+      
+      navigator.clipboard.writeText(output).then(() => {
+        alert('All coordinates copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+      });
+    }
+    
+    function clearSlideCoords() {
+      const slideNum = parseInt(document.getElementById('debugSlide').textContent);
+      if (slideCoordinates[slideNum]) {
+        delete slideCoordinates[slideNum];
+        updateCoordsDisplay();
+        document.getElementById('coordsDisplay').innerHTML = `Slide ${slideNum} coordinates cleared`;
+      }
+    }
+  </script>
+</body>
+</html>

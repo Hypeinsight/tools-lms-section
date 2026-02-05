@@ -28,3 +28,6 @@ desktop.ini
 *.tmp
 *.bak
 *.log
+
+# HubSpot config file
+hubspot.config.yml
