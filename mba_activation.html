@@ -544,6 +544,11 @@
     }
     
     function showImageModal(imagePath) {
+      // Scroll parent page to top if embedded
+      if (window.parent !== window) {
+        window.parent.postMessage({ action: 'scrollToTop' }, '*');
+      }
+      
       // Create modal overlay
       const modal = document.createElement('div');
       modal.style.position = 'fixed';
