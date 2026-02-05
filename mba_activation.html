@@ -524,6 +524,11 @@
         const height = item.open ? item.openHeight : item.closedHeight;
         currentY += height + accordion.spacing;
       });
+      
+      // Notify parent of height change after accordion animation
+      setTimeout(() => {
+        notifyParentHeight();
+      }, 350);
     }
 
     function handleAction(o) {
@@ -598,6 +603,31 @@
       if (state.viewBox[clamped]) renderOverlays(clamped);
       
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Notify parent about height change
+      notifyParentHeight();
+      
+      // Scroll parent to top
+      if (window.parent !== window) {
+        window.parent.postMessage({ action: 'scrollToTop' }, '*');
+      }
+    }
+    
+    function notifyParentHeight() {
+      // Get the actual height of the content
+      const activeComponent = container.querySelector('.component.active');
+      if (!activeComponent) return;
+      
+      const height = activeComponent.scrollHeight || activeComponent.offsetHeight;
+      const totalHeight = Math.max(height, 800); // Minimum height
+      
+      // Send height to parent window if embedded in iframe
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          action: 'resizeIframe',
+          height: totalHeight + 100 // Add padding
+        }, '*');
+      }
     }
 
     document.addEventListener('keydown', (e) => {
@@ -606,6 +636,18 @@
     });
 
     buildDOM();
+    
+    // Notify parent of initial height after images load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        notifyParentHeight();
+      }, 500);
+    });
+    
+    // Also notify on resize
+    window.addEventListener('resize', () => {
+      notifyParentHeight();
+    });
   </script>
 </body>
 </html>
