@@ -199,6 +199,11 @@
           { action: "next", x: 1287, y: 71, w: 52, h: 60 },
           { action: "back", x: 51, y: 1049, w: 148, h: 57 },
           { action: "next", x: 1194, y: 1051, w: 185, h: 60 }
+        ],
+        gifs: [
+          { src: "MBA/GIFs/NCC Codes  2 (1).gif", x: 60, y: 674, w: 420, h: 230 },
+          { src: "MBA/GIFs/Ac codes (1).gif", x: 510, y: 674, w: 420, h: 230 },
+          { src: "MBA/GIFs/Other Quality Standards (1).gif", x: 960, y: 674, w: 420, h: 230 }
         ]
       },
       {
@@ -320,6 +325,22 @@
           videoEl.appendChild(source);
           
           root.appendChild(videoEl);
+        });
+      }
+      
+      // Render GIFs
+      if (components[idx].gifs) {
+        components[idx].gifs.forEach((g) => {
+          const gifEl = document.createElement('img');
+          gifEl.className = 'image-embed';
+          gifEl.src = g.src;
+          gifEl.style.left = (g.x / vb.w) * 100 + '%';
+          gifEl.style.top = (g.y / vb.h) * 100 + '%';
+          gifEl.style.width = (g.w / vb.w) * 100 + '%';
+          gifEl.style.height = (g.h / vb.h) * 100 + '%';
+          gifEl.style.pointerEvents = 'none';
+          
+          root.appendChild(gifEl);
         });
       }
       
