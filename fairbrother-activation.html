@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fairbrother Activation</title>
+  <style>
+    :root {
+      --max-w: 1440px;
+    }
+    html, body { margin: 0; padding: 0; background:transparent; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#111; }
+    .page { display:flex; justify-content:center; padding:0; }
+    .container { position:relative; width:100%; max-width: var(--max-w); background:#DAE5F1; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.25); }
+
+    .component { display:none; position:relative; background:#DAE5F1; }
+    .component.active { display:block; }
+
+    .svg-host { position:relative; width:100%; height:auto; display:block; background:#DAE5F1; }
+    .svg-host img { width:100%; height:auto; display:block; }
+
+    /* overlay root sits above the image in the svg-host */
+    .overlay-root { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:10; }
+    .click-area { position:absolute; border-radius:8px; pointer-events:auto; cursor:pointer; }
+    .video-embed { position:absolute; pointer-events:auto; border:none; border-radius:24px; }
+    .image-embed { position:absolute; pointer-events:none; border-radius:32px; }
+    
+    /* Coordinate display */
+    .coord-display {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      z-index: 9999;
+      padding: 8px 12px;
+      background: rgba(37, 45, 54, 0.95);
+      color: #BFE002;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      pointer-events: none;
+      display: none;
+    }
+    .coord-display.active {
+      display: block;
+    }
+    .debug-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      padding: 10px 20px;
+      background: #252D36;
+      color: #BFE002;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <input id="debugToggle" type="checkbox" style="display:none;" />
+  <button class="debug-toggle" id="debugButton">Show Click Areas</button>
+  <div class="coord-display" id="coordDisplay">Click to see coordinates</div>
+  
+  <div class="page">
+    <div class="container">
+      <!-- components injected here by JS -->
+    </div>
+  </div>
+
+  <script>
+    /*
+      brandOverlays — Fairbrother rebrand layer
+      ----------------------------------------
+      The Hickory SVGs have all text converted to vector paths, so the words
+      "Hickory's" and the Smart Tip URL can't be find/replaced inside the SVG.
+      Instead, we overlay HTML on top of the SVG at exact coordinates.
+
+      Per-slide array of overlay objects:
+
+        { type: 'text', x, y, w, h, text,
+          bg, color, font, weight, align, fontSize, padding }
+
+        { type: 'logo', x, y, w, h, src, align }
+
+      Coordinates are in SVG units (matching viewBoxWidth/viewBoxHeight).
+      To capture coords: open the page, Ctrl+Click on the spot you want to
+      cover — coords are copied to your clipboard and shown in an alert.
+
+      Tip: use a 'text' overlay's bg color to match the slide background
+      (#DAE5F1 for the page, #1E88FF / etc. for the blue banner), then write
+      the new text on top. For a logo, leave bg transparent (default).
+    */
+    const components = [
+      // Slide 1 - Get Started
+      {
+        id: 1,
+        file: "Fairbrother Activation/1 - Get Started.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 3846,
+        videos: [
+          { src: "https://20832146.fs1.hubspotusercontent-na1.net/hubfs/20832146/EDU%20Intro%20V3%20(2)%20(1).mp4", x: 561, y: 1125, w: 769, h: 409 }
+        ],
+        // brandOverlays: Fairbrother rebrand layer (the SVG text is outlined, so we cover & redraw).
+        // Capture coords with Ctrl+Click on the page. See examples and field reference at bottom of <script>.
+        brandOverlays: [
+          // TODO slide 1: cover "Hickory's" in "Transform Hickory's Quality Portal" + replace "HICKORY" customer logo
+          // { type: 'text', text: "Fairbrother's", x: ?, y: ?, w: ?, h: ?, bg: '#1E88FF', color: '#FFFFFF' },
+          // { type: 'logo', src: 'Fairbrother Activation/fairbrother-logo.png', x: ?, y: ?, w: ?, h: ? },
+        ],
+        overlays: [
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1174.500, y: 3751.5, w: 200, h: 50 }
+        ]
+      },
+      // Slide 2 - How to achieve Quality?
+      {
+        id: 2,
+        file: "Fairbrother Activation/2- How to achieve Quality_.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1026,
+        brandOverlays: [
+          // TODO slide 2: add overlays for any Hickory logo / "Hickory's" text on this slide
+        ],
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://www.youtube.com/watch?v=NJyDyLEigbQ&t=6s", x: 60, y: 525, w: 410, h: 231 },
+          { action: "url", url: "https://www.youtube.com/watch?v=F7guvx59ZwI", x: 509.667, y: 525, w: 420, h: 231 },
+          { action: "url", url: "https://vimeo.com/762128620?fl=pl&fe=vl", x: 960.333, y: 525, w: 420, h: 231 },
+          { action: "back", x: 60, y: 910, w: 142, h: 56 },
+          { action: "next", x: 947, y: 910, w: 433, h: 56 }
+        ]
+      },
+      // Slide 3 - How to Access Tools?
+      {
+        id: 3,
+        file: "Fairbrother Activation/3 - How to Access Tools_.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1991,
+        brandOverlays: [
+          // TODO slide 3: add overlays for any Hickory logo / "Hickory's" text on this slide
+        ],
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://fairbrother.buildingtools.co/signup", x: 60, y: 458, w: 129, h: 44 },
+          { action: "back", x: 60, y: 1819, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1819, w: 433, h: 56 }
+        ]
+      },
+      // Slide 4 - Code Coverage & Citations
+      {
+        id: 4,
+        file: "Fairbrother Activation/4 - Code Coverage & Citations.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2078,
+        images: [
+          { src: "https://raw.githubusercontent.com/Hypeinsight/tools-lms-section/main/Hickory%20Activation/Activation%20GIFs/Module%203/Ncc%20codes.gif", x: 284.500, y: 804, w: 200, h: 50 },
+          { src: "https://raw.githubusercontent.com/Hypeinsight/tools-lms-section/main/Hickory%20Activation/Activation%20GIFs/Module%203/Ac%20codes.gif", x: 722.500, y: 801, w: 200, h: 50 }
+        ],
+        brandOverlays: [
+          // TODO slide 4: add overlays for any Hickory logo / "Hickory's" text on this slide
+        ],
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://buildingtools.co/r/fbF6yI?click=t&type=0", x: 747.278, y: 1810.7, w: 200, h: 20 },
+          { action: "back", x: 60, y: 1962, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1962, w: 433, h: 56 }
+        ]
+      },
+      // Slide 5 - Sharing - Link, QR, PDF
+      {
+        id: 5,
+        file: "Fairbrother Activation/5 - Sharing - Link, QR, PDF (1).svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2329,
+        brandOverlays: [
+          // TODO slide 5: Smart Tip URL "hickory.buildingtools.co" likely lives on this slide — cover & replace
+        ],
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "back", x: 60, y: 2213, w: 142, h: 56 },
+          { action: "next", x: 947, y: 2213, w: 433, h: 56 }
+        ]
+      },
+      // Slide 6 - Access for External Teams
+      {
+        id: 6,
+        file: "Fairbrother Activation/6 - Access for External Teams.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 1281,
+        brandOverlays: [
+          // TODO slide 6: add overlays for any Hickory logo / "Hickory's" text on this slide
+        ],
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "back", x: 60, y: 1165, w: 142, h: 56 },
+          { action: "next", x: 947, y: 1165, w: 433, h: 56 }
+        ]
+      },
+      // Slide 7 - Module walkthrough
+      {
+        id: 7,
+        file: "Fairbrother Activation/7 - Module walkthrough.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 2234,
+        brandOverlays: [
+          // TODO slide 7: add overlays for any Hickory logo / "Hickory's" text on this slide
+        ],
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "next", x: 1293, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/function", x: 61.9489, y: 1429.36, w: 93.3636, h: 11.64 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/building-code", x: 511.949, y: 1437.36, w: 93.3636, h: 11.64 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/citation", x: 961.949, y: 1437.36, w: 93.3636, h: 11.64 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/share-links", x: 61.9489, y: 1879.36, w: 93.3636, h: 11.64 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/-playlist", x: 511.949, y: 1879.36, w: 93.3636, h: 11.64 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base/your-tools", x: 961.949, y: 1879.36, w: 93.3636, h: 11.64 },
+          { action: "url", url: "https://info.buildingtools.co/knowledge-base", x: 636.5, y: 1945, w: 167, h: 52 },
+          { action: "back", x: 60, y: 2118, w: 142, h: 56 },
+          { action: "next", x: 947, y: 2118, w: 433, h: 56 }
+        ]
+      },
+      // Slide 8 - You're all set
+      {
+        id: 8,
+        file: "Fairbrother Activation/8 - You%E2%80%99re all set.svg",
+        viewBoxWidth: 1440,
+        viewBoxHeight: 826,
+        brandOverlays: [
+          // TODO slide 8: add overlays for any Hickory logo / "Hickory's" text on this slide
+        ],
+        overlays: [
+          { action: "back", x: 101, y: 55, w: 50, h: 50 },
+          { action: "url", url: "https://fairbrother.buildingtools.co/", x: 619, y: 588, w: 203, h: 56 }
+        ]
+      }
+    ];
+
+    // DOM setup
+    const container = document.querySelector('.container');
+
+    const state = {
+      index: 0, // 0..7
+      loaded: new Array(components.length).fill(false),
+      viewBox: new Array(components.length).fill(null) // {w,h}
+    };
+
+
+    function buildDOM() {
+      components.forEach((c, i) => {
+        const comp = document.createElement('div');
+        comp.className = 'component' + (i === 0 ? ' active' : '');
+        comp.dataset.idx = i;
+
+        const host = document.createElement('div');
+        host.className = 'svg-host';
+
+        const img = document.createElement('img');
+        img.src = c.file;
+        img.setAttribute('aria-label', `Slide ${c.id}`);
+
+        const overlays = document.createElement('div');
+        overlays.className = 'overlay-root';
+
+        host.appendChild(img);
+        host.appendChild(overlays);
+        comp.appendChild(host);
+        container.appendChild(comp);
+
+        // Use fixed viewBox dimensions from component config
+        state.viewBox[i] = { w: c.viewBoxWidth || 1440, h: c.viewBoxHeight || 2500 };
+        
+        // Wait for image to load before rendering overlays
+        img.addEventListener('load', () => {
+          state.loaded[i] = true;
+          renderOverlays(i);
+        });
+      });
+    }
+
+    function renderOverlays(idx) {
+      const compEl = container.querySelector(`.component[data-idx="${idx}"]`);
+      if (!compEl) return;
+      const root = compEl.querySelector('.overlay-root');
+      root.innerHTML = '';
+      const vb = state.viewBox[idx];
+      if (!vb) return;
+
+      // Render brandOverlays (Fairbrother rebrand layer over the Hickory SVG paths)
+      // Each entry: { type: 'logo' | 'text', x, y, w, h,
+      //               src?, text?, bg?, color?, font?, weight?, align? }
+      if (components[idx].brandOverlays) {
+        components[idx].brandOverlays.forEach((b) => {
+          const el = document.createElement(b.type === 'logo' ? 'img' : 'div');
+          el.style.position = 'absolute';
+          el.style.left = (b.x / vb.w) * 100 + '%';
+          el.style.top = (b.y / vb.h) * 100 + '%';
+          el.style.width = (b.w / vb.w) * 100 + '%';
+          el.style.height = (b.h / vb.h) * 100 + '%';
+          el.style.pointerEvents = 'none';
+
+          if (b.type === 'logo') {
+            el.src = b.src;
+            el.style.objectFit = 'contain';
+            el.style.objectPosition = b.align || 'left center';
+          } else {
+            // text overlay = cover the existing path text, draw new HTML text
+            el.style.background = b.bg || '#FFFFFF';
+            el.style.color = b.color || '#0E2C58';
+            el.style.fontFamily = b.font || 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+            el.style.fontWeight = b.weight || '700';
+            el.style.display = 'flex';
+            el.style.alignItems = 'center';
+            el.style.justifyContent = b.align || 'flex-start';
+            el.style.padding = b.padding || '0';
+            // size text to fit the cover box height
+            el.style.fontSize = (b.fontSize ? b.fontSize : Math.round(b.h * 0.7)) + 'px';
+            el.style.lineHeight = '1';
+            el.style.whiteSpace = 'nowrap';
+            el.textContent = b.text || '';
+          }
+
+          root.appendChild(el);
+        });
+      }
+
+      // Render cover rectangles first (to cover sections)
+      if (components[idx].covers) {
+        components[idx].covers.forEach((cover) => {
+          const coverEl = document.createElement('div');
+          coverEl.style.position = 'absolute';
+          coverEl.style.left = (cover.x / vb.w) * 100 + '%';
+          coverEl.style.top = (cover.y / vb.h) * 100 + '%';
+          coverEl.style.width = (cover.w / vb.w) * 100 + '%';
+          coverEl.style.height = (cover.h / vb.h) * 100 + '%';
+          coverEl.style.backgroundColor = '#DAE5F1';
+          coverEl.style.borderRadius = '8px';
+          coverEl.style.pointerEvents = 'none';
+          
+          root.appendChild(coverEl);
+        });
+      }
+
+      // Render videos
+      if (components[idx].videos) {
+        components[idx].videos.forEach((v) => {
+          const videoEl = document.createElement('video');
+          videoEl.className = 'video-embed';
+          videoEl.controls = true;
+          videoEl.style.left = (v.x / vb.w) * 100 + '%';
+          videoEl.style.top = (v.y / vb.h) * 100 + '%';
+          videoEl.style.width = (v.w / vb.w) * 100 + '%';
+          videoEl.style.height = (v.h / vb.h) * 100 + '%';
+          
+          const source = document.createElement('source');
+          source.src = v.src;
+          source.type = 'video/mp4';
+          videoEl.appendChild(source);
+          
+          root.appendChild(videoEl);
+        });
+      }
+
+      // Render images
+      if (components[idx].images) {
+        components[idx].images.forEach((img) => {
+          const imgEl = document.createElement('img');
+          imgEl.className = 'image-embed';
+          imgEl.src = img.src;
+          imgEl.style.position = 'absolute';
+          imgEl.style.left = (img.x / vb.w) * 100 + '%';
+          imgEl.style.top = (img.y / vb.h) * 100 + '%';
+          imgEl.style.width = (img.w / vb.w) * 100 + '%';
+          imgEl.style.height = (img.h / vb.h) * 100 + '%';
+          imgEl.style.objectFit = 'contain';
+          
+          root.appendChild(imgEl);
+        });
+      }
+
+      components[idx].overlays.forEach((o) => {
+        const el = document.createElement('div');
+        el.className = 'click-area';
+        
+        // Convert SVG coordinates to percentage based on viewBox
+        let leftPct = (o.x / vb.w) * 100;
+        const topPct = (o.y / vb.h) * 100;
+        let widthPct = (o.w / vb.w) * 100;
+        const heightPct = (o.h / vb.h) * 100;
+        
+        el.style.left = leftPct + '%';
+        el.style.top = topPct + '%';
+        el.style.width = widthPct + '%';
+        el.style.height = heightPct + '%';
+        el.title = o.action.toUpperCase();
+
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleAction(o);
+        });
+
+        root.appendChild(el);
+      });
+    }
+
+    function handleAction(o) {
+      if (o.action === 'next') {
+        goTo(state.index + 1, 'button');
+      } else if (o.action === 'back') {
+        goTo(state.index - 1, 'button');
+      } else if (o.action === 'url' && o.url) {
+        window.open(o.url, '_blank', 'noopener');
+      } else {
+        console.log('Unhandled action:', o);
+      }
+    }
+
+    function goTo(newIndex, method = 'button') {
+      const max = components.length - 1;
+      const clamped = Math.max(0, Math.min(max, newIndex));
+      if (clamped === state.index) return;
+      
+      const prev = container.querySelector(`.component[data-idx="${state.index}"]`);
+      const next = container.querySelector(`.component[data-idx="${clamped}"]`);
+      if (prev) prev.classList.remove('active');
+      if (next) next.classList.add('active');
+      state.index = clamped;
+      
+      if (state.viewBox[clamped]) renderOverlays(clamped);
+      
+      // Notify parent window of new height
+      notifyParentHeight();
+      
+      // Scroll parent window to top
+      if (window.parent !== window) {
+        window.parent.postMessage({ action: 'scrollToTop' }, '*');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function notifyParentHeight() {
+      if (window.parent !== window) {
+        const currentHeight = components[state.index].viewBoxHeight;
+        window.parent.postMessage({ 
+          action: 'resizeIframe', 
+          height: currentHeight 
+        }, '*');
+      }
+    }
+
+    function hookKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          goTo(state.index + 1, 'keyboard');
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          goTo(state.index - 1, 'keyboard');
+        }
+      });
+    }
+
+    // Debug toggle
+    document.getElementById('debugButton').addEventListener('click', () => {
+      const toggle = document.getElementById('debugToggle');
+      toggle.checked = !toggle.checked;
+      const clickAreas = document.querySelectorAll('.click-area');
+      clickAreas.forEach(area => {
+        if (toggle.checked) {
+          area.style.background = 'rgba(255, 0, 0, 0.2)';
+          area.style.border = '2px solid red';
+        } else {
+          area.style.background = '';
+          area.style.border = '';
+        }
+      });
+    });
+
+    // Coordinate display on hover
+    const coordDisplay = document.getElementById('coordDisplay');
+    container.addEventListener('mousemove', (e) => {
+      const comp = e.target.closest('.component.active');
+      if (!comp) return;
+      
+      const idx = parseInt(comp.dataset.idx);
+      const vb = state.viewBox[idx];
+      if (!vb) return;
+      
+      const host = comp.querySelector('.svg-host');
+      const rect = host.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * vb.w;
+      const y = ((e.clientY - rect.top) / rect.height) * vb.h;
+      
+      coordDisplay.textContent = `x: ${x.toFixed(3)}, y: ${y.toFixed(3)}`;
+      coordDisplay.classList.add('active');
+    });
+
+    container.addEventListener('mouseleave', () => {
+      coordDisplay.classList.remove('active');
+    });
+
+    // Ctrl+Click to capture coordinates
+    document.addEventListener('click', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        const comp = container.querySelector('.component.active');
+        if (!comp) return;
+        
+        const idx = parseInt(comp.dataset.idx);
+        const vb = state.viewBox[idx];
+        if (!vb) return;
+        
+        const host = comp.querySelector('.svg-host');
+        if (!host) return;
+        
+        const rect = host.getBoundingClientRect();
+        
+        // Check if click is within the host bounds
+        if (e.clientX < rect.left || e.clientX > rect.right || 
+            e.clientY < rect.top || e.clientY > rect.bottom) {
+          return;
+        }
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const x = ((e.clientX - rect.left) / rect.width) * vb.w;
+        const y = ((e.clientY - rect.top) / rect.height) * vb.h;
+        
+        const coordText = `Slide ${idx + 1}: x: ${x.toFixed(3)}, y: ${y.toFixed(3)}, w: 200, h: 50`;
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(coordText).then(() => {
+          console.log('=== CLICK AREA COORDINATE ===');
+          console.log('Slide:', idx + 1, '(' + components[idx].file + ')');
+          console.log('X:', x.toFixed(3));
+          console.log('Y:', y.toFixed(3));
+          console.log('Copied to clipboard:', coordText);
+          
+          alert(`✓ Copied to clipboard!\n\nSlide ${idx + 1}\nX: ${x.toFixed(3)}\nY: ${y.toFixed(3)}\nW: 200, H: 50`);
+        }).catch(err => {
+          console.error('Failed to copy:', err);
+          alert(`Coordinates:\n\nSlide ${idx + 1}\nX: ${x.toFixed(3)}\nY: ${y.toFixed(3)}\nW: 200, H: 50\n\n(Copy failed - check console)`);
+        });
+      }
+    }, true);
+
+    // init
+    buildDOM();
+    hookKeyboard();
+    
+    // Notify parent of initial height after DOM is ready
+    window.addEventListener('load', () => {
+      notifyParentHeight();
+    });
+  </script>
+</body>
+</html>
